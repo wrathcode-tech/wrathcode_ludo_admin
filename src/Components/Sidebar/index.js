@@ -52,11 +52,12 @@ const Sidebar = () => {
                             <li className={actived === "contactRequest" ? "active" : ""}>
                                 <Link to="/dashboard/contactRequest" onClick={() => setActived("contactRequest")}><img src="/images/support_icon.svg" alt="dashboard" />Contact Request</Link>
                             </li>
-                            <li className="">
-                                <a href="#/" onClick={handleLogout}><img src="/images/logout_icon.svg" alt="dashboard"/>Logout</a>
-                            </li>
+                            
                         </ul>
                     </div>
+                </div>
+                <div class="logout_btn">
+                      <a href="#/" onClick={handleLogout}><img src="/images/logout_icon.svg" alt="dashboard"/>Logout</a>
                 </div>
             </div>
 

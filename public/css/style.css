@@ -736,6 +736,8 @@ textarea.input_inb {
     border-radius: 20px 0px 20px 20px;
 }
 
+.navi_sidebar ul.list-unstyled li a img{ width: 26px; }
+
 .tab-content .ticket_support_team {
     margin-bottom: 24px;
 }
