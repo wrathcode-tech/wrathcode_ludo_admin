@@ -73,10 +73,27 @@ function LoginPage() {
                         <p>Enter your email & password to login</p>
 
                         <form>
-                            <div class="form_input">
+                            <div class="form_input d-flex">
                                 <input type="email" placeholder="Email *" value={emailId} onChange={(e) => setEmailId(e.target.value)} required="" />
+                                <button
+                                    type="button"
+                                    className="getotp"
+                                    onClick={handleGetCode}
+                                >
+                                    Get OTP
+                                </button>
                             </div>
+
                             <div class="form_input">
+                            <input
+                                type="number"
+                                placeholder="OTP *"
+                                value={otp}
+                                onChange={(e) => setOtp(e.target.value)}
+                                required />
+</div>
+
+                            <div class="form_input d-flex">
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Password *"
@@ -91,19 +108,7 @@ function LoginPage() {
                                         src={showPassword ? "/images/view_close.svg" : "/images/view_icon.svg"}
                                         alt="view" />
                                 </div>
-                                <input
-                                    type="number"
-                                    placeholder="OTP *"
-                                    value={otp}
-                                    onChange={(e) => setOtp(e.target.value)}
-                                    required />
-                                <button
-                                    type="button"
-                                    className="btn btn-primary"
-                                    onClick={handleGetCode}
-                                >
-                                    Get OTP
-                                </button>
+
                             </div>
                             <div class="form_input" onClick={() => handleLogin(emailId, password, otp)}>
                                 <input type="button" value="Login" />

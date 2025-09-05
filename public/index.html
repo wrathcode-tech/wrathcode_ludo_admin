@@ -67,6 +67,25 @@
   </script>
 
 
+<script>
+$(document).ready(function () {
+    var sidebar = $(".leftside_menu");
+    var offset = sidebar.offset().top;
+
+    $(window).scroll(function () {
+        var scrollTop = $(window).scrollTop();
+
+        if (scrollTop > offset) {
+            sidebar.addClass("sticky-sidebar");
+        } else {
+            sidebar.removeClass("sticky-sidebar");
+        }
+    });
+});
+
+
+</script>
+
   <script>
     $(document).ready(function () {
       $("#toggleBtn").click(function () {

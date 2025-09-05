@@ -23,12 +23,13 @@ const Sidebar = () => {
             <div class="leftside_menu">
                 <div class="leftside_items">
                     <div class="logo">
-                        <img src="/images/logo.png" alt="logo" />
+                        <img src="/images/logo_login.svg" alt="logo" />
                     </div>
                     <div class="toggle_menu" id="toggleBtn">
                         <img src="/images/toggle_icon.svg" alt="toggle" />
                     </div>
                     <div class="navi_sidebar" id="content">
+                        <div className="responsive_scrool">
                         <ul className="list-unstyled ps-0">
                             <li className={actived === "home" ? "active" : ""}>
                                 <Link to="/dashboard/home" onClick={() => setActived("home")}><img src="/images/dashboad_icon.svg" alt="dashboard" />My Dashboard</Link>
@@ -36,7 +37,7 @@ const Sidebar = () => {
                             {/* <li className={actived === "admin" ? "active" : ""}>
                                 <Link to="/dashboard/home" onClick={() => setActived("admin")}><img src="/images/admin_icon.svg" alt="dashboard" />Sub Admin</Link>
                             </li> */}
-                           
+
                             <li className={actived === "userList" ? "active" : ""}>
                                 <Link to="/dashboard/userList" onClick={() => setActived("userList")}><img src="/images/user_list_icon.svg" alt="dashboard" />All Users</Link>
                             </li>
@@ -52,16 +53,21 @@ const Sidebar = () => {
                             <li className={actived === "contactRequest" ? "active" : ""}>
                                 <Link to="/dashboard/contactRequest" onClick={() => setActived("contactRequest")}><img src="/images/support_icon.svg" alt="dashboard" />Contact Request</Link>
                             </li>
-                            
+
                         </ul>
+                        </div>
+                        <div class="logout_btn">
+                            <a href="#/" onClick={handleLogout}><img src="/images/logout_icon.svg" alt="dashboard" />Logout</a>
+                        </div>
+
                     </div>
                 </div>
-                <div class="logout_btn">
-                      <a href="#/" onClick={handleLogout}><img src="/images/logout_icon.svg" alt="dashboard"/>Logout</a>
-                </div>
+                {/* <div class="logout_btn">
+                    <a href="#/" onClick={handleLogout}><img src="/images/logout_icon.svg" alt="dashboard" />Logout</a>
+                </div> */}
             </div>
 
-                <Outlet />
+            <Outlet />
         </div>
     );
 };
