@@ -42,7 +42,7 @@ const AuthService = {
     const params = {
       email_or_phone: emailId,
       resent: true,
-      type: "",
+      type: "register",
     };
     const headers = {
       "Content-Type": "application/json",
@@ -104,13 +104,147 @@ const AuthService = {
     };
     return ApiCallPost(url, formData, headers);
   },
-
+  updateKycStatus: async (userId, status, reason) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, updateKycStatus } = ApiConfig;
+    const url = baseUrl + updateKycStatus;
+    const params = {
+      userId, userId,
+      status,
+      kycRejectReason: reason
+    };
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token
+    };
+    return ApiCallPost(url, params, headers);
+  },
 
 
   getProfile: async () => {
     const token = sessionStorage.getItem("token");
     const { baseUrl, getProfile } = ApiConfig;
     const url = baseUrl + getProfile;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  pendingDepositRequest: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, pendingDepositRequest } = ApiConfig;
+    const url = baseUrl + pendingDepositRequest;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  getUsersRespose: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, getUsersRespose } = ApiConfig;
+    const url = baseUrl + getUsersRespose;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  allCompletedLudoGameList: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, allCompletedLudoGameList } = ApiConfig;
+    const url = baseUrl + allCompletedLudoGameList;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  allDisputedLudoGameList: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, allDisputedLudoGameList } = ApiConfig;
+    const url = baseUrl + allDisputedLudoGameList;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  allRunningLudoGameList: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, allRunningLudoGameList } = ApiConfig;
+    const url = baseUrl + allRunningLudoGameList;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  allExpiredLudoGameList: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, allExpiredLudoGameList } = ApiConfig;
+    const url = baseUrl + allExpiredLudoGameList;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  allWaitingLudoGameList: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, allWaitingLudoGameList } = ApiConfig;
+    const url = baseUrl + allWaitingLudoGameList;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  allCancelLudoGameList: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, allCancelLudoGameList } = ApiConfig;
+    const url = baseUrl + allCancelLudoGameList;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  allDisputeLudoGameList: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, allDisputeLudoGameList } = ApiConfig;
+    const url = baseUrl + allDisputeLudoGameList;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  getpendingKycList: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, getpendingKycList } = ApiConfig;
+    const url = baseUrl + getpendingKycList;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  getapprovedKycList: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, getapprovedKycList } = ApiConfig;
+    const url = baseUrl + getapprovedKycList;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  getrejectedKycList: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, getrejectedKycList } = ApiConfig;
+    const url = baseUrl + getrejectedKycList;
     const headers = {
       'Content-Type': 'application/json',
       Authorization: token
@@ -205,6 +339,16 @@ const AuthService = {
     const token = sessionStorage.getItem("token");
     const { baseUrl, usersList } = ApiConfig;
     const url = baseUrl + usersList;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  depositWithdraList: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, depositWithdraList } = ApiConfig;
+    const url = baseUrl + depositWithdraList;
     const headers = {
       'Content-Type': 'application/json',
       Authorization: token

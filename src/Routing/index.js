@@ -8,8 +8,16 @@ import AllUserList from "../Components/AllUser";
 import Sidebar from "../Components/Sidebar";
 import { Outlet } from "react-router-dom";
 import BlogPage from "../Components/BlogPage";
-import Chatpage from "../Components/SupportPage/Chatpage";
+// import Chatpage from "../Components/SupportPage/Chatpage";
 import ContactusList from "../Components/ContactusList";
+import PendingDepositRequest from "../Components/DepositsList";
+import UserKyc from "../Components/UserKyc";
+import MatchDetails from "../Components/MatchDetails/Index";
+import AllLudoList from "../Components/LudoList/AllLudoList";
+import OverAllReferralEarnList from "../Components/ReferralBonusEarn/Index";
+import OverAllCommissionEarnList from "../Components/AllCommissionBonusEarn/Index";
+import DepostiWithdraSummary from "../Components/DepositsList/DepostiWithdraSummary";
+import UserEarningSummary from "../Components/UserEarningSummary";
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -29,9 +37,18 @@ const Routing = () => {
         <Route path="notification" element={<ProtectedRoute> <Notification /></ProtectedRoute>} />
         <Route path="support" element={<ProtectedRoute> <SupportPage /></ProtectedRoute>} />
         <Route path="userList" element={<ProtectedRoute> <AllUserList /></ProtectedRoute>} />
+        <Route path="UserKyc" element={<ProtectedRoute> <UserKyc /></ProtectedRoute>} />
+        <Route path="pendingDeposit" element={<ProtectedRoute> <PendingDepositRequest /></ProtectedRoute>} />
+        <Route path="matchDetails" element={<ProtectedRoute> <MatchDetails /></ProtectedRoute>} />
         <Route path="blog" element={<ProtectedRoute> <BlogPage /></ProtectedRoute>} />
         <Route path="contactRequest" element={<ProtectedRoute> <ContactusList /></ProtectedRoute>} />
-        <Route path="chat/:id" element={<ProtectedRoute> <Chatpage /></ProtectedRoute>} />
+        <Route path="earn_referralBonus" element={<ProtectedRoute> <OverAllReferralEarnList /></ProtectedRoute>} />
+        <Route path="earn_commissionBonus" element={<ProtectedRoute> <OverAllCommissionEarnList /></ProtectedRoute>} />
+        <Route path="earn_depositWithdrawSummary" element={<ProtectedRoute> <DepostiWithdraSummary /></ProtectedRoute>} />
+        <Route path="earn_userEarningSummary" element={<ProtectedRoute> <UserEarningSummary /></ProtectedRoute>} />
+
+        {/* <Route path="chat/:id" element={<ProtectedRoute> <Chatpage /></ProtectedRoute>} /> */}
+        <Route path="AllGamesList" element={<ProtectedRoute> <AllLudoList /></ProtectedRoute>} />
       </Route>
       <Route path="*" element={token ? <Navigate to="/dashboard/home" replace /> : <Navigate to="/" replace />} />
     </Routes>

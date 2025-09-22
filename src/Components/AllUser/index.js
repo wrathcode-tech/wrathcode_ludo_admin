@@ -3,6 +3,8 @@ import UserHeader from '../../Layout/UserHeader'
 import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import AuthService from '../../Api/Api_Services/AuthService';
 import { alertErrorMessage } from '../../Utils/CustomAlertMessage';
+import DataTable from 'react-data-table-component';
+import moment from 'moment';
 
 function AllUserList() {
 
@@ -60,8 +62,83 @@ function AllUserList() {
 
     useEffect(() => {
         handleUsersList()
-
     }, []);
+
+    const Columns = [
+        {
+            name: 'Created At',
+            selector: row => moment(row.createdAt).format('DD-MM-YYYY LT'),
+            sortable: true,
+            wrap: true
+        },
+        {
+            name: 'User Id',
+            selector: row => row?.uuid || '—',
+            sortable: true,
+            wrap: true
+        },
+        {
+            name: 'Full Name',
+            selector: row => row?.fullName || '—',
+            sortable: true,
+            wrap: true
+        },
+        {
+            name: 'Email', width: '200px',
+            selector: row => row?.emailId || '—',
+            sortable: true,
+            wrap: true
+        },
+        // {
+        //     name: 'Mobile Number',
+        //     selector: row => row?.mobileNumber || '—',
+        //     sortable: true,
+        //     wrap: true
+        // },
+        // {
+        //     name: 'Country Code',
+        //     selector: row => row?.countryCode || '—',
+        //     sortable: true,
+        //     wrap: true
+        // },
+        {
+            name: 'KYC Status',
+            selector: row => row?.kycVerified || '—',
+            cell: row => (
+                <span style={{ color: row?.kycVerified === 'APPROVED' ? 'green' : 'red' }}>
+                    {row?.kycVerified || '—'}
+                </span>
+            ),
+            sortable: true,
+            wrap: true
+        },
+        {
+            name: 'Rank',
+            selector: row => row?.rank || '—',
+            sortable: true,
+            wrap: true
+        },
+        {
+            name: 'Total Referrals',
+            selector: row => row?.totalRefer || 0,
+            sortable: true,
+            wrap: true
+        },
+        {
+            name: 'Status',
+            selector: row => row?.status || '—',
+            cell: row => (
+                <span style={{ color: row?.status === 'ACTIVE' ? 'green' : 'red' }}>
+                    {row?.status || '—'}
+                </span>
+            ),
+            sortable: true,
+            wrap: true
+        },
+    ];
+
+
+
 
     return (
         <>
@@ -73,64 +150,20 @@ function AllUserList() {
                         <div class="user_list_top">
                             <div class="user_list_l">
                                 <h4>All User</h4>
-                                <p>Active Members</p>
                             </div>
                             <div class="user_search">
                                 <button><img src="/images/search_icon.svg" alt="search" /></button>
-                                <input type="search" placeholder="Search Email / UID" onChange={(e) => setSearch(e.target.value)} value={search} />
+                                <input type="search" placeholder="Search User" onChange={(e) => setSearch(e.target.value)} value={search} />
                             </div>
                         </div>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>UID</th>
-                                    <th>User Name</th>
-                                    <th>Email</th>
-                                    <th>Gender</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {userList?.map((item, index) => {
-                                    return (
-                                        <tr key={index}>
-                                            <td>{item?.uId}</td>
-                                            <td>{item?.firstName ? item?.firstName + " " + item?.lastName : "---"}</td>
-                                            <td>{item?.emailId}</td>
-                                            <td>{item?.gender?.toUpperCase() || "---"}</td>
-                                            <td>{item?.status}</td>
-                                            <td><button className={item?.status !== "ACTIVE" && 'inactive_button'} onClick={() => handleStatusUpdate(item?._id, item?.status === "ACTIVE" ? "INACTIVE" : "ACTIVE")}>{item?.status}</button></td>
-                                        </tr>
-                                    )
-                                })}
-
-
-                            </tbody>
-                        </table>
-                        {/* <div class="pagination_list">
-                            <p>Showing data 1 to 8 of 256K entries</p>
-                            <ul class="pagination">
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item"><a class="page-link" href="#">4</a></li>
-                                <li class="page-item"><a class="page-link" href="#">5</a></li>
-                                <li class="page-item"><a class="page-link" href="#">...</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                        <span class="sr-only">Next</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div> */}
+                        <DataTable
+                            columns={Columns}
+                            data={userList}
+                            pagination
+                            highlightOnHover
+                            striped
+                            responsive
+                        />
                     </div>
                 </div>
             </div >

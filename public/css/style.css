@@ -768,12 +768,23 @@ textarea.input_inb {
 }
 
 .navi_sidebar ul.list-unstyled li a img {
-    width: 26px;
+    width: 18px;
 }
 
 .tab-content .ticket_support_team {
     margin-bottom: 24px;
 }
+
+.rdt_TableRow .rdt_TableCell {
+    padding: 8px 0px;
+}
+
+
+
+.navi_sidebar ul.list-unstyled.ps-0 {
+    padding-bottom: 50px !important;
+}
+
 
 .ticket_resolved {
     display: flex;
@@ -831,7 +842,7 @@ button.closed_btn {
 }
 
 .responsive_scrool {
-    height: 80vh;
+    height: 70vh;
     overflow: auto;
 }
 

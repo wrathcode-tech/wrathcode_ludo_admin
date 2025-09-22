@@ -9,7 +9,7 @@ export const deployedUrl = `${window.origin}/`
 export const ApiConfig = {
   // =========EndPoints========== //
   login: "login",
-  usersList: "users-list",
+  usersList: "allUsersList",
   getOpenTickets: "get-open-tickets",
   getClosedTickets: "get-close-tickets",
   getResolvedTickets: "get-resolve-tickets",
@@ -27,6 +27,20 @@ export const ApiConfig = {
   updateTicketStatus: "update-ticket-status",
   getOtp: "send-otp",
   replyTicket: "reply-ticket",
+  pendingDepositRequest: "pendingDepositRequest",
+  getpendingKycList: "pendingKycUsers",
+  getapprovedKycList: "approvedKycUsers",
+  getrejectedKycList: "rejectedKycUsers",
+  updateKycStatus: "updateKycStatus",
+  getUsersRespose: "getUsersRespose",
+  allCompletedLudoGameList: "allCompletedLudoGameList",
+  allDisputeLudoGameList: "allDisputeLudoGameList",
+  allRunningLudoGameList: "allRunningLudoGameList",
+  allExpiredLudoGameList: "allExpiredLudoGameList",
+  allWaitingLudoGameList: "allWaitingLudoGameList",
+  allCancelLudoGameList: "allCancelLudoGameList",
+  depositWithdraList: "usersDepositWithdrawalSummary",
+  // allAdminList: "allAdminList",
 
 
 
