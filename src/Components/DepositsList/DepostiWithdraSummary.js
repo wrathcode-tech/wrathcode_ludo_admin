@@ -1,30 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import UserHeader from '../../Layout/UserHeader';
-import DataTable from 'react-data-table-component';
 import LoaderHelper from '../../Utils/Loading/LoaderHelper';
-import { alertErrorMessage } from '../../Utils/CustomAlertMessage';
+import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertMessage';
 import AuthService from '../../Api/Api_Services/AuthService';
+import ReactPaginate from 'react-paginate';
+import copy from "copy-to-clipboard";
+import DataTableBase from '../../Utils/DataTable';
 
 function DepostiWithdraSummary() {
     const [userList, setUserList] = useState([]);
-    console.log("🚀 ~ DepostiWithdraSummary ~ userList:", userList)
     const [search, setSearch] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalRows, setTotalRows] = useState(0);
-    const [perPage, setPerPage] = useState(10);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [totalData, setTotalData] = useState(0);
+
+
+    const copyUserId = (row) => {
+        copy(row.userId);
+        alertSuccessMessage("User ID copied!!");
+    };
+    const pageCount = Math.ceil(totalData / itemsPerPage);
 
     useEffect(() => {
-        fetchDepositWithdrawList(currentPage, perPage);
-    }, [currentPage, perPage]);
+        handleUserBalData(currentPage, itemsPerPage);
+    }, [currentPage, itemsPerPage]);
 
-    const fetchDepositWithdrawList = async (page, pageSize) => {
+    // const pageCount = Math.ceil(totalData / itemsPerPage);
+
+
+    const handleUserBalData = async (page, pageSize) => {
         try {
             LoaderHelper.loaderStatus(true);
-            const result = await AuthService.depositWithdraList({ page, pageSize });
+            const result = await AuthService.depositWithdraList(page, pageSize);
             if (result?.success) {
-                setUserList(result.data || []);
-                setTotalRows(result.pagination.totalUsers || 0);
-                setPerPage(result.pagination.pageSize || pageSize);
+                setUserList(result?.data || []);
+                setTotalData(result?.pagination?.totalUsers || 0);
+                setCurrentPage(result?.pagination?.currentPage || page);
+                setItemsPerPage(result?.pagination?.pageSize || pageSize);
             } else {
                 alertErrorMessage(result?.message);
             }
@@ -34,23 +46,30 @@ function DepostiWithdraSummary() {
             LoaderHelper.loaderStatus(false);
         }
     };
+    const handlePageChange = ({ selected }) => {
+        setCurrentPage(selected + 1); // kyunki selected 0-based hota hai
+    };
 
     const handleSearch = (e) => {
         const value = e.target.value;
         setSearch(value);
         if (value) {
             const filteredData = userList.filter(item =>
-                (item?.emailId || '').toLowerCase().includes(value.toLowerCase()) ||
+                (item?.email || '').toLowerCase().includes(value.toLowerCase()) ||
                 (item?.userId || '').includes(value)
             );
             setUserList(filteredData);
         } else {
-            fetchDepositWithdrawList(currentPage, perPage);
+            handleUserBalData(currentPage, itemsPerPage);
         }
     };
 
-    const Columns = [
-        { name: "Sr. No.", selector: (row, index) => row?.index, width: "80px", sortable: true },
+    const columns = [
+        {
+            name: "Sr. No.",
+            selector: (row, index) => (currentPage - 1) * itemsPerPage + (index + 1),
+            width: "80px"
+        },
         { name: 'User Id', selector: row => row?.userId || '—', sortable: true, wrap: true },
         { name: 'Full Name', selector: row => row?.fullName || '—', sortable: true, wrap: true },
         { name: 'Email', selector: row => row?.email || '—', sortable: true, wrap: true, width: '200px' },
@@ -59,11 +78,10 @@ function DepostiWithdraSummary() {
         { name: 'Net', selector: row => row?.net || '—', sortable: true, wrap: true },
     ];
 
-    const handlePageChange = (page) => setCurrentPage(page);
-    const handlePerRowsChange = (newPerPage, page) => {
-        setPerPage(newPerPage);
-        setCurrentPage(page);
-    };
+    // ✅ ReactPaginate gives { selected: number }
+    // const handlePageChange = ({ selected }) => {
+    //     setCurrentPage(selected + 1); // because selected is 0-based
+    // };
 
     return (
         <div className="dashboard_right">
@@ -82,18 +100,39 @@ function DepostiWithdraSummary() {
                             />
                         </div>
                     </div>
-                    <DataTable
-                        columns={Columns}
-                        data={userList}
-                        pagination
-                        paginationServer
-                        paginationTotalRows={totalRows} // ✅ correct total rows
-                        onChangePage={handlePageChange}
-                        onChangeRowsPerPage={handlePerRowsChange}
-                        highlightOnHover
-                        striped
-                        responsive
-                    />
+                    <div className="card-body">
+                        <div className="table-responsive" width="100%">
+                            <DataTableBase columns={columns} data={userList} pagination={false} />
+                        </div>
+                        <div className="align-items-center mt-3 d-flex justify-content-between">
+                            <div className="pl_row d-flex justify-content-start gap-3 align-items-center">
+                                <label htmlFor="rowsPerPage">Rows per page: </label>
+                                <select
+                                    className="form-select form-select-sm my-0"
+                                    id="rowsPerPage"
+                                    value={itemsPerPage}
+                                    onChange={(e) => {
+                                        const newSize = Number(e.target.value);
+                                        setItemsPerPage(newSize);
+                                        setCurrentPage(1);
+                                        handleUserBalData(1, newSize); // 👈 force reload with new size
+                                    }}
+                                >
+                                    <option value={10}>10</option>
+                                    <option value={25}>25</option>
+                                    <option value={50}>50</option>
+                                    <option value={100}>100</option>
+                                </select>
+                            </div>
+                            <ReactPaginate
+                                pageCount={pageCount}
+                                onPageChange={handlePageChange}
+                                forcePage={currentPage - 1} // keep paginate in sync with currentPage
+                                containerClassName={'customPagination'}
+                                activeClassName={'active'}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

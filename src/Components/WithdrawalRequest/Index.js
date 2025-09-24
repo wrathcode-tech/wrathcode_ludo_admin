@@ -6,27 +6,24 @@ import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertM
 import moment from 'moment';
 import DataTable from 'react-data-table-component';
 
-function UserKyc() {
-    const [kycPendingList, setKycPendingList] = useState([]);
+function WithdrawalRequest() {
     const [activeTab, setActiveTab] = useState("PENDING");
-    const [kycApprovedList, setKycApprovedList] = useState([]);
-    const [kycRejectedList, setKycRejectedList] = useState([]);
+    const [withdrawalRequestData, setWithdrawalRequestData] = useState([]);
+    const [withdrawalApprovedList, setWithdrawalApprovedList] = useState([]);
+    const [withdrawalRejectedList, setWithdrawalRejectedList] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 10;
-
-    // ✅ Reject Modal States
-    const [showModal, setShowModal] = useState(false);
-    const [selectedUserId, setSelectedUserId] = useState(null);
-    const [rejectReason, setRejectReason] = useState("");
-
-    const handlePendingList = async () => {
+    useEffect(() => {
+        handlePendingWithdrawalList();
+    }, []);
+    const handlePendingWithdrawalList = async () => {
         try {
             LoaderHelper.loaderStatus(true);
-            const result = await AuthService.getpendingKycList();
+            const result = await AuthService.pendingWithdrawalRequest();
             if (result?.success) {
-                setKycPendingList(result?.data?.reverse());
+                setWithdrawalRequestData(result?.data?.reverse());
             } else {
-                alertErrorMessage(result?.message);
+                // alertErrorMessage(result?.message);
             }
         } catch (error) {
             alertErrorMessage(error?.message);
@@ -35,18 +32,16 @@ function UserKyc() {
         }
     };
 
-    useEffect(() => {
-        handlePendingList();
-    }, []);
+
 
     const handleApprovedList = async () => {
         try {
             LoaderHelper.loaderStatus(true);
-            const result = await AuthService.getapprovedKycList();
+            const result = await AuthService.approvedWithdrawalRequest();
             if (result?.success) {
-                setKycApprovedList(result?.data?.reverse());
+                setWithdrawalApprovedList(result?.data?.reverse());
             } else {
-                alertErrorMessage(result?.message);
+                // alertErrorMessage(result?.message);
             }
         } catch (error) {
             alertErrorMessage(error?.message);
@@ -58,11 +53,11 @@ function UserKyc() {
     const handleRejectedList = async () => {
         try {
             LoaderHelper.loaderStatus(true);
-            const result = await AuthService.getrejectedKycList();
+            const result = await AuthService.cancelWithdrawalRequest();
             if (result?.success) {
-                setKycRejectedList(result?.data?.reverse());
+                setWithdrawalRejectedList(result?.data?.reverse());
             } else {
-                alertErrorMessage(result?.message);
+                // alertErrorMessage(result?.message);
             }
         } catch (error) {
             alertErrorMessage(error?.message);
@@ -71,14 +66,14 @@ function UserKyc() {
         }
     };
 
-    const handleKycStatus = async (userId, status, reason = "") => {
+    const handleStatus = async (userId, status, transactionId) => {
         try {
             LoaderHelper.loaderStatus(true);
-            const finalReason = status === "REJECTED" ? reason : "";
-            const result = await AuthService.updateKycStatus(userId, status, finalReason);
+            const reason = status === "REJECTED" ? "Rejected by Admin" : "";
+            const result = await AuthService.updateWithdrawalStatus(userId, status, transactionId, reason);
             if (result?.success) {
                 alertSuccessMessage(`KYC ${status} successfully`);
-                handlePendingList();
+                handlePendingWithdrawalList();
                 if (status === "APPROVED") handleApprovedList();
                 if (status === "REJECTED") handleRejectedList();
             } else {
@@ -88,63 +83,43 @@ function UserKyc() {
             alertErrorMessage(error?.message);
         } finally {
             LoaderHelper.loaderStatus(false);
-            setShowModal(false);
-            setRejectReason("");
         }
     };
 
     useEffect(() => {
-        if (activeTab === "APPROVED" && kycApprovedList.length === 0) {
+        if (activeTab === "APPROVED" && withdrawalApprovedList?.length === 0) {
             handleApprovedList();
         }
-        if (activeTab === "REJECTED" && kycRejectedList.length === 0) {
+        if (activeTab === "REJECTED" && withdrawalRejectedList?.length === 0) {
             handleRejectedList();
         }
     }, [activeTab]);
 
     // ---------------- Columns ----------------
-    const PendingKycList = [
+    const withdrawalRequest = [
         { name: "SR No", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
-        { name: "Full Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
-        { name: "Email", selector: (row) => row?.emailId, sortable: true, wrap: true },
-        { name: "UUID", selector: (row) => row?.uuid, sortable: true, wrap: true },
-        {
-            name: "KYC Status",
-            cell: (row) => (
-                <span style={{
-                    color: row.kycVerified === "APPROVED"
-                        ? "green"
-                        : row.kycVerified === "PENDING"
-                            ? "orange"
-                            : "red",
-                    fontWeight: "600",
-                }}>
-                    {row?.kycVerified}
-                </span>
-            ),
-            sortable: true, wrap: true,
-        },
+        { name: "Full Name", selector: (row) => row?.userId?.fullName, sortable: true, wrap: true },
         { name: "Created At", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-
-        // ✅ Action Buttons
+        { name: "Amount", selector: (row) => row?.amount, sortable: true, wrap: true },
+        { name: "Status", selector: (row) => row?.status, sortable: true, wrap: true },
+        { name: "Description", selector: (row) => row?.description, sortable: true, wrap: true },
         {
-            name: "Actions",
-            width: "200px",
+            name: "Actions", width: "200px",
             cell: (row) => (
                 <div style={{ display: "flex", gap: "8px" }}>
                     <button
                         className="btn btn-success btn-sm"
-                        onClick={() => handleKycStatus(row._id, "APPROVED")}
+                        onClick={() => handleStatus(row?.userId?._id, "APPROVED", row?._id)}
                     >
                         Approve
                     </button>
                     <button
                         className="btn btn-danger btn-sm"
-                        onClick={() => handleRejectClick(row._id)}
+                        onClick={() => handleStatus(row.userId?._id, "REJECTED", row?._id)}
                     >
                         Reject
                     </button>
-                </div>
+                </div >
             ),
             ignoreRowClick: true,
             allowOverflow: true,
@@ -152,35 +127,26 @@ function UserKyc() {
         },
     ];
 
-    const handleRejectClick = (userId) => {
-        setSelectedUserId(userId);
-        setShowModal(true);
-    };
-
-    const ApprovedKycList = [
-        { name: "SR No", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
+    const approvedWithdrawalList = [
+        { name: "Sr. No.", center: true, wrap: true, selector: (row, index) => currentPage + 1 + index, },
         { name: "Created At", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-        { name: "UUID", selector: (row) => row?.uuid, sortable: true, wrap: true },
+        { name: "Transaction Type", selector: (row) => row?.transactionType, sortable: true, wrap: true },
+        { name: "Amount", selector: (row) => row?.amount, sortable: true, wrap: true },
+        { name: "Description", selector: (row) => row?.description || "------", sortable: true, wrap: true },
+        { name: "Status", selector: (row) => row?.status, sortable: true, wrap: true },
+    ];
+
+    const rejectedWithdrawalList = [
+        { name: "SR No", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
         { name: "Full Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
         { name: "Email", selector: (row) => row?.emailId, sortable: true, wrap: true },
         {
-            name: "KYC Status",
-            cell: (row) => (
-                <span style={{
-                    color: "green",
-                    fontWeight: "600",
-                }}>
-                    {row?.kycVerified}
-                </span>
-            ),
-            sortable: true, wrap: true,
+            name: "Mobile",
+            selector: (row) => row?.countryCode && row?.mobileNumber
+                ? `${row.countryCode} ${row.mobileNumber}`
+                : "N/A",
+            sortable: true, wrap: true
         },
-    ];
-
-    const RejectedKycList = [
-        { name: "SR No", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
-        { name: "Full Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
-        { name: "Email", selector: (row) => row?.emailId, sortable: true, wrap: true },
         { name: "UUID", selector: (row) => row?.uuid, sortable: true, wrap: true },
         {
             name: "KYC Status",
@@ -194,6 +160,7 @@ function UserKyc() {
             ),
             sortable: true, wrap: true,
         },
+        { name: "Status", selector: (row) => row?.status, sortable: true, wrap: true },
         { name: "Created At", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
         { name: "Updated At", selector: (row) => moment(row.updatedAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
     ];
@@ -202,12 +169,12 @@ function UserKyc() {
         <div className="dashboard_right">
             <UserHeader />
             <div className="dashboard_outer_s">
-                <h2>Kyc Verification Details</h2>
+                <h2>Withdrawal Request Details</h2>
                 <div className="dashboard_detail_s user_list_table user_summary_t">
                     <div className="user_list_top">
                         <div className="user_list_l">
                             <h4 className="text-xl font-semibold mb-4">
-                                Users List{" "}
+                                Withdrawal Request List{" "}
                                 {activeTab === "PENDING" && <span style={{ color: "orange" }}>(Pending)</span>}
                                 {activeTab === "APPROVED" && <span style={{ color: "green" }}>(Approved)</span>}
                                 {activeTab === "REJECTED" && <span style={{ color: "red" }}>(Rejected)</span>}
@@ -236,8 +203,8 @@ function UserKyc() {
                         <div className="p-4">
                             {activeTab === "PENDING" && (
                                 <DataTable
-                                    columns={PendingKycList}
-                                    data={kycPendingList}
+                                    columns={withdrawalRequest}
+                                    data={withdrawalRequestData}
                                     pagination
                                     highlightOnHover
                                     striped
@@ -251,8 +218,8 @@ function UserKyc() {
 
                             {activeTab === "APPROVED" && (
                                 <DataTable
-                                    columns={ApprovedKycList}
-                                    data={kycApprovedList}
+                                    columns={approvedWithdrawalList}
+                                    data={withdrawalApprovedList}
                                     pagination
                                     highlightOnHover
                                     striped
@@ -266,8 +233,8 @@ function UserKyc() {
 
                             {activeTab === "REJECTED" && (
                                 <DataTable
-                                    columns={RejectedKycList}
-                                    data={kycRejectedList}
+                                    columns={rejectedWithdrawalList}
+                                    data={withdrawalRejectedList}
                                     pagination
                                     highlightOnHover
                                     striped
@@ -282,61 +249,8 @@ function UserKyc() {
                     </div>
                 </div>
             </div>
-
-            {/* ✅ Reject Reason Modal */}
-            {showModal && (
-                <div className="custom-modal-overlay">
-                    <div className="custom-modal">
-                        <h4>Reject KYC</h4>
-                        <textarea
-                            rows="4"
-                            className="form-control"
-                            placeholder="Enter reason for rejection"
-                            value={rejectReason}
-                            onChange={(e) => setRejectReason(e.target.value)}
-                        />
-                        <div style={{ marginTop: "15px", display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-                            <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
-                                Cancel
-                            </button>
-                            <button
-                                className="btn btn-danger"
-                                onClick={() => handleKycStatus(selectedUserId, "REJECTED", rejectReason)}
-                            >
-                                Submit
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* ✅ Inline CSS for modal */}
-            <style>{`
-                .custom-modal-overlay {
-                    position: fixed;
-                    top: 0; left: 0; right: 0; bottom: 0;
-                    background: rgba(0,0,0,0.5);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    z-index: 1000;
-                }
-                .custom-modal {
-                    background: #fff;
-                    padding: 20px;
-                    border-radius: 8px;
-                    width: 400px;
-                    max-width: 90%;
-                }
-                .form-control {
-                    width: 100%;
-                    padding: 8px;
-                    border: 1px solid #ccc;
-                    border-radius: 4px;
-                }
-            `}</style>
         </div>
     );
 }
 
-export default UserKyc;
+export default WithdrawalRequest;

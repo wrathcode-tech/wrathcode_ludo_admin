@@ -19,7 +19,7 @@ function OverAllReferralEarnList() {
     const fetchDepositWithdrawList = async (page, pageSize) => {
         try {
             LoaderHelper.loaderStatus(true);
-            const result = await AuthService.depositWithdraList({ page, pageSize });
+            const result = await AuthService.usersOverAllReferalBonusEarn({ page, pageSize });
             if (result?.success) {
                 setUserList(result.data || []);
                 setTotalRows(result.pagination.totalUsers || 0);
@@ -74,7 +74,7 @@ function OverAllReferralEarnList() {
         <div className="dashboard_right">
             <UserHeader />
             <div className="dashboard_outer_s">
-                <h2>Deposit Withdrawal List</h2>
+                <h2>All Referrals Bonus List</h2>
                 <div className="dashboard_detail_s user_list_table user_summary_t">
                     <div className="user_list_top">
                         <div className="user_search">

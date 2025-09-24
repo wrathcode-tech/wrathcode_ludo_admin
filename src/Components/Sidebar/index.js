@@ -42,7 +42,10 @@ const Sidebar = () => {
                                     <Link to="/dashboard/userList" onClick={() => setActived("userList")}><img src="/images/user_list_icon.svg" alt="dashboard" />All Users</Link>
                                 </li>
                                 <li className={actived === "pendingDeposit" ? "active" : ""}>
-                                    <Link to="/dashboard/pendingDeposit" onClick={() => setActived("pendingDeposit")}><img src="/images/user_list_icon.svg" alt="dashboard" />Pending Deposits</Link>
+                                    <Link to="/dashboard/pendingDeposit" onClick={() => setActived("pendingDeposit")}><img src="/images/user_list_icon.svg" alt="dashboard" /> Deposits Request</Link>
+                                </li>
+                                <li className={actived === "withdrawalRequest" ? "active" : ""}>
+                                    <Link to="/dashboard/withdrawalRequest" onClick={() => setActived("withdrawalRequest")}><img src="/images/user_list_icon.svg" alt="dashboard" />Withdrawal Request</Link>
                                 </li>
                                 <li className={actived === "UserKyc" ? "active" : ""}>
                                     <Link to="/dashboard/UserKyc" onClick={() => setActived("UserKyc")}><img src="/images/user_list_icon.svg" alt="dashboard" />User KYC Details</Link>
@@ -58,7 +61,10 @@ const Sidebar = () => {
                                     <Link to="/dashboard/earn_depositWithdrawSummary" onClick={() => setActived("earn_depositWithdrawSummary")}><img src="/images/support_icon.svg" alt="dashboard" />Deposit Withdrawal List</Link>
                                 </li>
                                 <li className={actived === "earn_referralBonus" ? "active" : ""}>
-                                    <Link to="/dashboard/earn_referralBonus" onClick={() => setActived("earn_referralBonus")}><img src="/images/support_icon.svg" alt="dashboard" />Total Referral List</Link>
+                                    <Link to="/dashboard/earn_referralBonus" onClick={() => setActived("earn_referralBonus")}><img src="/images/support_icon.svg" alt="dashboard" />All Referral Bonus List</Link>
+                                </li>
+                                <li className={actived === "earn_referralBonus" ? "active" : ""}>
+                                    <Link to="/dashboard/earn_referralBonus" onClick={() => setActived("earn_referralBonus")}><img src="/images/support_icon.svg" alt="dashboard" />All Commission Bonus List</Link>
                                 </li>
                                 {/* <li className={actived === "contactRequest" ? "active" : ""}>
                                     <Link to="/dashboard/contactRequest" onClick={() => setActived("contactRequest")}><img src="/images/support_icon.svg" alt="dashboard" />Contact Request</Link>

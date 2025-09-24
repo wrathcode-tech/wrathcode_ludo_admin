@@ -18,6 +18,8 @@ import OverAllReferralEarnList from "../Components/ReferralBonusEarn/Index";
 import OverAllCommissionEarnList from "../Components/AllCommissionBonusEarn/Index";
 import DepostiWithdraSummary from "../Components/DepositsList/DepostiWithdraSummary";
 import UserEarningSummary from "../Components/UserEarningSummary";
+import WithdrawalRequest from "../Components/WithdrawalRequest/Index";
+import UserDetails from "../Components/AllUser/UserDetails";
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -46,6 +48,9 @@ const Routing = () => {
         <Route path="earn_commissionBonus" element={<ProtectedRoute> <OverAllCommissionEarnList /></ProtectedRoute>} />
         <Route path="earn_depositWithdrawSummary" element={<ProtectedRoute> <DepostiWithdraSummary /></ProtectedRoute>} />
         <Route path="earn_userEarningSummary" element={<ProtectedRoute> <UserEarningSummary /></ProtectedRoute>} />
+        <Route path="withdrawalRequest" element={<ProtectedRoute> <WithdrawalRequest /></ProtectedRoute>} />
+        <Route path="UserDetails" element={<ProtectedRoute> <UserDetails /></ProtectedRoute>} />
+
 
         {/* <Route path="chat/:id" element={<ProtectedRoute> <Chatpage /></ProtectedRoute>} /> */}
         <Route path="AllGamesList" element={<ProtectedRoute> <AllLudoList /></ProtectedRoute>} />

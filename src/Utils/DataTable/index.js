@@ -18,7 +18,7 @@ const DataTableBase = (props) => {
             striped
             highlightOnHover
             fixedHeader
-            theme='dark'
+            theme='light'
             noDataComponent={noData}
             {...props}
         />

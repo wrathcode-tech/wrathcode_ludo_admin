@@ -40,6 +40,16 @@ export const ApiConfig = {
   allWaitingLudoGameList: "allWaitingLudoGameList",
   allCancelLudoGameList: "allCancelLudoGameList",
   depositWithdraList: "usersDepositWithdrawalSummary",
+  usersOverAllReferalBonusEarn: "usersOverAllReferalBonusEarn",
+  usersOverAllCommissionBonusEarn: "usersOverAllCommissionBonusEarn",
+  dashboardData: "dashboardData",
+  updateDepositRequest: "updateDepositRequest",
+  pendingWithdrawalRequest: "pendingWithdrawalRequest",
+  approvedWithdrawalRequest: "approvedWithdrawalRequest",
+  cancelWithdrawalRequest: "cancelWithdrawalRequest",
+  updateWithdrawalStatus: "updateWithdrawalRequest",
+
+
   // allAdminList: "allAdminList",
 
 

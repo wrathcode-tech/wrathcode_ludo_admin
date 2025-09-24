@@ -2,24 +2,42 @@ import React, { useEffect, useState } from 'react'
 import UserHeader from '../../Layout/UserHeader'
 import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import AuthService from '../../Api/Api_Services/AuthService';
-import { alertErrorMessage } from '../../Utils/CustomAlertMessage';
-import DataTable from 'react-data-table-component';
+import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertMessage';
 import moment from 'moment';
+import ReactPaginate from 'react-paginate';
+import DataTableBase from '../../Utils/DataTable';
+import { useNavigate } from 'react-router-dom';
+import copy from 'copy-to-clipboard';
 
 function AllUserList() {
 
     const [userList, setUserList] = useState([]);
     const [allData, setAllData] = useState([]);
     const [search, setSearch] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [totalData, setTotalData] = useState(0);
 
-    const handleUsersList = async () => {
+
+
+
+    const pageCount = Math.ceil(totalData / itemsPerPage);
+
+    useEffect(() => {
+        handleUsersList(currentPage, itemsPerPage);
+    }, [currentPage, itemsPerPage]);
+
+
+    const handleUsersList = async (page, pageSize) => {
 
         try {
             LoaderHelper.loaderStatus(true);
-            const result = await AuthService.usersList();
+            const result = await AuthService.usersList(page, pageSize);
             if (result?.success) {
-                setUserList(result?.data)
-                setAllData(result?.data)
+                setUserList(result?.data || []);
+                setTotalData(result?.pagination?.totalUsers || 0);
+                setCurrentPage(result?.pagination?.currentPage || page);
+                setItemsPerPage(result?.pagination?.pageSize || pageSize);
 
             } else {
                 alertErrorMessage(result?.message);
@@ -30,6 +48,9 @@ function AllUserList() {
         } finally {
             LoaderHelper.loaderStatus(false);
         }
+    };
+    const handlePageChange = ({ selected }) => {
+        setCurrentPage(selected + 1); // kyunki selected 0-based hota hai
     };
 
     const handleStatusUpdate = async (id, status) => {
@@ -64,7 +85,20 @@ function AllUserList() {
         handleUsersList()
     }, []);
 
-    const Columns = [
+    const navigate = useNavigate();
+    const copyUserId = (row) => {
+        copy(row._id);
+        alertSuccessMessage("User ID copied!!");
+    };
+    const handleUserClick = (userId) => {
+        navigate(`/dashboard/UserDetails`, { state: { userId } });
+    };
+    const columns = [
+        {
+            name: "Sr. No.",
+            selector: (row, index) => (currentPage - 1) * itemsPerPage + (index + 1),
+            width: "80px"
+        },
         {
             name: 'Created At',
             selector: row => moment(row.createdAt).format('DD-MM-YYYY LT'),
@@ -72,10 +106,21 @@ function AllUserList() {
             wrap: true
         },
         {
-            name: 'User Id',
-            selector: row => row?.uuid || '—',
-            sortable: true,
-            wrap: true
+            name: "User ID", wrap: true, width: "160px",
+            selector: (row) => (
+                <>
+                    <div>
+                        <button
+                            onClick={() => handleUserClick(row?._id)}
+                            className="btn p-0" style={{ color: "blue", cursor: "pointer" }}>
+                            {row?._id?.substring(0, 8).toUpperCase() || "------"}
+                        </button>
+                        <div className="mx-2" onClick={() => copyUserId(row)}>
+                            <i className="far fa-copy cursor-pointer" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </>
+            ),
         },
         {
             name: 'Full Name',
@@ -89,18 +134,6 @@ function AllUserList() {
             sortable: true,
             wrap: true
         },
-        // {
-        //     name: 'Mobile Number',
-        //     selector: row => row?.mobileNumber || '—',
-        //     sortable: true,
-        //     wrap: true
-        // },
-        // {
-        //     name: 'Country Code',
-        //     selector: row => row?.countryCode || '—',
-        //     sortable: true,
-        //     wrap: true
-        // },
         {
             name: 'KYC Status',
             selector: row => row?.kycVerified || '—',
@@ -156,14 +189,39 @@ function AllUserList() {
                                 <input type="search" placeholder="Search User" onChange={(e) => setSearch(e.target.value)} value={search} />
                             </div>
                         </div>
-                        <DataTable
-                            columns={Columns}
-                            data={userList}
-                            pagination
-                            highlightOnHover
-                            striped
-                            responsive
-                        />
+                        <div className="card-body">
+                            <div className="table-responsive" width="100%">
+                                <DataTableBase columns={columns} data={userList} pagination={false} />
+                            </div>
+                            <div className="align-items-center mt-3 d-flex justify-content-between">
+                                <div className="pl_row d-flex justify-content-start gap-3 align-items-center">
+                                    <label htmlFor="rowsPerPage">Rows per page: </label>
+                                    <select
+                                        className="form-select form-select-sm my-0"
+                                        id="rowsPerPage"
+                                        value={itemsPerPage}
+                                        onChange={(e) => {
+                                            const newSize = Number(e.target.value);
+                                            setItemsPerPage(newSize);
+                                            setCurrentPage(1);
+                                            handleUsersList(1, newSize); // 👈 force reload with new size
+                                        }}
+                                    >
+                                        <option value={10}>10</option>
+                                        <option value={25}>25</option>
+                                        <option value={50}>50</option>
+                                        <option value={100}>100</option>
+                                    </select>
+                                </div>
+                                <ReactPaginate
+                                    pageCount={pageCount}
+                                    onPageChange={handlePageChange}
+                                    forcePage={currentPage - 1} // keep paginate in sync with currentPage
+                                    containerClassName={'customPagination'}
+                                    activeClassName={'active'}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div >

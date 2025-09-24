@@ -131,10 +131,40 @@ const AuthService = {
     };
     return ApiCallGet(url, headers);
   },
-  pendingDepositRequest: async () => {
+  pendingWithdrawalRequest: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, pendingWithdrawalRequest } = ApiConfig;
+    const url = baseUrl + pendingWithdrawalRequest;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  approvedWithdrawalRequest: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, approvedWithdrawalRequest } = ApiConfig;
+    const url = baseUrl + approvedWithdrawalRequest;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  cancelWithdrawalRequest: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, cancelWithdrawalRequest } = ApiConfig;
+    const url = baseUrl + cancelWithdrawalRequest;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  pendingDepositRequest: async (page, pageSize) => {
     const token = sessionStorage.getItem("token");
     const { baseUrl, pendingDepositRequest } = ApiConfig;
-    const url = baseUrl + pendingDepositRequest;
+    const url = `${baseUrl}${pendingDepositRequest}?page=${page}&pageSize=${pageSize}`;
     const headers = {
       'Content-Type': 'application/json',
       Authorization: token
@@ -335,20 +365,40 @@ const AuthService = {
   },
 
 
-  usersList: async () => {
+  usersList: async (page, pageSize) => {
     const token = sessionStorage.getItem("token");
     const { baseUrl, usersList } = ApiConfig;
-    const url = baseUrl + usersList;
+    const url = `${baseUrl}${usersList}?page=${page}&pageSize=${pageSize}`;
     const headers = {
       'Content-Type': 'application/json',
       Authorization: token
     };
     return ApiCallGet(url, headers);
   },
-  depositWithdraList: async () => {
+  depositWithdraList: async (page, pageSize) => {
     const token = sessionStorage.getItem("token");
     const { baseUrl, depositWithdraList } = ApiConfig;
-    const url = baseUrl + depositWithdraList;
+    const url = `${baseUrl}${depositWithdraList}?page=${page}&pageSize=${pageSize}`;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  usersOverAllReferalBonusEarn: async (page, pageSize) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, usersOverAllReferalBonusEarn } = ApiConfig;
+    const url = `${baseUrl}${usersOverAllReferalBonusEarn}?page=${page}&pageSize=${pageSize}`;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  usersOverAllCommissionBonusEarn: async (page, pageSize) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, usersOverAllCommissionBonusEarn } = ApiConfig;
+    const url = `${baseUrl}${usersOverAllCommissionBonusEarn}?page=${page}&pageSize=${pageSize}`;
     const headers = {
       'Content-Type': 'application/json',
       Authorization: token
@@ -360,6 +410,16 @@ const AuthService = {
     const token = sessionStorage.getItem("token");
     const { baseSupport, getOpenTickets } = ApiConfig;
     const url = baseSupport + getOpenTickets;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  dashboardData: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, dashboardData } = ApiConfig;
+    const url = baseUrl + dashboardData;
     const headers = {
       'Content-Type': 'application/json',
       Authorization: token
@@ -494,15 +554,32 @@ const AuthService = {
     };
     return ApiCallPost(url, params, headers);
   },
-
-  update2fa: async (authType, code, verifyType) => {
-    const token = sessionStorage.getItem("GATSBIT_AUTH_TOKEN");
-    const { baseAuth, update2fa } = ApiConfig;
-    const url = baseAuth + update2fa;
+  updateWithdrawalStatus: async (userId, status, transactionId) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, updateWithdrawalStatus } = ApiConfig;
+    const url = baseUrl + updateWithdrawalStatus;
     const params = {
-      type: authType,
-      verification_code: +code,
-      email_or_phone: verifyType
+      userId: userId,
+      status: status,
+      transactionId: transactionId,
+
+    };
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+    return ApiCallPost(url, params, headers);
+  },
+
+  updateDepositRequest: async (userId, transactionId, status, rejectReason) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, updateDepositRequest } = ApiConfig;
+    const url = baseUrl + updateDepositRequest;
+    const params = {
+      userId: userId,
+      transactionId: transactionId,
+      status: status,
+      rejectReason
     };
     const headers = {
       "Content-Type": "application/json",

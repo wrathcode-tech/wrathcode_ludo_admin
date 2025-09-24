@@ -9,11 +9,8 @@ function DashboardPage() {
     const [dashboardData, setDashboardData] = useState([]);
     const [dashboardList, setDashboardList] = useState([]);
 
-    console.log(dashboardData, "dashboardData");
-
     useEffect(() => {
         handleDashboardData();
-        handleDashboardList();
     }, []);
 
     const handleDashboardData = async () => {
@@ -22,24 +19,8 @@ function DashboardPage() {
             LoaderHelper.loaderStatus(true);
             const result = await AuthService.dashboardData();
             if (result?.success) {
-                setDashboardData(result)
-            } else {
-                alertErrorMessage(result?.message);
-            }
-        } catch (error) {
-            alertErrorMessage(error?.message);
-        } finally {
-            LoaderHelper.loaderStatus(false);
-        }
-    };
-
-    const handleDashboardList = async () => {
-
-        try {
-            LoaderHelper.loaderStatus(true);
-            const result = await AuthService.dashboardList();
-            if (result?.success) {
-                setDashboardList(result?.data?.reverse())
+                setDashboardData(result?.data)
+                setDashboardList(result?.data?.activityLogs?.reverse())
             } else {
                 alertErrorMessage(result?.message);
             }
@@ -76,8 +57,8 @@ function DashboardPage() {
                                 <li class="nth_one">
                                     <div class="user_cnt_top">
                                         <div class="cnt_lft">
-                                            <span>Active User</span>
-                                            <h3>{dashboardData?.activeUser}</h3>
+                                            <span>Verified User</span>
+                                            <h3>{dashboardData?.verifyedUser}</h3>
                                         </div>
                                         <div class="dashboard_icon">
                                             <img src="/images/dashboad_list_icon.svg" alt="dashboard" />
@@ -88,8 +69,8 @@ function DashboardPage() {
                                 <li class="nth_two">
                                     <div class="user_cnt_top">
                                         <div class="cnt_lft">
-                                            <span>Inactive User</span>
-                                            <h3>{dashboardData?.inactiveUser}</h3>
+                                            <span>Total Withdrawal (INR)</span>
+                                            <h3>{dashboardData?.totalWithdrawalInr}</h3>
                                         </div>
                                         <div class="dashboard_icon">
                                             <img src="/images/dashboad_list_icon2.svg" alt="dashboard" />
@@ -101,8 +82,8 @@ function DashboardPage() {
                                 <li class="nth_three">
                                     <div class="user_cnt_top">
                                         <div class="cnt_lft">
-                                            <span>Open Support Tickets</span>
-                                            <h3>{dashboardData?.openSupportTickets}</h3>
+                                            <span>Total Deposit (INR)</span>
+                                            <h3>{dashboardData?.totalDepositInr}</h3>
                                         </div>
                                         <div class="dashboard_icon">
                                             <img src="/images/dashboad_list_icon3.svg" alt="dashboard" />
@@ -113,8 +94,8 @@ function DashboardPage() {
                                 <li class="nth_four">
                                     <div class="user_cnt_top">
                                         <div class="cnt_lft">
-                                            <span>Resolved Support Tickets</span>
-                                            <h3>{dashboardData?.resolvedSupportTickets}</h3>
+                                            <span>All Time Referrals</span>
+                                            <h3>{dashboardData?.overalAllReferBonus}</h3>
                                         </div>
                                         <div class="dashboard_icon">
                                             <img src="/images/dashboad_list_icon4.svg" alt="dashboard" />
@@ -125,8 +106,8 @@ function DashboardPage() {
                                 <li class="nth_five">
                                     <div class="user_cnt_top">
                                         <div class="cnt_lft">
-                                            <span>Total ContactUs Requests</span>
-                                            <h3>{dashboardData?.totalContactUsRequests}</h3>
+                                            <span>All Time Commission Bonus</span>
+                                            <h3>{dashboardData?.overalAllCommission}</h3>
                                         </div>
                                         <div class="dashboard_icon">
                                             <img src="/images/dashboad_list_icon5.svg" alt="dashboard" />
@@ -137,8 +118,8 @@ function DashboardPage() {
                                 <li class="nth_six">
                                     <div class="user_cnt_top">
                                         <div class="cnt_lft">
-                                            <span>Total Support Tickets</span>
-                                            <h3>{dashboardData?.totalSupportTickets}</h3>
+                                            <span>Total Running Games</span>
+                                            <h3>{dashboardData?.totalRunninnGame}</h3>
                                         </div>
                                         <div class="dashboard_icon">
                                             <img src="/images/dashboad_list_icon6.svg" alt="dashboard" />
@@ -150,8 +131,8 @@ function DashboardPage() {
                                 <li class="nth_seven">
                                     <div class="user_cnt_top">
                                         <div class="cnt_lft">
-                                            <span>Closed Support Tickets</span>
-                                            <h3>{dashboardData?.closedSupportTickets}</h3>
+                                            <span>Total Open Battles</span>
+                                            <h3>{dashboardData?.totalWaitingGame}</h3>
                                         </div>
                                         <div class="dashboard_icon">
                                             <img src="/images/dashboad_list_icon7.svg" alt="dashboard" />
@@ -175,7 +156,7 @@ function DashboardPage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {dashboardList.map((log, index) => (
+                                {dashboardList?.map((log, index) => (
                                     <tr key={log._id || index}>
                                         <td>
                                             <div className="td_first">
@@ -185,7 +166,7 @@ function DashboardPage() {
                                                 <div className="title">{log.Activity}</div>
                                             </div>
                                         </td>
-                                        <td>{log.IP || "-"}</td>
+                                        <td>{log.adminIP || "-"}</td>
                                         <td>{new Date(log.createdAt).toLocaleString()}</td>
                                         {/* <td>{log.adminId || "-"}</td> */}
                                         {/* <td>{log.userId || "-"}</td> */}

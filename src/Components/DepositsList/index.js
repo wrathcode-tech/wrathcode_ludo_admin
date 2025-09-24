@@ -2,36 +2,51 @@ import React, { useEffect, useState } from 'react'
 import UserHeader from '../../Layout/UserHeader'
 import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import AuthService from '../../Api/Api_Services/AuthService';
-import { alertErrorMessage } from '../../Utils/CustomAlertMessage';
-import DataTable from "react-data-table-component";
+import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertMessage';
 import { imageUrl } from '../../Api/Api_Config/ApiEndpoints';
 import moment from 'moment';
+import ReactPaginate from 'react-paginate';
+import DataTableBase from '../../Utils/DataTable';
 
 function PendingDepositRequest() {
 
-    const [allData, setAllData] = useState([]);
     const [pendingDepositRequest, setPendingDepositRequest] = useState([]);
+    const [allData, setAllData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [totalData, setTotalData] = useState(0);
+
+    const userId = sessionStorage.getItem("userId");
+
+
+    const pageCount = Math.ceil(totalData / itemsPerPage);
 
     useEffect(() => {
-        const handlePendingDepositReq = async () => {
-            try {
-                LoaderHelper.loaderStatus(true);
-                const result = await AuthService.pendingDepositRequest();
+        handlePendingDepositReq(currentPage, itemsPerPage);
+    }, [currentPage, itemsPerPage]);
 
-                if (result?.success) {
-                    setAllData(result?.data);
-                    setPendingDepositRequest(result?.data);
-                } else {
-                    alertErrorMessage(result?.message);
-                }
-            } catch (error) {
-                alertErrorMessage(error?.message);
-            } finally {
-                LoaderHelper.loaderStatus(false);
+    const handlePageChange = ({ selected }) => {
+        setCurrentPage(selected + 1); // kyunki selected 0-based hota hai
+    };
+
+    const handlePendingDepositReq = async (page, pageSize) => {
+        try {
+            LoaderHelper.loaderStatus(true);
+            const result = await AuthService.pendingDepositRequest(page, pageSize);
+
+            if (result?.success) {
+                setAllData(result?.data);
+                setPendingDepositRequest(result?.data);
+            } else {
+                // alertErrorMessage(result?.message);
             }
-        };
-        handlePendingDepositReq();
-    }, []);
+        } catch (error) {
+            alertErrorMessage(error?.message);
+        } finally {
+            LoaderHelper.loaderStatus(false);
+        }
+    };
+
 
     const columns = [
         { name: "Created At", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
@@ -45,9 +60,48 @@ function PendingDepositRequest() {
                 <img src={imageUrl + row?.paymentProof} alt="proof" /></a>),
         },
         {
-            name: "Status", selector: (row) => row.status, cell: (row) => (<span style={{ color: "#1eb5c0" }}>{row?.status}</span>), sortable: true, wrap: true
+            name: "Actions", width: "200px",
+            cell: (row) => {
+                return (<div style={{ display: "flex", gap: "8px" }}>
+                    <button
+                        className="btn btn-success btn-sm"
+                        onClick={() => handleStatusUpdate(row.userId?._id, row._id, "APPROVED")}
+                    >
+                        Approve
+                    </button>
+
+                    <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => handleStatusUpdate(row.userId?._id, row._id, "REJECTED")}
+                    >
+                        Reject
+                    </button>
+
+                </div>);
+            },
+            ignoreRowClick: true,
+            allowOverflow: true,
+            button: true,
         },
     ];
+
+    const handleStatusUpdate = async (userId, transactionId, status, rejectReason) => {
+        try {
+            LoaderHelper.loaderStatus(true);
+            const result = await AuthService.updateDepositRequest(userId, transactionId, status, rejectReason);
+            if (result?.success) {
+                alertSuccessMessage(`Deposit ${status} successfully`);
+                handlePendingDepositReq();
+            } else {
+                alertErrorMessage(result?.message);
+            }
+        } catch (error) {
+            alertErrorMessage(error?.message);
+        } finally {
+            LoaderHelper.loaderStatus(false);
+        }
+    };
+
     function searchObjects(e) {
         const keysToSearch = ["userId.fullName", "utrNumber", "amount"];
         const userInput = e.target.value;
@@ -66,24 +120,6 @@ function PendingDepositRequest() {
 
         setPendingDepositRequest(matchingObjects);
     }
-    // const handleStatusUpdate = async (id, status) => {
-
-    //     try {
-    //         LoaderHelper.loaderStatus(true);
-    //         const result = await AuthService.usersStatusUpdate(id, status);
-    //         if (result?.success) {
-    //             handlePendingDepositReq()
-
-    //         } else {
-    //             alertErrorMessage(result?.message);
-    //         }
-
-    //     } catch (error) {
-    //         alertErrorMessage(error?.message);
-    //     } finally {
-    //         LoaderHelper.loaderStatus(false);
-    //     }
-    // };
 
     return (
         <>
@@ -103,8 +139,38 @@ function PendingDepositRequest() {
 
                             </div>
                         </div>
-                        <div className="p-2">
-                            <DataTable columns={columns} data={pendingDepositRequest} pagination highlightOnHover striped responsive />
+                        <div className="card-body">
+                            <div className="table-responsive" width="100%">
+                                <DataTableBase columns={columns} data={pendingDepositRequest} pagination={false} />
+                            </div>
+                            <div className="align-items-center mt-3 d-flex justify-content-between">
+                                <div className="pl_row d-flex justify-content-start gap-3 align-items-center">
+                                    <label htmlFor="rowsPerPage">Rows per page: </label>
+                                    <select
+                                        className="form-select form-select-sm my-0"
+                                        id="rowsPerPage"
+                                        value={itemsPerPage}
+                                        onChange={(e) => {
+                                            const newSize = Number(e.target.value);
+                                            setItemsPerPage(newSize);
+                                            setCurrentPage(1);
+                                            handlePendingDepositReq(1, newSize); // 👈 force reload with new size
+                                        }}
+                                    >
+                                        <option value={10}>10</option>
+                                        <option value={25}>25</option>
+                                        <option value={50}>50</option>
+                                        <option value={100}>100</option>
+                                    </select>
+                                </div>
+                                <ReactPaginate
+                                    pageCount={pageCount}
+                                    onPageChange={handlePageChange}
+                                    forcePage={currentPage - 1} // keep paginate in sync with currentPage
+                                    containerClassName={'customPagination'}
+                                    activeClassName={'active'}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
