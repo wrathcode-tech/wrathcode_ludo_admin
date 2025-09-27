@@ -282,16 +282,6 @@ const AuthService = {
     return ApiCallGet(url, headers);
   },
 
-  dashboardData: async () => {
-    const token = sessionStorage.getItem("token");
-    const { baseUrl, dashboardData } = ApiConfig;
-    const url = baseUrl + dashboardData;
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: token
-    };
-    return ApiCallGet(url, headers);
-  },
   dashboardList: async () => {
     const token = sessionStorage.getItem("token");
     const { baseUrl, dashboardList } = ApiConfig;
@@ -461,16 +451,16 @@ const AuthService = {
   },
 
 
-  notificationList: async () => {
-    const token = sessionStorage.getItem("token");
-    const { baseUrl, notificationList } = ApiConfig;
-    const url = baseUrl + notificationList;
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: token
-    };
-    return ApiCallGet(url, headers);
-  },
+  // notificationList: async () => {
+  //   const token = sessionStorage.getItem("token");
+  //   const { baseUrl, notificationList } = ApiConfig;
+  //   const url = baseUrl + notificationList;
+  //   const headers = {
+  //     'Content-Type': 'application/json',
+  //     Authorization: token
+  //   };
+  //   return ApiCallGet(url, headers);
+  // },
 
   getActivityData: async () => {
     const token = sessionStorage.getItem("token");
@@ -505,16 +495,16 @@ const AuthService = {
     return ApiCallGet(url, headers);
   },
 
-  notificationList: async () => {
-    const token = sessionStorage.getItem("token");
-    const { baseUrl, notificationList } = ApiConfig;
-    const url = baseUrl + notificationList;
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: token
-    };
-    return ApiCallGet(url, headers);
-  },
+  // getNotificationList: async () => {
+  //   const token = sessionStorage.getItem("token");
+  //   const { baseUrl, notificationList } = ApiConfig;
+  //   const url = baseUrl + notificationList;
+  //   const headers = {
+  //     'Content-Type': 'application/json',
+  //     Authorization: token
+  //   };
+  //   return ApiCallGet(url, headers);
+  // },
   editProfile: async (formData) => {
     const token = sessionStorage.getItem("token");
     const { baseUrl, profileEdit } = ApiConfig;
@@ -586,6 +576,161 @@ const AuthService = {
       Authorization: token,
     };
     return ApiCallPut(url, params, headers);
+  },
+
+  getMsgUser: async (userId) => {
+    const token = sessionStorage.getItem("token");
+    const { baseSupport, getMsgUser } = ApiConfig;
+    const url = `${baseSupport}${getMsgUser}/${userId}`;
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+    return ApiCallGet(url, headers);
+  },
+  allMsg: async (userId) => {
+    const token = sessionStorage.getItem("token");
+    const { baseSupport, allMsg } = ApiConfig;
+    const url = `${baseSupport}${allMsg}`;
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+    return ApiCallGet(url, headers);
+  },
+
+  msgSend: async (userId, adminId, sender, message) => {
+    const token = sessionStorage.getItem("token");
+    const { baseSupport, msgSend } = ApiConfig;
+    const url = baseSupport + msgSend;
+    const params = {
+      userId,
+      adminId,
+      sender,
+      message
+    };
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+    return ApiCallPost(url, params, headers);
+  },
+  msgSeen: async (userId, viewer) => {
+    const token = sessionStorage.getItem("token");
+    const { baseSupport, msgSeen } = ApiConfig;
+    const url = baseSupport + msgSeen;
+    const params = {
+      userId,
+      viewer
+    };
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+    return ApiCallPost(url, params, headers);
+  },
+
+  getNotificationList: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseNotification, notificationList } = ApiConfig;
+    const url = baseNotification + notificationList;
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+    return ApiCallGet(url, headers);
+  },
+
+  deleteNotify: async (notificationId) => {
+    const token = sessionStorage.getItem("token");
+    const { baseNotification, deleteNotify } = ApiConfig;
+    const url = `${baseNotification + deleteNotify}/${notificationId}`;
+
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+    return ApiCallGet(url, headers);
+  },
+
+  sendNotificationToUser: async (userId, title, message, link) => {
+    const token = sessionStorage.getItem("token");
+    const { baseNotification, singalUser } = ApiConfig;
+    const url = baseNotification + singalUser;
+    const params = {
+      userId: userId,
+      title: title,
+      message: message,
+      link: link
+    };
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+    return ApiCallPost(url, params, headers);
+  },
+
+
+  sendBulkNotification: async (userId, title, message, link) => {
+    const token = sessionStorage.getItem("token");
+    const { baseNotification, sendBulkNotification } = ApiConfig;
+    const url = baseNotification + sendBulkNotification;
+    const params = {
+      "userIds": userId,
+      title: title,
+      message: message,
+      link: link
+    };
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+    return ApiCallPost(url, params, headers);
+  },
+
+  sendAllNotification: async (title, message, link) => {
+    const token = sessionStorage.getItem("token");
+    const { baseNotification, sendToAll } = ApiConfig;
+    const url = baseNotification + sendToAll;
+    const params = {
+      title: title,
+      message: message,
+      link: link
+    };
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+    return ApiCallPost(url, params, headers);
+  },
+
+
+  updateNotificationStatus: async (id, status) => {
+    const token = sessionStorage.getItem("token");
+    const { baseNotification, updateNotificationStatus } = ApiConfig;
+    const url = baseNotification + updateNotificationStatus;
+    const params = {
+      id: id,
+      isActive: status,
+    }
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+    return ApiCallPost(url, params, headers);
+  },
+  userFind: async (userId) => {
+    const token = sessionStorage.getItem("token");
+    const { baseNotification, userFind } = ApiConfig;
+    const url = baseNotification + userFind;
+    const params = {
+      emailId: userId,
+    };
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+    return ApiCallPost(url, params, headers);
   },
 
 };

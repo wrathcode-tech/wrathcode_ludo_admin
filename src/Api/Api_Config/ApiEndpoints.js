@@ -14,13 +14,13 @@ export const ApiConfig = {
   getClosedTickets: "get-close-tickets",
   getResolvedTickets: "get-resolve-tickets",
   blogList: "blog-list",
-  notificationList: "notification-list",
+  // notificationList: "notification-list",
   usersStatusUpdate: "users-status-update",
   addNotification: "add-notification",
   addBlog: "add-blog",
   deleteNotification: "delete-notification",
   deleteBlog: "delete-blog",
-  dashboardData: "dashboard",
+  // dashboardData: "dashboard",
   dashboardList: "activity-logs",
   contactusList: "contactus-list",
   adminViewTicket: "admin-view-ticket",
@@ -49,6 +49,23 @@ export const ApiConfig = {
   cancelWithdrawalRequest: "cancelWithdrawalRequest",
   updateWithdrawalStatus: "updateWithdrawalRequest",
 
+  // Notifications Endpoints
+  notificationList: "admin-listing",
+  deleteNotify: "delete",
+  singalUser: "single-user",
+  sendBulkNotification: "send-bulk",
+  sendToAll: "send-all",
+  updateNotificationStatus: "update-status",
+  announcementBanner: "add-banner",
+  getBannerList: "admin-banner-listing",
+  updateBannerStatus: "update-status",
+  bannerDelete: "delete-banner",
+  userFind: "find-user",
+  msgSend: "send",
+  getMsgUser: "user",
+  allMsg: "all",
+  msgSeen: "seen",
+
 
   // allAdminList: "allAdminList",
 
@@ -63,7 +80,8 @@ export const ApiConfig = {
 
 
 
+
   // ============webSocketUrl================ //
-  // webSocketUrl: appUrl,
+  webSocketUrl: "http://3.110.173.10:3009",
 
 };

@@ -1,193 +1,223 @@
 import React, { useEffect, useState, useRef } from "react";
-import { io } from "socket.io-client";
 import moment from "moment";
-import { ApiConfig } from "../../Api/Api_Config/ApiEndpoints";
+import { alertErrorMessage } from "../../Utils/CustomAlertMessage";
+import LoaderHelper from "../../Utils/Loading/LoaderHelper";
+import AuthService from "../../Api/Api_Services/AuthService";
+import DataTableBase from "../../Utils/DataTable";
 
 function SupportChat() {
-  const userId = sessionStorage.getItem("userId"); // ya admin id
-  const [chatData, setChatData] = useState([]);
+  const adminId = "68a4b42c776734c76dfc7248";
+  const [supportData, setSupportData] = useState([]);
   const [message, setMessage] = useState("");
-  const [socket, setSocket] = useState(null);
   const [isClosed, setIsClosed] = useState(false);
-  const messagesEndRef = useRef(null);
+  const [allMsgData, setAllMsgData] = useState([]);
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const chatEndRef = useRef(null);
 
-  // Connect socket
-  useEffect(() => {
-    const newSocket = io(`${ApiConfig?.webSocketUrl}`, {
-      transports: ["websocket"],
-      upgrade: false,
-      rejectUnauthorized: false,
-      reconnection: false,
-    });
+  /** 🔹 Send message */
+  const handleMsgSend = async () => {
+    if (!message.trim() || !selectedTicket) return;
+    LoaderHelper.loaderStatus(true);
+    try {
+      const result = await AuthService.msgSend(
+        selectedTicket,
+        adminId,
+        "admin",
+        message.trim()
+      );
 
-    setSocket(newSocket);
-
-    // Listen for incoming messages
-    newSocket.on("supportResponse", (data) => {
-      if (Array.isArray(data)) {
-        setChatData(data);
-      } else if (data?.message) {
-        setChatData((prev) => [...prev, data]);
+      if (result?.success) {
+        setSupportData((prev = []) => [
+          ...(Array.isArray(prev) ? prev : []),
+          { sender: "admin", message: message.trim(), timestamp: new Date().toISOString() },
+        ]);
+        setMessage("");
+      } else {
+        alertErrorMessage(result?.message || "Failed to send message.");
       }
-      if (data?.isClosed) setIsClosed(true);
-    });
-
-    return () => newSocket.disconnect();
-  }, []);
-
-  // Auto scroll to bottom
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [chatData]);
-
-  // Send message
-  const handleSend = () => {
-    if (socket && message.trim() !== "" && !isClosed) {
-      const payload = {
-        userId: userId,
-        sender: "admin", // ya "user"
-        message: message,
-        timestamp: new Date().toISOString(),
-      };
-
-      // Optimistic UI update
-      setChatData((prev) => [...prev, payload]);
-
-      // Emit to socket
-      socket.emit("supportMessage", payload);
-
-      setMessage("");
+    } catch (error) {
+      console.error("❌ Failed to send message:", error);
+      alertErrorMessage("Server error while sending message.");
+    } finally {
+      LoaderHelper.loaderStatus(false);
     }
   };
+
+  /** 🔹 Get messages of selected user */
+  const handleGetMsg = async (userId) => {
+    if (!userId) return;
+    LoaderHelper.loaderStatus(true);
+    try {
+      const result = await AuthService.getMsgUser(userId);
+      if (result?.success) {
+        const messages = Array.isArray(result.data) ? result.data : result.data?.messages || [];
+        setSupportData(messages);
+        if (
+          result?.ticketStatus === "closed" ||
+          result.data?.ticketStatus === "closed"
+        ) {
+          setIsClosed(true);
+        } else {
+          setIsClosed(false);
+        }
+      } else {
+        alertErrorMessage(result?.message || "Failed to fetch messages.");
+        setSupportData([]);
+      }
+    } catch (error) {
+      console.error("❌ Failed to fetch messages:", error);
+      alertErrorMessage("Server error while fetching messages.");
+      setSupportData([]);
+    } finally {
+      LoaderHelper.loaderStatus(false);
+    }
+  };
+
+  /** 🔹 Get all tickets */
+  const handleAllMsg = async () => {
+    LoaderHelper.loaderStatus(true);
+    try {
+      const result = await AuthService.allMsg();
+      if (result?.success) {
+        setAllMsgData(result.data);
+      } else {
+        alertErrorMessage(result?.message || "Failed to fetch all messages.");
+      }
+    } catch (error) {
+      console.error("❌ Failed to fetch all messages:", error);
+      alertErrorMessage("Server error while fetching messages.");
+    } finally {
+      LoaderHelper.loaderStatus(false);
+    }
+  };
+
+  /** 🔹 Auto scroll */
+  useEffect(() => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [supportData]);
+
+  useEffect(() => {
+    handleAllMsg();
+  }, []);
+
+  const columns = [
+    { name: "User ID", selector: (row) => row?.userId?._id || "—", sortable: true },
+    { name: "User Name", selector: (row) => row?.userId?.fullName || "—", sortable: true },
+    { name: "Email", selector: (row) => row?.userId?.emailId || "—", sortable: true },
+    { name: "Last Message", selector: (row) => row?.lastMessage || "—", sortable: true },
+    { name: "Status", selector: (row) => row?.status || "—", sortable: true },
+    {
+      name: "Created At",
+      selector: (row) => new Date(row?.createdAt).toLocaleString(),
+      sortable: true,
+    },
+    {
+      name: "Action",
+      cell: (row) => (
+        <button
+          className="btn btn-sm btn-primary"
+          onClick={() => {
+            setSelectedTicket(row.userId._id);
+            handleGetMsg(row.userId._id);
+          }}
+        >
+          View
+        </button>
+      ),
+    },
+  ];
 
   return (
     <div className="dashboard_right">
       <div className="dashboard_outer_s">
         <h2>Support Chat</h2>
+        <DataTableBase columns={columns} data={allMsgData} pagination />
 
-        {/* Chat Messages */}
-        <div
-          className="chat_messages_block"
-          style={{
-            maxHeight: "400px",
-            overflowY: "auto",
-            padding: "15px",
-            border: "1px solid #ddd",
-            borderRadius: "8px",
-            marginBottom: "15px",
-            background: "#fafafa",
-          }}
-        >
-          {chatData.length > 0 ? (
-            chatData.map((chat, i) => (
-              <div
-                key={i}
-                style={{
-                  display: "flex",
-                  justifyContent:
-                    chat.sender === "admin" ? "flex-end" : "flex-start",
-                  marginBottom: "12px",
-                }}
-              >
-                {/* Avatar */}
-                <div
-                  style={{
-                    width: "35px",
-                    height: "35px",
-                    borderRadius: "50%",
-                    background: chat.sender === "admin" ? "#03C2C7" : "#e5e5e5",
-                    color: chat.sender === "admin" ? "#fff" : "#000",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontWeight: "bold",
-                    marginRight: chat.sender === "admin" ? "0" : "8px",
-                    marginLeft: chat.sender === "admin" ? "8px" : "0",
-                    flexShrink: 0,
-                  }}
-                >
-                  {chat.sender === "admin" ? "A" : "U"}
-                </div>
-
-                {/* Message bubble */}
-                <div
-                  style={{
-                    background: chat.sender === "admin" ? "#03C2C7" : "#e5e5e5",
-                    color: chat.sender === "admin" ? "#fff" : "#000",
-                    padding: "8px 12px",
-                    borderRadius: "10px",
-                    maxWidth: "70%",
-                    position: "relative",
-                  }}
-                >
-                  <strong style={{ display: "block", marginBottom: "4px" }}>
-                    {chat.sender === "admin" ? "You (Admin)" : "User"}
-                  </strong>
-                  <p style={{ margin: "4px 0" }}>{chat.message}</p>
-                  <small
+        {/* Show chat only if a ticket is selected */}
+        {selectedTicket && (
+          <div style={{ marginTop: "20px" }}>
+            <h4>Chat Window</h4>
+            <div
+              className="chat_messages_block"
+              style={{
+                maxHeight: "400px",
+                overflowY: "auto",
+                padding: "15px",
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                marginBottom: "15px",
+                background: "#fafafa",
+              }}
+            >
+              {supportData.length > 0 ? (
+                supportData.map((chat, i) => (
+                  <div
+                    key={i}
                     style={{
-                      fontSize: "11px",
-                      opacity: 0.7,
-                      display: "block",
-                      textAlign: "right",
+                      display: "flex",
+                      justifyContent:
+                        chat.sender === "admin" ? "flex-end" : "flex-start",
+                      marginBottom: "12px",
                     }}
                   >
-                    {chat?.timestamp
-                      ? moment(chat.timestamp).format("DD/MM/YYYY hh:mm A")
-                      : ""}
-                  </small>
-                  {/* Read indicator for admin */}
-                  {chat.sender === "admin" && (
-                    <span
+                    <div
                       style={{
-                        position: "absolute",
-                        bottom: "2px",
-                        right: "4px",
-                        fontSize: "10px",
-                        opacity: 0.6,
+                        background: chat.sender === "admin" ? "#03C2C7" : "#e5e5e5",
+                        color: chat.sender === "admin" ? "#fff" : "#000",
+                        padding: "8px 12px",
+                        borderRadius: "10px",
+                        maxWidth: "70%",
                       }}
                     >
-                      ✓
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))
-          ) : (
-            <p style={{ textAlign: "center", color: "#777" }}>No messages yet</p>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
+                      <strong style={{ display: "block", marginBottom: "4px" }}>
+                        {chat.sender === "admin" ? "You (Admin)" : "User"}
+                      </strong>
+                      <p style={{ margin: "4px 0" }}>{chat.message}</p>
+                      <small style={{ fontSize: "11px", opacity: 0.7 }}>
+                        {chat?.timestamp
+                          ? moment(chat.timestamp).format("DD/MM/YYYY hh:mm A")
+                          : ""}
+                      </small>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p style={{ textAlign: "center", color: "#777" }}>No messages yet</p>
+              )}
+              <div ref={chatEndRef}></div>
+            </div>
 
-        {/* Input Box */}
-        {!isClosed ? (
-          <div style={{ display: "flex", gap: "8px" }}>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Type your message..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            />
-            <button
-              className="btn"
-              style={{
-                backgroundColor: "#03C2C7",
-                color: "#fff",
-                padding: "8px 16px",
-              }}
-              onClick={handleSend}
-              disabled={!message.trim()}
-            >
-              Send
-            </button>
-          </div>
-        ) : (
-          <div style={{ textAlign: "center", marginTop: "20px", color: "green" }}>
-            <p>This ticket has been resolved ✅</p>
+            {/* Input Box */}
+            {!isClosed ? (
+              <div style={{ display: "flex", gap: "8px" }}>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Type your message..."
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleMsgSend()}
+                />
+                <button
+                  className="btn"
+                  style={{
+                    backgroundColor: "#03C2C7",
+                    color: "#fff",
+                    padding: "8px 16px",
+                  }}
+                  onClick={handleMsgSend}
+                  disabled={!message.trim()}
+                >
+                  Send
+                </button>
+              </div>
+            ) : (
+              <div style={{ textAlign: "center", marginTop: "20px", color: "green" }}>
+                <p>This ticket has been resolved ✅</p>
+              </div>
+            )}
           </div>
         )}
       </div>
