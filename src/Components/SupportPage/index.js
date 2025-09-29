@@ -44,9 +44,11 @@ function SupportChat() {
   };
 
   /** 🔹 Get messages of selected user */
-  const handleGetMsg = async (userId) => {
+  const handleGetMsg = async (userId, { showLoader = true } = {}) => {
     if (!userId) return;
-    LoaderHelper.loaderStatus(true);
+    if (showLoader) {
+      LoaderHelper.loaderStatus(true);
+    }
     try {
       const result = await AuthService.getMsgUser(userId);
       if (result?.success) {
@@ -69,7 +71,9 @@ function SupportChat() {
       alertErrorMessage("Server error while fetching messages.");
       setSupportData([]);
     } finally {
-      LoaderHelper.loaderStatus(false);
+      if (showLoader) {
+        LoaderHelper.loaderStatus(false);
+      }
     }
   };
 
@@ -78,6 +82,22 @@ function SupportChat() {
     LoaderHelper.loaderStatus(true);
     try {
       const result = await AuthService.allMsg();
+      if (result?.success) {
+        setAllMsgData(result.data);
+      } else {
+        alertErrorMessage(result?.message || "Failed to fetch all messages.");
+      }
+    } catch (error) {
+      console.error("❌ Failed to fetch all messages:", error);
+      alertErrorMessage("Server error while fetching messages.");
+    } finally {
+      LoaderHelper.loaderStatus(false);
+    }
+  };
+  const handleMsgSeen = async (userId, viewer) => {
+    LoaderHelper.loaderStatus(true);
+    try {
+      const result = await AuthService.msgSeen(userId, viewer);
       if (result?.success) {
         setAllMsgData(result.data);
       } else {
@@ -101,6 +121,15 @@ function SupportChat() {
   useEffect(() => {
     handleAllMsg();
   }, []);
+
+  /** 🔹 Poll chat messages every 3 seconds when a ticket is selected */
+  useEffect(() => {
+    if (!selectedTicket) return;
+    const intervalId = setInterval(() => {
+      handleGetMsg(selectedTicket, { showLoader: false });
+    }, 3000);
+    return () => clearInterval(intervalId);
+  }, [selectedTicket]);
 
   const columns = [
     { name: "User ID", selector: (row) => row?.userId?._id || "—", sortable: true },
