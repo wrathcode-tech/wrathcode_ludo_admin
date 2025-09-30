@@ -77,7 +77,7 @@ export const ApiConfig = {
   baseUsers: `${appUrl}/users/`,
   baseSupport: `${appUrl}/support/`,
   // baseAdminUrl: `${appUrl}/admins/`,
-
+  baseNotification: `${appUrl}/notifications/`,
 
 
 
