@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import moment from "moment";
-import { alertErrorMessage } from "../../Utils/CustomAlertMessage";
+import { alertErrorMessage, alertSuccessMessage } from "../../Utils/CustomAlertMessage";
 import LoaderHelper from "../../Utils/Loading/LoaderHelper";
 import AuthService from "../../Api/Api_Services/AuthService";
 import DataTableBase from "../../Utils/DataTable";
+import { imageUrl } from "../../Api/Api_Config/ApiEndpoints";
 
 function SupportChat() {
   const adminId = "68a4b42c776734c76dfc7248";
@@ -13,34 +14,58 @@ function SupportChat() {
   const [allMsgData, setAllMsgData] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const chatEndRef = useRef(null);
+  const [file, setFile] = useState(null);
+  const [filePreview, setFilePreview] = useState("");
+  const fileInputRef = useRef(null);
 
   /** 🔹 Send message */
   const handleMsgSend = async () => {
-    if (!message.trim() || !selectedTicket) return;
+    const trimmed = message.trim();
+    if (!selectedTicket) return;
+    if (!trimmed && !file) return; // nothing to send
+    const formData = new FormData();
+    formData.append("userId", selectedTicket);
+    formData.append("adminId", adminId);
+    formData.append("sender", "admin");
+    if (trimmed) formData.append("message", trimmed);
+    if (file) formData.append("imageUrl", file);
     LoaderHelper.loaderStatus(true);
     try {
-      const result = await AuthService.msgSend(
-        selectedTicket,
-        adminId,
-        "admin",
-        message.trim()
-      );
+      const result = await AuthService.msgSend(formData);
 
       if (result?.success) {
-        setSupportData((prev = []) => [
-          ...(Array.isArray(prev) ? prev : []),
-          { sender: "admin", message: message.trim(), timestamp: new Date().toISOString() },
-        ]);
+        alertSuccessMessage(result?.message);
         setMessage("");
+        // clear attachment (preview + file)
+        try { if (filePreview) URL.revokeObjectURL(filePreview); } catch (_) { }
+        setFile(null);
+        setFilePreview("");
+        if (fileInputRef.current) fileInputRef.current.value = "";
+        // optimistic update for text
+        if (trimmed) {
+          setSupportData((prev = []) => [
+            ...(Array.isArray(prev) ? prev : []),
+            { sender: "admin", message: trimmed, timestamp: new Date().toISOString() },
+          ]);
+        }
+        // immediate fetch to include any processed media
+        await handleGetMsg(selectedTicket, { showLoader: false });
       } else {
-        alertErrorMessage(result?.message || "Failed to send message.");
+        alertErrorMessage(result?.message);
       }
     } catch (error) {
-      console.error("❌ Failed to send message:", error);
-      alertErrorMessage("Server error while sending message.");
+      alertErrorMessage(error?.message);
     } finally {
       LoaderHelper.loaderStatus(false);
     }
+  };
+
+  const handleFileChange = (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    setFile(f);
+    try { if (filePreview) URL.revokeObjectURL(filePreview); } catch (_) { }
+    setFilePreview(URL.createObjectURL(f));
   };
 
   /** 🔹 Get messages of selected user */
@@ -203,6 +228,13 @@ function SupportChat() {
                       <strong style={{ display: "block", marginBottom: "4px" }}>
                         {chat.sender === "admin" ? "You (Admin)" : "User"}
                       </strong>
+                      {chat?.image && (
+                        <img
+                          src={imageUrl + chat.image}
+                          alt="chat-media"
+                          style={{ maxWidth: "200px", borderRadius: "8px", marginTop: "5px" }}
+                        />
+                      )}
                       <p style={{ margin: "4px 0" }}>{chat.message}</p>
                       <small style={{ fontSize: "11px", opacity: 0.7 }}>
                         {chat?.timestamp
@@ -220,28 +252,55 @@ function SupportChat() {
 
             {/* Input Box */}
             {!isClosed ? (
-              <div style={{ display: "flex", gap: "8px" }}>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Type your message..."
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleMsgSend()}
-                />
-                <button
-                  className="btn"
-                  style={{
-                    backgroundColor: "#03C2C7",
-                    color: "#fff",
-                    padding: "8px 16px",
-                  }}
-                  onClick={handleMsgSend}
-                  disabled={!message.trim()}
-                >
-                  Send
-                </button>
-              </div>
+              <>
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Type your message..."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleMsgSend()}
+                  />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                    className="form-control"
+                    style={{ maxWidth: "240px" }}
+                  />
+                  <button
+                    className="btn"
+                    style={{
+                      backgroundColor: "#03C2C7",
+                      color: "#fff",
+                      padding: "8px 16px",
+                    }}
+                    onClick={handleMsgSend}
+                    disabled={!message.trim() && !file}
+                  >
+                    Send
+                  </button>
+                </div>
+                {filePreview && (
+                  <div style={{ marginTop: "8px" }}>
+                    <img src={filePreview} alt="preview" style={{ maxHeight: "120px", borderRadius: "6px" }} />
+                    <button
+                      className="btn btn-sm btn-danger"
+                      style={{ marginLeft: "10px" }}
+                      onClick={() => {
+                        try { if (filePreview) URL.revokeObjectURL(filePreview); } catch (_) { }
+                        setFile(null);
+                        setFilePreview("");
+                        if (fileInputRef.current) fileInputRef.current.value = "";
+                      }}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
+              </>
             ) : (
               <div style={{ textAlign: "center", marginTop: "20px", color: "green" }}>
                 <p>This ticket has been resolved ✅</p>

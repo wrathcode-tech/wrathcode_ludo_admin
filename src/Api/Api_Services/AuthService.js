@@ -104,12 +104,23 @@ const AuthService = {
     };
     return ApiCallPost(url, formData, headers);
   },
+  msgSend: async (formData) => {
+    const token = sessionStorage.getItem("token");
+    const { baseSupport, msgSend } = ApiConfig;
+    const url = baseSupport + msgSend;
+
+    const headers = {
+      "Content-Type": "multipart/form-data",
+      Authorization: token
+    };
+    return ApiCallPost(url, formData, headers);
+  },
   updateKycStatus: async (userId, status, reason) => {
     const token = sessionStorage.getItem("token");
     const { baseUrl, updateKycStatus } = ApiConfig;
     const url = baseUrl + updateKycStatus;
     const params = {
-      userId, userId,
+      userId: userId,
       status,
       kycRejectReason: reason
     };
@@ -599,22 +610,7 @@ const AuthService = {
     return ApiCallGet(url, headers);
   },
 
-  msgSend: async (userId, adminId, sender, message) => {
-    const token = sessionStorage.getItem("token");
-    const { baseSupport, msgSend } = ApiConfig;
-    const url = baseSupport + msgSend;
-    const params = {
-      userId,
-      adminId,
-      sender,
-      message
-    };
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: token,
-    };
-    return ApiCallPost(url, params, headers);
-  },
+
   msgSeen: async (userId, viewer) => {
     const token = sessionStorage.getItem("token");
     const { baseSupport, msgSeen } = ApiConfig;
