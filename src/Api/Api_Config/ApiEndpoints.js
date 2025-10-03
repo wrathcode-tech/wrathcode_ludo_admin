@@ -62,6 +62,11 @@ export const ApiConfig = {
   allMsg: "all",
   msgSeen: "seen",
 
+  // Dispute User Response
+  getDisputeUsersRespose: "getUsersRespose",
+  getParticularResponseView: "getParticularResponseView",
+  chooseWinner: "chooseWinner",
+
 
 
 

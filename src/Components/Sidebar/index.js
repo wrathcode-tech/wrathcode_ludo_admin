@@ -78,6 +78,9 @@ const Sidebar = () => {
                                 <li className={actived === "support" ? "active" : ""}>
                                     <Link to="/dashboard/support" onClick={() => setActived("support")}><img src="/images/support_icon.svg" alt="dashboard" />Support</Link>
                                 </li>
+                                <li className={actived === "disputeResponse" ? "active" : ""}>
+                                    <Link to="/dashboard/disputeResponse" onClick={() => setActived("disputeResponse")}><img src="/images/support_icon.svg" alt="disputeResponse" />Dispute Response</Link>
+                                </li>
                             </ul>
                         </div>
                         <div class="logout_btn">

@@ -192,6 +192,45 @@ const AuthService = {
     };
     return ApiCallGet(url, headers);
   },
+  getDisputeUsersRespose: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, getDisputeUsersRespose } = ApiConfig;
+    const url = baseUrl + getDisputeUsersRespose;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  getParticularResponseView: async (id) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, getParticularResponseView } = ApiConfig;
+    const url = baseUrl + getParticularResponseView;
+    const params = {
+      id: id,
+    }
+    const headers = {
+      "Content-Type": "application/json",
+      'Authorization': token
+    };
+
+    return ApiCallPost(url, params, headers);
+  },
+  chooseWinner: async (eventId, winnerId) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, chooseWinner } = ApiConfig;
+    const url = baseUrl + chooseWinner;
+    const params = {
+      eventId: eventId,
+      winnerId: winnerId
+    }
+    const headers = {
+      "Content-Type": "application/json",
+      'Authorization': token
+    };
+
+    return ApiCallPost(url, params, headers);
+  },
   allCompletedLudoGameList: async () => {
     const token = sessionStorage.getItem("token");
     const { baseUrl, allCompletedLudoGameList } = ApiConfig;

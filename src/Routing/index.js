@@ -21,6 +21,7 @@ import UserEarningSummary from "../Components/UserEarningSummary";
 import WithdrawalRequest from "../Components/WithdrawalRequest/Index";
 import UserDetails from "../Components/AllUser/UserDetails";
 import BannerManagement from "../Components/BannerManagement/BannerManagement";
+import DisputeResponse from "../Components/DisputeResponse/DisputeResponse";
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -52,6 +53,7 @@ const Routing = () => {
         <Route path="withdrawalRequest" element={<ProtectedRoute> <WithdrawalRequest /></ProtectedRoute>} />
         <Route path="UserDetails" element={<ProtectedRoute> <UserDetails /></ProtectedRoute>} />
         <Route path="BannerManagement" element={<ProtectedRoute> <BannerManagement /></ProtectedRoute>} />
+        <Route path="disputeResponse" element={<ProtectedRoute> <DisputeResponse /></ProtectedRoute>} />
 
 
         {/* <Route path="chat/:id" element={<ProtectedRoute> <Chatpage /></ProtectedRoute>} /> */}
