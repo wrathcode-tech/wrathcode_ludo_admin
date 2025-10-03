@@ -3,7 +3,7 @@ import LoaderHelper from "../../Utils/Loading/LoaderHelper";
 import AuthService from "../../Api/Api_Services/AuthService";
 import { alertErrorMessage, alertSuccessMessage } from "../../Utils/CustomAlertMessage";
 import moment from "moment";
-import { ApiConfig } from "../../Api/Api_Config/ApiEndpoints";
+import { ApiConfig, imageUrl } from "../../Api/Api_Config/ApiEndpoints";
 import DataTableBase from "../../Utils/DataTable";
 
 
@@ -60,11 +60,30 @@ const BannerManagement = () => {
     const linkFollow = (row) => {
         return (
             <div className="d-flex gap-2">
-                <button className="btn btn-danger btn-sm" onClick={() => DeleteNotification(row?._id)}>Delete</button>
-                {row?.status === "ACTIVE" ?
-                    <button className="btn btn-success btn-sm me-2" onClick={() => { handleStatus(row?._id, "INACTIVE") }} >Active</button>
-                    : <button className="btn btn-danger btn-sm me-2" onClick={() => { handleStatus(row?._id, "ACTIVE") }}  >Inactive</button>}
+                <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => DeleteNotification(row?._id)}
+                >
+                    Delete
+                </button>
+
+                {row?.status === "ACTIVE" ? (
+                    <button
+                        className="btn btn-success btn-sm me-2"
+                        onClick={() => handleStatus(row?._id, "INACTIVE")}
+                    >
+                        Active
+                    </button>
+                ) : (
+                    <button
+                        className="btn btn-secondary btn-sm me-2"
+                        onClick={() => handleStatus(row?._id, "ACTIVE")}
+                    >
+                        Inactive
+                    </button>
+                )}
             </div>
+
         );
     };
 
@@ -83,7 +102,7 @@ const BannerManagement = () => {
             selector: row => (
                 row?.bannerImage ? (
                     <img
-                        src={`${ApiConfig?.appUrl}${row?.bannerImage}`}
+                        src={`${imageUrl}${row?.bannerImage}`}
                         alt="Banner"
                         style={{ maxWidth: "100px", height: "auto", borderRadius: "8px" }}
                     />
