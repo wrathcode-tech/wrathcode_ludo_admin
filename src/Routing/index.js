@@ -20,6 +20,7 @@ import DepostiWithdraSummary from "../Components/DepositsList/DepostiWithdraSumm
 import UserEarningSummary from "../Components/UserEarningSummary";
 import WithdrawalRequest from "../Components/WithdrawalRequest/Index";
 import UserDetails from "../Components/AllUser/UserDetails";
+import BannerManagement from "../Components/BannerManagement/BannerManagement";
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -50,6 +51,7 @@ const Routing = () => {
         <Route path="earn_userEarningSummary" element={<ProtectedRoute> <UserEarningSummary /></ProtectedRoute>} />
         <Route path="withdrawalRequest" element={<ProtectedRoute> <WithdrawalRequest /></ProtectedRoute>} />
         <Route path="UserDetails" element={<ProtectedRoute> <UserDetails /></ProtectedRoute>} />
+        <Route path="BannerManagement" element={<ProtectedRoute> <BannerManagement /></ProtectedRoute>} />
 
 
         {/* <Route path="chat/:id" element={<ProtectedRoute> <Chatpage /></ProtectedRoute>} /> */}

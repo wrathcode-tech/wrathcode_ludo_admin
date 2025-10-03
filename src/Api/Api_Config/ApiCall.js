@@ -43,7 +43,7 @@ export const ApiCallGet = async (url, headers) => {
   }
 };
 
-export const ApiCalDelete = async (url, headers) => {
+export const ApiCallDelete = async (url, headers) => {
   try {
     const response = await axios.delete(url, { headers: headers });
     LoaderHelper.loaderStatus(false);

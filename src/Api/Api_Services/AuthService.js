@@ -1,5 +1,5 @@
 import { ApiConfig } from "../Api_Config/ApiEndpoints";
-import { ApiCalDelete, ApiCallGet, ApiCallPost, ApiCallPut } from "../Api_Config/ApiCall";
+import { ApiCallDelete, ApiCallGet, ApiCallPost, ApiCallPut } from "../Api_Config/ApiCall";
 
 const AuthService = {
   /*** Calling Api's **/
@@ -321,7 +321,7 @@ const AuthService = {
       'Content-Type': 'application/json',
       Authorization: token
     };
-    return ApiCalDelete(url, headers);
+    return ApiCallDelete(url, headers);
   },
 
 
@@ -333,7 +333,7 @@ const AuthService = {
       'Content-Type': 'application/json',
       Authorization: token
     };
-    return ApiCalDelete(url, headers);
+    return ApiCallDelete(url, headers);
   },
 
   adminViewTicket: async (id) => {
@@ -727,6 +727,51 @@ const AuthService = {
       Authorization: token,
     };
     return ApiCallPost(url, params, headers);
+  },
+  announcementBanner: async (formData) => {
+    const token = sessionStorage.getItem("token");
+    const { baseBanner, announcementBanner } = ApiConfig;
+    const url = baseBanner + announcementBanner;
+    const headers = {
+      "Content-Type": "multipart/form-data",
+      Authorization: token,
+    };
+    return ApiCallPost(url, formData, headers);
+  },
+  getAnnouncementBannerList: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseBanner, getBannerList } = ApiConfig;
+    const url = baseBanner + getBannerList;
+    const headers = {
+      "content-Type": "application/json",
+      Authorization: token,
+    };
+    return ApiCallGet(url, headers);
+  },
+  updateBannerStatus: async (bannerId, status) => {
+    const token = sessionStorage.getItem("token");
+    const { baseBanner, updateBannerStatus } = ApiConfig;
+    const url = baseBanner + updateBannerStatus;
+    const params = {
+      bannerId: bannerId,
+      status: status,
+    }
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+    return ApiCallPost(url, params, headers);
+  },
+  bannerDelete: async (bannerId) => {
+    const token = sessionStorage.getItem("token");
+    const { baseBanner, bannerDelete } = ApiConfig;
+    const url = `${baseBanner + bannerDelete}/${bannerId}`;
+
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+    return ApiCallGet(url, headers);
   },
 
 };

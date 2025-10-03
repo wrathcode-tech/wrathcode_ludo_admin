@@ -72,9 +72,9 @@ const Sidebar = () => {
                                 <li className={actived === "notification" ? "active" : ""}>
                                     <Link to="/dashboard/notification" onClick={() => setActived("notification")}><img src="/images/notification_icon.svg" alt="dashboard" />Notifications</Link>
                                 </li>
-                                {/* <li className={actived === "blog" ? "active" : ""}>
-                                    <Link to="/dashboard/blog" onClick={() => setActived("blog")}><img src="/images/blog_icon.svg" alt="dashboard" />Blog</Link>
-                                </li> */}
+                                <li className={actived === "BannerManagement" ? "active" : ""}>
+                                    <Link to="/dashboard/BannerManagement" onClick={() => setActived("blog")}><img src="/images/blog_icon.svg" alt="BannerManagement" />Banner Management</Link>
+                                </li>
                                 <li className={actived === "support" ? "active" : ""}>
                                     <Link to="/dashboard/support" onClick={() => setActived("support")}><img src="/images/support_icon.svg" alt="dashboard" />Support</Link>
                                 </li>
