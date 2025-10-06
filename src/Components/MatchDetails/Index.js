@@ -102,8 +102,10 @@ function MatchDetails() {
 
                             </div>
                         </div>
-                        <div className="p-2">
+                        <div className='table-responsive'>
+                        <div className="p-2 mobilep">
                             <DataTable columns={columns} data={responseData} pagination highlightOnHover striped responsive />
+                        </div>
                         </div>
                     </div>
                 </div>

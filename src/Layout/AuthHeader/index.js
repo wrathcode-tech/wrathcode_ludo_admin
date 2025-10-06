@@ -16,15 +16,18 @@ const AuthHeader = () => {
             </div>
             <div className="col-sm-12  col-md-12 col-lg-6 ">
               <div className="navigation">
+                <div class="toggle_menu">
+                  <img src="/images/toggle_icon.svg" alt="toggle" />
+                </div>
                 <nav className="navbar navbar-expand-lg ">
                   <div className="container-fluid">
-                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    {/* <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
                       data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                       aria-label="Toggle navigation">
                       <span className="navbar-toggler-icon">
                         <img src="/images/toggle_icon.svg" alt="toggle" />
                       </span>
-                    </button>
+                    </button> */}
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                       <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         <li className="nav-item">

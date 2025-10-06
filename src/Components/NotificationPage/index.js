@@ -188,12 +188,12 @@ const Notification = () => {
     };
 
     return (
-        <div className="dashboard_right">
+        <div className="dashboard_right notification_s">
             <div className="dashboard_outer_s">
                 <div id="layoutSidenav_content">
                     <main>
                         <header className="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
-                            <div className="container-xl px-4">
+                            <div className="container2">
                                 <div className="page-header-content pt-4">
                                     <h1 className="page-header-title mb-0">Notification Management</h1>
                                 </div>
@@ -201,7 +201,7 @@ const Notification = () => {
                                     {["sendToUser", "bulkNotification", "announceToAll", "managementNotification"].map(tab => (
                                         <li key={tab} className="nav-item" onClick={resetInput}>
                                             <button
-                                                className={`m-0 nav-link text-white ${activeTab === tab ? "active" : ""}`}
+                                                className={`m-0 nav-link ${activeTab === tab ? "active" : ""}`}
                                                 type="button"
                                                 onClick={() => setActiveTab(tab)}
                                             >
@@ -216,7 +216,7 @@ const Notification = () => {
                             </div>
                         </header>
 
-                        <div className="container-xl px-4 mt-n10">
+                        <div className="container2 mt-n10 width-70">
                             <div className="row">
                                 <div className="col-xl-12">
                                     {activeTab === "sendToUser" && (

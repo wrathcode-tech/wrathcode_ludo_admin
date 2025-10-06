@@ -187,10 +187,10 @@ const BannerManagement = () => {
                     <div id="layoutSidenav_content">
                         <main>
                             <header className="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
-                                <div className="container-xl px-4">
+                                <div className="container2">
                                     <div className="page-header-content pt-4">
                                         <div className="row align-items-center justify-content-between">
-                                            <div className="col-auto mt-4">
+                                            <div className="col-auto">
                                                 <div className="d-flex align-items-center">
                                                     <button
                                                         className="btn p-0 page-header-icon">
@@ -227,7 +227,7 @@ const BannerManagement = () => {
                                     </ul>
                                 </div>
                             </header>
-                            <div className="container-xl px-4 mt-n10">
+                            <div className="container2 mt-n10 width-70">
                                 <div className="row">
                                     <div className="col-xl-12">
                                         {activeTab === "sendToBanner" && (

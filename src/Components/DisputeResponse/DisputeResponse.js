@@ -159,6 +159,7 @@ function DisputeResponse() {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
+                        <div className='table-responsive'>
                         <DataTable
                             columns={commonColumns}
                             data={filteredData}
@@ -167,6 +168,7 @@ function DisputeResponse() {
                             striped
                             responsive
                         />
+                        </div>
                     </div>
                 </div>
             </div>

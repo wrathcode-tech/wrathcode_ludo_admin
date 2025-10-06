@@ -87,6 +87,7 @@ function OverAllReferralEarnList() {
                             />
                         </div>
                     </div>
+                    <div className='table-responsive'>
                     <DataTable
                         columns={Columns}
                         data={userList}
@@ -99,6 +100,7 @@ function OverAllReferralEarnList() {
                         striped
                         responsive
                     />
+                    </div>
                 </div>
             </div>
         </div>
