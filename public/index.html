@@ -18,6 +18,19 @@
 
 </head>
 
+<script>
+  $(document).on("click", ".toggle_menu", function (e) {
+    e.preventDefault();
+    $("body").toggleClass("sidenav-toggled");
+  });
+
+  // leftside_menu ke andar kisi bhi link par click hone par close kar do
+  $(document).on("click", ".leftside_menu a", function (e) {
+    // Class remove kar do (sidebar close)
+    $("body").removeClass("sidenav-toggled");
+    // Page naturally navigate karega
+  });
+</script>
 
 <body class="bg-1 theme-dark" id="body">
   <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -86,7 +99,7 @@
 
   </script>
 
-  <script>
+  <!-- <script>
     $(document).ready(function () {
       $("#toggleBtn").click(function () {
         $("#content").toggleClass("active");
@@ -96,7 +109,9 @@
         });
 
     });
-  </script>
+  </script> -->
+
+
 
 
 </body>

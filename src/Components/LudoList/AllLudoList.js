@@ -151,7 +151,9 @@ function AllLudoList() {
                             />
                         </div>
                     </div>
-                    <div className="p-2">
+                    
+                        <div className='table-responsive'>
+                    <div className="p-2 mobilep">
                         <DataTable
                             columns={commonColumns}
                             data={filteredData}
@@ -160,6 +162,7 @@ function AllLudoList() {
                             striped
                             responsive
                         />
+                    </div>
                     </div>
                 </div>
             </div>

@@ -203,12 +203,12 @@ function AllUserList() {
                                 <input type="search" placeholder="Search User" onChange={(e) => setSearch(e.target.value)} value={search} />
                             </div>
                         </div>
-                        <div className="card-body">
+                        <div className="card-body userlisttable">
                             <div className="table-responsive" width="100%">
                                 <DataTableBase columns={columns} data={userList} pagination={false} />
                             </div>
                             <div className="align-items-center mt-3 d-flex justify-content-between">
-                                <div className="pl_row d-flex justify-content-start gap-3 align-items-center">
+                                <div className="pl_row d-flex justify-content-start gap-3 align-items-center perpage_list">
                                     <label htmlFor="rowsPerPage">Rows per page: </label>
                                     <select
                                         className="form-select form-select-sm my-0"

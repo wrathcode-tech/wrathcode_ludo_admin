@@ -5,7 +5,7 @@ import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import { alertErrorMessage } from '../../Utils/CustomAlertMessage';
 import AuthService from '../../Api/Api_Services/AuthService';
 
-function OverAllReferralEarnList() {
+function CommissionBonusList() {
     const [userList, setUserList] = useState([]);
     const [search, setSearch] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -19,7 +19,7 @@ function OverAllReferralEarnList() {
     const fetchDepositWithdrawList = async (page, pageSize) => {
         try {
             LoaderHelper.loaderStatus(true);
-            const result = await AuthService.usersOverAllReferalBonusEarn({ page, pageSize });
+            const result = await AuthService.usersOverAllCommissionBonusEarn({ page, pageSize });
             if (result?.success) {
                 setUserList(result.data || []);
                 setTotalRows(result.pagination.totalUsers || 0);
@@ -74,7 +74,7 @@ function OverAllReferralEarnList() {
         <div className="dashboard_right">
             <UserHeader />
             <div className="dashboard_outer_s">
-                <h2>All Referrals Bonus List</h2>
+                <h2>All Commission Bonus List</h2>
                 <div className="dashboard_detail_s user_list_table user_summary_t">
                     <div className="user_list_top">
                         <div className="user_search">
@@ -87,7 +87,6 @@ function OverAllReferralEarnList() {
                             />
                         </div>
                     </div>
-                    <div className='table-responsive'>
                     <DataTable
                         columns={Columns}
                         data={userList}
@@ -100,11 +99,10 @@ function OverAllReferralEarnList() {
                         striped
                         responsive
                     />
-                    </div>
                 </div>
             </div>
         </div>
     );
 }
 
-export default OverAllReferralEarnList;
+export default CommissionBonusList;

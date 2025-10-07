@@ -46,7 +46,7 @@ function UserKyc() {
             if (result?.success) {
                 setKycApprovedList(result?.data?.reverse());
             } else {
-                alertErrorMessage(result?.message);
+                // alertErrorMessage(result?.message);
             }
         } catch (error) {
             alertErrorMessage(error?.message);
@@ -62,7 +62,7 @@ function UserKyc() {
             if (result?.success) {
                 setKycRejectedList(result?.data?.reverse());
             } else {
-                alertErrorMessage(result?.message);
+                // alertErrorMessage(result?.message);
             }
         } catch (error) {
             alertErrorMessage(error?.message);

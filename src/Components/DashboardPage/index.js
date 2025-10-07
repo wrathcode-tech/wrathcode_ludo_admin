@@ -145,6 +145,7 @@ function DashboardPage() {
                     </div>
                     <div className="dashboard_detail_s">
                         <h3>Login Details</h3>
+                        <div className='table-responsive'>
                         <table>
                             <thead>
                                 <tr>
@@ -174,6 +175,7 @@ function DashboardPage() {
                                 ))}
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             </div>
