@@ -107,8 +107,7 @@ function AllUserList() {
             wrap: true,
             width: "160px",
             selector: (row) => (
-                <div className="d-flex align-items-center">
-                    {/* 👇 show uuid but send _id on click */}
+                <div className="d-flex align-items-center ">
                     <button
                         onClick={() => handleUserClick(row?._id)}
                         className="btn p-0 text-primary"
@@ -116,11 +115,7 @@ function AllUserList() {
                     >
                         {row?.uuid || "------"}
                     </button>
-
-                    {/* 👇 copy uuid */}
-                    <div
-                        className="mx-2"
-                        style={{ cursor: "pointer" }}
+                    <div className="mx-2 " style={{ cursor: "pointer" }}
                         onClick={() => {
                             if (row?.uuid) {
                                 navigator?.clipboard?.writeText(row?.uuid);

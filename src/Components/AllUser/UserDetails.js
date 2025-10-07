@@ -464,8 +464,8 @@ function UserDetails() {
       <div id="layoutSidenav_content">
         <main>
           <header className="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
-            <div className="container-xl px-4">
-              <div className="page-header-content pt-4">
+            <div className="container2">
+              <div className="page-header-content pt-4 userdetails">
                 <div className="row align-items-center justify-content-between">
                   <div className="col-auto mt-4">
                     <div className="d-flex align-items-center">
@@ -481,9 +481,9 @@ function UserDetails() {
                   </div>
                 </div>
               </div>
-              <ul className="nav nav-pills mb-3" id="pills-tab" role="tablist">
+              <ul className="nav nav-pills mb-3 tabs_top" id="pills-tab" role="tablist">
                 <li className="nav-item" role="presentation">
-                  <button className="m-0 nav-link active text-white" id="pills-one-tab" data-bs-toggle="pill" data-bs-target="#pills-one"
+                  <button className="m-0 nav-link active" id="pills-one-tab" data-bs-toggle="pill" data-bs-target="#pills-one"
                     type="button"
                     role="tab"
                     aria-controls="pills-one"
@@ -494,7 +494,7 @@ function UserDetails() {
                 </li>
                 <li className="nav-item" role="presentation">
                   <button
-                    className="m-0 nav-link text-white"
+                    className="m-0 nav-link"
                     id="pills-two-tab"
                     data-bs-toggle="pill"
                     data-bs-target="#pills-two"
@@ -508,7 +508,7 @@ function UserDetails() {
                 </li>
                 <li className="nav-item" role="presentation">
                   <button
-                    className="m-0 nav-link text-white"
+                    className="m-0 nav-link"
                     id="pills-five-tab"
                     data-bs-toggle="pill"
                     data-bs-target="#pills-five"
@@ -522,7 +522,7 @@ function UserDetails() {
                 </li>
                 <li className="nav-item" role="presentation">
                   <button
-                    className="m-0 nav-link text-white"
+                    className="m-0 nav-link"
                     id="pills-six-tab"
                     data-bs-toggle="pill"
                     data-bs-target="#pills-six"
@@ -536,7 +536,7 @@ function UserDetails() {
                 </li>
                 <li className="nav-item" role="presentation">
                   <button
-                    className="m-0 nav-link text-white"
+                    className="m-0 nav-link"
                     id="pills-seven-tab"
                     data-bs-toggle="pill"
                     data-bs-target="#pills-seven"
@@ -550,7 +550,7 @@ function UserDetails() {
                 </li>
                 <li className="nav-item" role="presentation">
                   <button
-                    className="m-0 nav-link text-white"
+                    className="m-0 nav-link"
                     id="pills-eight-tab"
                     data-bs-toggle="pill"
                     data-bs-target="#pills-eight"
@@ -564,7 +564,7 @@ function UserDetails() {
                 </li>
                 <li className="nav-item" role="presentation">
                   <button
-                    className="m-0 nav-link text-white"
+                    className="m-0 nav-link"
                     id="pills-fifty-tab"
                     data-bs-toggle="pill"
                     data-bs-target="#pills-fifty"
@@ -578,16 +578,16 @@ function UserDetails() {
               </ul>
             </div>
           </header>
-          <div className="container-xl px-4 mt-n10">
+          <div className="container2 mt-n10 user_detail_info">
             <div className="row">
               <div className="col-xl-12 mb-4">
                 <div className="card mb-4 mb-xl-0">
-                  <div className="card-body py-5 pb-0">
+                  <div className="card-body py-4 pb-0">
                     <div className="tab-content">
                       {/* User Profile Tab */}
                       <div className="tab-pane fade show active" id="pills-one" role="tabpanel" aria-labelledby="pills-one-tab">
                         <div className="list_profile">
-                          <div>
+                          <div className="profile_lft">
                             {userDetails?.avatar && userDetails?.avatar !== "" ? (
                               <img
                                 className="img-account-profile rounded-circle mb-2 mb-lg-0"
@@ -602,7 +602,7 @@ function UserDetails() {
                                 alt="dummy"
                               />
                             )}
-                            <div className="col-lg-7">
+                            <div className="col-lg-12">
                               <span className="fw-bolder fs-6 text-dark">
                                 {userDetails?.fullName ? userDetails?.fullName : userDetails?.userName}
                               </span>
@@ -618,7 +618,7 @@ function UserDetails() {
                           </button>
                         </div>
 
-                        <div className="doc_img py-5 px-4 my-4">
+                        <div className="doc_img py-3 px-2 my-2">
                           {/* 🔹 Basic Info */}
                           <div className="row mb-3">
                             <label className="col-lg-5 fw-bold text-muted">Full Name:</label>
@@ -1084,7 +1084,7 @@ function UserDetails() {
                   aria-label="Close"
                 ></button>
               </div>
-              <div className="modal-body">
+              <div className="modal-body depositform">
                 <div className="row g-4 gx-md-5">
                   <div className="col-md-12">
                     <label>
@@ -1096,6 +1096,13 @@ function UserDetails() {
                       name="winningCash" onChange={(e) => setAmount(e.target.value)}
                     />
                   </div>
+
+                  <div class="col-md-12"><label>Select Wallet Type <span class="text-danger">* </span></label>
+                  <select className="form-control">
+                    <option>INR</option>
+                    <option>USDT</option>
+                    </select>
+                    </div>
                 </div>
               </div>
               <div className="modal-footer">
@@ -1139,7 +1146,7 @@ function UserDetails() {
                 ></button>
               </div>
 
-              <div className="modal-body">
+              <div className="modal-body depositform">
                 <div className="row g-4 gx-md-5">
                   <div className="col-md-12">
                     <label>
@@ -1150,6 +1157,15 @@ function UserDetails() {
                       className="form-control form-control-solid"
                       name="addDeposit" onChange={(e) => setAmount(e.target.value)}
                     />
+                  </div>
+                  <div className="col-md-12">
+                    <label>
+                      Select Wallet Type <span className="text-danger">* </span>
+                    </label>
+                    <select className="form-control">
+                      <option>INR</option>
+                      <option>USDT</option>
+                    </select>
                   </div>
                 </div>
               </div>
