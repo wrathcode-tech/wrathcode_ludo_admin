@@ -19,6 +19,7 @@ const AuthHeader = () => {
                 <div class="toggle_menu">
                   <img src="/images/toggle_icon.svg" alt="toggle" />
                 </div>
+                <div className="navi_sidebar">
                 <nav className="navbar navbar-expand-lg ">
                   <div className="container-fluid">
                     {/* <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -49,6 +50,7 @@ const AuthHeader = () => {
                     </div>
                   </div>
                 </nav>
+                </div>
               </div>
             </div>
             <div className="col-sm-12 col-md-4  col-lg-4">

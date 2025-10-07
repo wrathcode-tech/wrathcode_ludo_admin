@@ -1483,7 +1483,7 @@ button.closed_btn {
 
     .user_list_top {
         flex-direction: column;
-        gap: 5px;
+        gap:10px;
         margin-bottom: 15px;
         align-items: normal;
     }

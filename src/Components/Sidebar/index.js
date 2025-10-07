@@ -63,8 +63,8 @@ const Sidebar = () => {
                                 <li className={actived === "earn_referralBonus" ? "active" : ""}>
                                     <Link to="/dashboard/earn_referralBonus" onClick={() => setActived("earn_referralBonus")}><img src="/images/support_icon.svg" alt="dashboard" />All Referral Bonus List</Link>
                                 </li>
-                                <li className={actived === "earn_referralBonus" ? "active" : ""}>
-                                    <Link to="/dashboard/earn_referralBonus" onClick={() => setActived("earn_referralBonus")}><img src="/images/support_icon.svg" alt="dashboard" />All Commission Bonus List</Link>
+                                <li className={actived === "commissionBonusList" ? "active" : ""}>
+                                    <Link to="/dashboard/commissionBonusList" onClick={() => setActived("commissionBonusList")}><img src="/images/support_icon.svg" alt="dashboard" />All Commission Bonus List</Link>
                                 </li>
                                 {/* <li className={actived === "contactRequest" ? "active" : ""}>
                                     <Link to="/dashboard/contactRequest" onClick={() => setActived("contactRequest")}><img src="/images/support_icon.svg" alt="dashboard" />Contact Request</Link>
