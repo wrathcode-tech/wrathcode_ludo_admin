@@ -6,29 +6,28 @@ import ReactPaginate from "react-paginate";
 import Swal from "sweetalert2";
 import LoaderHelper from "../../Utils/Loading/LoaderHelper";
 import AuthService from "../../Api/Api_Services/AuthService";
-import { alertErrorMessage } from "../../Utils/CustomAlertMessage";
+import { alertErrorMessage, alertSuccessMessage } from "../../Utils/CustomAlertMessage";
 import DataTableBase from "../../Utils/DataTable";
-import { ApiConfig } from "../../Api/Api_Config/ApiEndpoints";
+import { ApiConfig, imageUrl } from "../../Api/Api_Config/ApiEndpoints";
 
 function UserDetails() {
   const location = useLocation();
   const [userDetails, setUserDetails] = useState([]);
-  const [allTransacactions, setAllTransacactions] = useState([]);
-  const [userKycDetails, setUserKycDetails] = useState([]);
-  const [panCardKycDetail, setPanCardKycDetail] = useState([]);
+  const [userKycDetail, setUserKycDetail] = useState([]);
+  console.log("🚀 ~ UserDetails ~ userKycDetail:", userKycDetail)
   const [referData, setReferData] = useState([]);
-  const [dataType, setDataType] = useState("upiList");
   const [data, setData] = useState([]);
-  const [userIds, setUserIds] = useState("");
-  const [transDetails, setTransDetails] = useState([]);
   const [walletType, setWalletType] = useState("");
   const [amount, setAmount] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalData, setTotalData] = useState(0)
-  const [responsibleData, setResponsibleData] = useState([]);
   const [username, setUsername] = useState("");
   const [showImage, setShowImage] = useState("");
+  const [winingWalletType, setWiningWalletType] = useState("");
+  const [userCommissionData, setUserCommissionData] = useState([]);
+  const [userBankData, setUserBankData] = useState([]);
+  const [gameData, setGameData] = useState([]);
 
 
 
@@ -43,24 +42,28 @@ function UserDetails() {
   useEffect(() => {
     if (totalData > 0) {
 
-      handleAllTransaction(skip, itemsPerPage);
+      handleUserGameTransaction(skip, itemsPerPage);
     }
   }, [currentPage, skip, itemsPerPage]);
 
   // Api functions start header
   useEffect(() => {
     handleUserDetails();
-    handleUserUpiDetails("upiList");
+    // handleUserGameTransaction();
+    // handleUserKycDetails();
+    // handleUserBankDetails();
+    // handleReferAndEarn();
+    // handleUserCommissionDetails()
   }, []);
-  const handleAllTransaction = async (skip, limit) => {
+
+
+  const handleUserDetails = async () => {
     try {
       LoaderHelper.loaderStatus(true);
-      const result = await AuthService.AllTransations(location?.state?.userId, skip, limit);
+      const result = await AuthService.getUserDetails(location?.state?.userId);
       if (result?.success) {
         LoaderHelper.loaderStatus(false);
-        let fillteredData = result?.data?.userData?.map((item, index) => ({ ...item, index: index + 1 + skip }));
-        setAllTransacactions(fillteredData);
-        setTotalData(result?.data?.dataCount);
+        setUserDetails(result?.data);
       } else {
         alertErrorMessage(result?.message);
       }
@@ -69,10 +72,76 @@ function UserDetails() {
       alertErrorMessage(error?.message);
     }
   };
-  const handleReferAndEarn = async (userIds) => {
+  const handleUserGameTransaction = async (skip, limit) => {
     try {
       LoaderHelper.loaderStatus(true);
-      const result = await AuthService.getReferDetails(userIds);
+      const result = await AuthService.userGameTransations(location?.state?.userId, skip, limit);
+
+      if (result?.success) {
+        LoaderHelper.loaderStatus(false);
+
+        // Extract totals
+        const totals = {
+          totalGames: result?.data?.totalGames || 0,
+          totalWin: result?.data?.totalWin || 0,
+          totalLoss: result?.data?.totalLoss || 0,
+          totalProfit: result?.data?.totalProfit || 0,
+        };
+
+        // Map individual game history
+        const filteredData = result?.data?.history?.map((item, index) => ({
+          ...item,
+          index: index + 1 + skip,
+          ...totals, // add totals to each row if you want to show them in the table
+        })) || [];
+
+        setGameData(filteredData);
+        setTotalData(totals.totalGames);
+      } else {
+        alertErrorMessage(result?.message);
+        LoaderHelper.loaderStatus(false);
+      }
+    } catch (error) {
+      LoaderHelper.loaderStatus(false);
+      alertErrorMessage(error?.message);
+    }
+  };
+  const handleUserKycDetails = async () => {
+    try {
+      LoaderHelper.loaderStatus(true);
+      const result = await AuthService.getuserKycDetails(location?.state?.userId);
+      if (result?.success) {
+        LoaderHelper.loaderStatus(false);
+        // Wrap object in an array
+        setUserKycDetail(result?.data ? [result.data] : []);
+      } else {
+        alertErrorMessage(result?.message);
+      }
+    } catch (error) {
+      LoaderHelper.loaderStatus(false);
+      alertErrorMessage(error?.message);
+    }
+  };
+
+  const handleUserBankDetails = async () => {
+    try {
+      LoaderHelper.loaderStatus(true);
+      const result = await AuthService.getUserBankDetails(location?.state?.userId);
+      if (result?.success) {
+        LoaderHelper.loaderStatus(false);
+        setUserBankData(result?.data ? [result.data] : []);
+      } else {
+        alertErrorMessage(result?.message);
+      }
+    } catch (error) {
+      LoaderHelper.loaderStatus(false);
+      alertErrorMessage(error?.message);
+    }
+  };
+  const handleUserReferralDetails = async () => {
+    try {
+      LoaderHelper.loaderStatus(true);
+      const result = await AuthService.getUserReferralDetails(location?.state?.userId);
       LoaderHelper.loaderStatus(false);
       if (result?.success) {
         setReferData(result.data);
@@ -84,43 +153,27 @@ function UserDetails() {
       alertErrorMessage(error.message);
     }
   };
-  const handleUserBankDetails = async () => {
+  const handleUserCommissionDetails = async () => {
     try {
       LoaderHelper.loaderStatus(true);
-      const result = await AuthService.getUserbankList(location?.state?.userId);
+      const result = await AuthService.getUserCommissionDetails(location?.state?.userId);
+      LoaderHelper.loaderStatus(false);
       if (result?.success) {
-        LoaderHelper.loaderStatus(false);
-        setData(result?.data);
+        setUserCommissionData(result.data);
       } else {
-        alertErrorMessage(result?.message);
+        // alertErrorMessage(result.message);
       }
     } catch (error) {
       LoaderHelper.loaderStatus(false);
-      alertErrorMessage(error?.message);
+      alertErrorMessage(error.message);
     }
   };
-  const handleUserUpiDetails = async () => {
+  const handleAddWinningAmount = async (winingWalletType, amount,) => {
     try {
       LoaderHelper.loaderStatus(true);
-      const result = await AuthService.getUserUpiList(location?.state?.userId);
+      const result = await AuthService.addUserWinningAmount(location?.state?.userId, winingWalletType, amount);
       if (result?.success) {
         LoaderHelper.loaderStatus(false);
-        setData(result?.data);
-      } else {
-        alertErrorMessage(result?.message);
-      }
-    } catch (error) {
-      LoaderHelper.loaderStatus(false);
-      alertErrorMessage(error?.message);
-    }
-  };
-  const handleAddAmount = async (walletType, amount,) => {
-    try {
-      LoaderHelper.loaderStatus(true);
-      const result = await AuthService.addAmount(location?.state?.userId, walletType, amount);
-      if (result?.success) {
-        LoaderHelper.loaderStatus(false);
-        setWalletType(result?.data);
         handleUserDetails();
       } else {
         alertErrorMessage(result?.message);
@@ -130,52 +183,13 @@ function UserDetails() {
       alertErrorMessage(error?.message);
     }
   };
-  const handleUserDetails = async () => {
+  const handleAddDepositAmount = async (walletType, amount,) => {
     try {
       LoaderHelper.loaderStatus(true);
-      const result = await AuthService.getUserDetails(location?.state?.userId);
+      const result = await AuthService.addDepositAmount(location?.state?.userId, walletType, amount);
       if (result?.success) {
         LoaderHelper.loaderStatus(false);
-        setUserDetails(result?.data);
-        // setUserIds(result?.data?.sponsoredUsers);
-        // setResponsibleData(result?.data?.selfExcluded);
-      } else {
-        alertErrorMessage(result?.message);
-      }
-    } catch (error) {
-      LoaderHelper.loaderStatus(false);
-      alertErrorMessage(error?.message);
-    }
-  };
-  const handleTransDetails = async (fromOrder, type) => {
-    try {
-      LoaderHelper.loaderStatus(true);
-      const result = await AuthService.getTransDetails(fromOrder, type);
-      if (result?.success) {
-        setTransDetails([result?.data]);
-        if (Object.keys(result?.data).length > 0) {
-          $("#wallet_history_modal").modal("show");
-        } else {
-          alertErrorMessage("No more details available");
-        }
-
-      } else {
-        alertErrorMessage("No more details available");
-      }
-    } catch (error) {
-      alertErrorMessage(error?.message);
-    } finally {
-      LoaderHelper.loaderStatus(false);
-    }
-  };
-  const handleUserKycDetails = async () => {
-    try {
-      LoaderHelper.loaderStatus(true);
-      const result = await AuthService.getUserKycDetails(location?.state?.userId);
-      if (result?.success) {
-        LoaderHelper.loaderStatus(false);
-        setUserKycDetails(result?.data);
-        setPanCardKycDetail(result?.data);
+        handleUserDetails();
       } else {
         alertErrorMessage(result?.message);
       }
@@ -190,8 +204,7 @@ function UserDetails() {
       const result = await AuthService.editUser(location?.state?.userId, userName);
       if (result?.success) {
         LoaderHelper.loaderStatus(false);
-        setUserKycDetails(result?.data);
-        setPanCardKycDetail(result?.data);
+        setUserKycDetail(result?.data);
         handleUserDetails();
       } else {
         alertErrorMessage(result?.message);
@@ -200,50 +213,6 @@ function UserDetails() {
       LoaderHelper.loaderStatus(false);
       alertErrorMessage(error?.message);
     }
-  };
-
-  // table functions start here
-  const handleAmount = (row) => {
-    return (
-      <span className={`text-${row?.paymentType === "Credit" ? "success" : "danger"} font-bold`}>{row?.paymentType === "Credit" ? "+" : "-"} ₹{row?.amount}</span>
-    )
-  }
-  const handlePreviousBonus = (row) => {
-    return (
-      <span className={`text-${(row?.paymentType === "Credit" && row?.transactionType === "Bonus") && "success"} text-${(row?.paymentType === "Debit" && row?.transactionType === "Bonus") && "danger"}`}> ₹{row?.previousBonus}</span>
-    )
-  };
-  const handlePreviousDeposited = (row) => {
-    return (
-      <span className={`text-${(row?.paymentType === "Credit" && row?.transactionType === "Deposit") && "success"} text-${(row?.paymentType === "Debit" && row?.transactionType === "Deposit") && "danger"} `}> ₹{row?.previousDepositedBalance}</span>
-    )
-  };
-  const handlePreviousWinning = (row) => {
-    return (
-      <span className={`text-${(row?.paymentType === "Credit" && row?.transactionType === "Winning") && "success"} text-${(row?.paymentType === "Debit" && row?.transactionType === "Winning") && "danger"} `}> ₹{row?.previousWinningAmount}</span>
-    )
-  };
-  const handleCurrentAmount = (row) => {
-    const formatAmount = (amount => {
-      return (+amount).toFixed(2);
-    })
-    return (
-      <>
-        {row?.transactionType === "Bonus" ? (
-          <span className={`text-${row?.paymentType === "Credit" ? "success" : "danger"} font-bold`}>
-            ₹{formatAmount(+row?.amount + +row?.previousBonus)}
-          </span>
-        ) : row?.transactionType === "Deposit" ? (
-          <span className={`text-${row?.paymentType === "Credit" ? "success" : "danger"} font-bold`}>
-            ₹{formatAmount(+row?.amount + +row?.previousDepositedBalance)}
-          </span>
-        ) : (
-          <span className={`text-${row?.paymentType === "Credit" ? "success" : "danger"} font-bold`}>
-            ₹{formatAmount(+row?.amount + +row?.previousWinningAmount)}
-          </span>
-        )}
-      </>
-    )
   };
   const flattenObjectForDisplay = (obj, parentKey = '', result = {}) => {
     for (let key in obj) {
@@ -285,7 +254,7 @@ function UserDetails() {
     try {
       const result = await AuthService.deleteUser(userId);
       if (result.success) {
-        // alertSuccessMessage(result.message);
+        alertSuccessMessage(result.message);
 
       } else {
         alertErrorMessage(result.message);
@@ -323,120 +292,157 @@ function UserDetails() {
       </>
     );
   };
-  const deletePan = (row) => {
-    return (
-      <>
-        <button className="btn btn-danger btn-sm" type="button" onClick={() => {
-          Swal.fire({
-            title: "Are you sure you want to delete account?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
-          }).then((result) => {
-            if (result.isConfirmed) {
-              handleUserDelete(row?._id);
 
-              Swal.fire({
-                title: "Deleted!",
-                text: "User has been deleted.",
-                icon: "success"
-              });
-            }
-          });
-        }}>
-          <i className="fas fa-trash-alt"></i>
-        </button>
-      </>
-    );
-  };
   const handleImageDetail = (img) => {
     setShowImage(img);
   };
   // React Data table Start from here
-  const allTransColumns = [
-    { name: "Sr. No.", width: "70px", wrap: true, selector: (row, index) => skip + 1 + index, },
-    { name: <> Date & Time</>, width: "180px", sortabable: true, wrap: true, selector: (row) => moment(row?.createdAt).format(" DD MMM YYYY LT") ? moment(row?.createdAt).format(" DD MMM YYYY LT") : "------", },
-    { name: "Wallet Type ", sortabable: true, wrap: true, selector: (row) => row?.transactionType, },
-    { name: "Previous Bonus  ", sortabable: true, wrap: true, selector: handlePreviousBonus },
-    { name: "Previous Deposited Balance  ", width: "180px", sortabable: true, wrap: true, selector: handlePreviousDeposited, },
-    { name: "Previous Winning Amount  ", width: "180px", sortabable: true, wrap: true, selector: handlePreviousWinning, },
-    { name: "Amount ", sortabable: true, wrap: true, selector: handleAmount, },
-    { name: "Current Balance ", sortabable: true, wrap: true, selector: handleCurrentAmount, },
-    { name: "Description  ", width: "250px", sortabable: true, wrap: true, selector: (row) => row?.description, },
 
+  const UserGameDetails = [
     {
-      name: "Action", wrap: true, selector: (row) => (<span style={{ color: "blue", cursor: "pointer", }}
-
-      >
-        <button className="btn btn-sm btn-primary me-2" onClick={() => handleTransDetails(row?.fromOrder, row?.fromTransaction)}><i className="far fa-eye"></i></button>
-      </span>
-      ),
-    }
+      name: "Sr. No.",
+      selector: (row) => row.index,
+      width: "80px",
+    },
+    {
+      name: "Event ID",
+      selector: (row) => row?.eventId?.substring(0, 8)?.toUpperCase(),
+      wrap: true,
+    },
+    {
+      name: "Bet Amount",
+      selector: (row) => row?.betAmount,
+      sortable: true,
+    },
+    {
+      name: "Total Bet Pool",
+      selector: (row) => row?.totalBetPool,
+      sortable: true,
+    },
+    {
+      name: "Admin Commission",
+      selector: (row) => row?.adminCommission,
+      sortable: true,
+    },
+    {
+      name: "Result Amount",
+      selector: (row) => row?.resultAmount,
+      sortable: true,
+    },
+    {
+      name: "Wallet Type",
+      selector: (row) => row?.walletType,
+    },
+    {
+      name: "Role",
+      selector: (row) => row?.role,
+    },
+    {
+      name: "Status",
+      selector: (row) => row?.status,
+    },
+    // These totals will be same for all rows (optional to show)
+    {
+      name: "Total Games Played",
+      selector: (row) => row?.totalGames,
+    },
+    {
+      name: "Total Lost Game",
+      selector: (row) => row?.totalLoss,
+    },
+    {
+      name: "Total Game Profit",
+      selector: (row) => row?.totalProfit,
+    },
+    {
+      name: "Total Game Win",
+      selector: (row) => row?.totalWin,
+    },
   ];
-  const UserAadhharColumns = [
-    { name: "Sr. No.", width: "100px", wrap: true, selector: (row, index) => skip + 1 + index, },
-    { name: "Name On Aadhar", sortabable: true, wrap: true, selector: (row) => row?.aadharKyc?.nameOnAadhar || "------", },
-    { name: "Aadhar Card Number", sortabable: true, wrap: true, selector: (row) => row?.aadharKyc?.aadharNumber || "------", },
-    { name: "Aadhar DOB", sortabable: true, wrap: true, selector: (row) => row?.aadharKyc?.dob || "------", },
+  const UserKycDetails = [
     {
-      name: "Aadhar Card Photo", center: true, sortable: true, wrap: true, selector: (row) => (
-        <img className="table-img w-100 cursor-pointer" src={`data:image/jpeg;base64,${row?.aadharKyc?.imageOnAadhar}`}
-          data-bs-toggle="modal" data-bs-target="#ImageModal" onClick={() => handleImageDetail(`data:image/jpeg;base64,${row?.aadharKyc?.imageOnAadhar}`)} alt="aadharImage" />
+      name: "Sr. No.",
+      width: "100px",
+      wrap: true,
+      selector: (row, index) => skip + 1 + index,
+    },
+    {
+      name: "Full Name",
+      sortable: true,
+      wrap: true,
+      selector: (row) => row?.userId?.fullName || row?.userId?.fullName || "------",
+    },
+    {
+      name: "Document Number",
+      sortable: true,
+      wrap: true,
+      selector: (row) => row?.documentNumber || "------",
+    },
+    {
+      name: "Document Front Image",
+      center: true,
+      sortable: true,
+      wrap: true,
+      cell: (row) => (
+        <img
+          className="table-img w-100 cursor-pointer"
+          src={row?.documentFrontImage ? `${imageUrl}/${row.documentFrontImage}` : "/no-image.png"}
+          data-bs-toggle="modal"
+          data-bs-target="#ImageModal"
+          onClick={() => handleImageDetail(`${imageUrl}/${row.documentFrontImage}`)}
+          alt="DocumentFrontImage"
+        />
       ),
     },
-    { name: "Address", sortabable: true, wrap: true, selector: (row) => row?.aadharKyc?.aadharAddress || "------", },
-    { name: "Status", sortabable: true, wrap: true, selector: (row) => row?.aadharKyc?.aadharStatus || "------", },
-    { name: "Action", width: "180px", sortabable: true, wrap: true, selector: deleteAdhar },
+    {
+      name: "Document Back Image",
+      center: true,
+      sortable: true,
+      wrap: true,
+      cell: (row) => (
+        <img
+          className="table-img w-100 cursor-pointer"
+          src={row?.documentBackImage ? `${imageUrl}/${row.documentBackImage}` : "/no-image.png"}
+          data-bs-toggle="modal"
+          data-bs-target="#ImageModal"
+          onClick={() => handleImageDetail(`${imageUrl}/${row.documentBackImage}`)}
+          alt="DocumentBackImage"
+        />
+      ),
+    },
+    {
+      name: "Status",
+      sortable: true,
+      wrap: true,
+      selector: (row) => row?.status || "------",
+    },
+    {
+      name: "Action",
+      width: "180px",
+      wrap: true,
+      cell: (row) => (
+        <button className="btn btn-danger" onClick={() => deleteAdhar(row)}>
+          Delete
+        </button>
+      ),
+    },
   ];
-  const UserPanColumns = [
-    { name: "Sr. No.", width: "100px", wrap: true, selector: (row, index) => skip + 1 + index, },
-    { name: "Name on Pan Card", wrap: true, selector: (row) => row?.panKyc?.nameOnPan || "------", },
-    { name: "Pan Card Number ", sortabable: true, wrap: true, selector: (row) => row?.panKyc?.panNumber || "------", },
-    { name: "Status", sortabable: true, wrap: true, selector: (row) => row?.panKyc?.panStatus || "------", },
-    { name: "Action", width: "180px", sortabable: true, wrap: true, selector: deletePan, },
 
-
-  ];
-  const GameStatisticscolumns = [
-    { name: "Sr. No.", selector: (row, index) => index + 1, width: "80px" },
-    { name: "Game Name", selector: (row) => row?.gameName, sortable: true },
-    { name: "BATTLE (One Vs One)", width: "180px", selector: (row) => row?.battle, sortable: true, wrap: true },
-    { name: "CONTEST (One Vs Many)", width: "180px", selector: (row) => row?.Contest, sortable: true },
-    { name: "Total Loss", selector: (row) => row?.totalLoss, sortable: true },
-    { name: "Total Win", selector: (row) => row?.totalWin, sortable: true },
-    { name: "Total Tie", selector: (row) => row?.totalTie, sortable: true },
-    { name: "Total Played", selector: (row) => row?.totalPlayed, sortable: true },
-  ];
-  const GameHistorycolumns = [
-    { name: "Sr. No.", selector: (row, index) => index + 1, },
-    { name: "Game ID", selector: (row) => row?.gameid, sortable: true },
-    { name: "Game Name", selector: (row) => row?.gameName, sortable: true },
-    { name: "Game History", selector: (row) => row?.gameHistory, wrap: true },
-  ];
   const BankDetailscolumns = [
     { name: "Sr. No.", selector: (row, index) => index + 1, },
     { name: "Bank Account Name", selector: (row) => row?.accountHolderName ? row?.accountHolderName : "-----", sortable: true },
     { name: "Bank Name", selector: (row) => row?.bankName ? row?.bankName : "-----", sortable: true },
     { name: "Bank IFSC Code", selector: (row) => row?.ifscCode ? row?.ifscCode : "-----", sortable: true },
     { name: "Bank Account Number", selector: (row) => row?.accountNumber ? row?.accountNumber : "-----", sortable: true },
-    { name: "Bank Status", selector: (row) => row?.bankStatus ? row?.bankStatus : "-----", sortable: true },
+    { name: "Bank Status", selector: (row) => row?.status ? row?.status : "-----", sortable: true },
   ];
-  const UpiDetailscolumns = [
-    { name: "Sr. No.", selector: (row, index) => index + 1, },
-    { name: "Name", selector: (row) => row?.name ? row?.name : "-----", sortable: true },
-    { name: "UPI ID", selector: (row) => row?.upiId ? row?.upiId : "-----", sortable: true },
-    { name: "Status", selector: (row) => row?.bankStatus ? row?.bankStatus : "-----", sortable: true },
-  ];
-  const EarningReportColumns = [
+  const UserReferralDetails = [
     { name: "Sr. No.", selector: (row, index) => index + 1, width: "80px" },
     { name: "Game ID", selector: (row) => row?.gameid, sortable: true },
     { name: "Game Name", selector: (row) => row?.gameName, sortable: true },
     { name: "Net Credited Amount", selector: (row) => row?.notCredit, sortable: true },
   ];
-  const ReferEarnColumns = [
+  const UserCommissionDetails = [
     { name: "Sr. No.", selector: (row, index) => index + 1, width: "80px" },
     { name: "User Name", selector: (row) => row?.userName ? row?.userName : "-----", sortable: true },
     { name: "Mobile Number", selector: (row) => row?.mobileNumber ? row?.mobileNumber : "-----", sortable: true },
@@ -448,16 +454,6 @@ function UserDetails() {
 
   ];
 
-  const handleTypeChange = (selectedType) => {
-    setDataType(selectedType);
-    if (selectedType === "upiList") {
-      setData(UpiDetailscolumns);
-    } else if (selectedType === "bankList") {
-      setData(BankDetailscolumns);
-    } else {
-      setData([]);
-    }
-  };
 
   return (
     <div className="dashboard_right">
@@ -482,8 +478,13 @@ function UserDetails() {
                 </div>
               </div>
               <ul className="nav nav-pills mb-3 tabs_top" id="pills-tab" role="tablist">
+                {/* 1️⃣ User Profile */}
                 <li className="nav-item" role="presentation">
-                  <button className="m-0 nav-link active" id="pills-one-tab" data-bs-toggle="pill" data-bs-target="#pills-one"
+                  <button
+                    className="m-0 nav-link active"
+                    id="pills-one-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-one"
                     type="button"
                     role="tab"
                     aria-controls="pills-one"
@@ -492,6 +493,8 @@ function UserDetails() {
                     User Profile
                   </button>
                 </li>
+
+                {/* 2️⃣ Game Transactions */}
                 <li className="nav-item" role="presentation">
                   <button
                     className="m-0 nav-link"
@@ -501,11 +504,48 @@ function UserDetails() {
                     type="button"
                     role="tab"
                     aria-controls="pills-two"
-                    aria-selected="false" onClick={() => handleAllTransaction(skip, itemsPerPage)}
+                    aria-selected="false"
+                    onClick={() => handleUserGameTransaction(skip, itemsPerPage)}
                   >
                     Game Transactions
                   </button>
                 </li>
+
+                {/* 3️⃣ User KYC */}
+                <li className="nav-item" role="presentation">
+                  <button
+                    className="m-0 nav-link"
+                    id="pills-three-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-three"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills-three"
+                    aria-selected="false"
+                    onClick={handleUserKycDetails}
+                  >
+                    User KYC
+                  </button>
+                </li>
+
+                {/* 4️⃣ Bank / UPI */}
+                <li className="nav-item" role="presentation">
+                  <button
+                    className="m-0 nav-link"
+                    id="pills-four-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-four"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills-four"
+                    aria-selected="false"
+                    onClick={handleUserBankDetails}
+                  >
+                    Bank / UPI
+                  </button>
+                </li>
+
+                {/* 5️⃣ Referral Details */}
                 <li className="nav-item" role="presentation">
                   <button
                     className="m-0 nav-link"
@@ -515,11 +555,14 @@ function UserDetails() {
                     type="button"
                     role="tab"
                     aria-controls="pills-five"
-                    aria-selected="false" onClick={handleUserKycDetails}
+                    aria-selected="false"
+                    onClick={handleUserReferralDetails}
                   >
-                    User KYC
+                    Referral Details
                   </button>
                 </li>
+
+                {/* 6️⃣ Commission Details */}
                 <li className="nav-item" role="presentation">
                   <button
                     className="m-0 nav-link"
@@ -530,49 +573,10 @@ function UserDetails() {
                     role="tab"
                     aria-controls="pills-six"
                     aria-selected="false"
+                    onClick={handleUserCommissionDetails}
+
                   >
-                    Bank / UPI
-                  </button>
-                </li>
-                <li className="nav-item" role="presentation">
-                  <button
-                    className="m-0 nav-link"
-                    id="pills-seven-tab"
-                    data-bs-toggle="pill"
-                    data-bs-target="#pills-seven"
-                    type="button"
-                    role="tab"
-                    aria-controls="pills-seven"
-                    aria-selected="false"
-                  >
-                    Earning Report
-                  </button>
-                </li>
-                <li className="nav-item" role="presentation">
-                  <button
-                    className="m-0 nav-link"
-                    id="pills-eight-tab"
-                    data-bs-toggle="pill"
-                    data-bs-target="#pills-eight"
-                    type="button"
-                    role="tab"
-                    aria-controls="pills-eight"
-                    aria-selected="false" onClick={() => handleReferAndEarn(userIds)}
-                  >
-                    Refer and Earn
-                  </button>
-                </li>
-                <li className="nav-item" role="presentation">
-                  <button
-                    className="m-0 nav-link"
-                    id="pills-fifty-tab"
-                    data-bs-toggle="pill"
-                    data-bs-target="#pills-fifty"
-                    type="button"
-                    role="tab"
-                    aria-controls="pills-fifty"
-                    aria-selected="false" onClick={() => handleUserDetails(skip, itemsPerPage)}>
-                    Responsible Gaming
+                    Commission Details
                   </button>
                 </li>
               </ul>
@@ -584,6 +588,7 @@ function UserDetails() {
                 <div className="card mb-4 mb-xl-0">
                   <div className="card-body py-4 pb-0">
                     <div className="tab-content">
+
                       {/* User Profile Tab */}
                       <div className="tab-pane fade show active" id="pills-one" role="tabpanel" aria-labelledby="pills-one-tab">
                         <div className="list_profile">
@@ -598,7 +603,7 @@ function UserDetails() {
                             ) : (
                               <img
                                 className="img-account-profile rounded-circle mb-2 mb-lg-0"
-                                src="/assets/img/dummy.png"
+                                src="/public/images/.png"
                                 alt="dummy"
                               />
                             )}
@@ -745,247 +750,41 @@ function UserDetails() {
                               <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.totalCommissionBalanceByUser || 0}</span>
                             </div>
                           </div>
-
-                          {/* 🔹 UUID */}
                           <hr />
-
                         </div>
                       </div>
 
-                      {/* Wallet History Tab */}
-                      <div className="tab-pane fade" id="pills-two" role="tabpanel" aria-labelledby="pills-two-tab">
-                        <div className="row mb-3">
-                          <label className="col-lg-5 fw-bold text-muted">
-                            Available Deposit Balance:
-                          </label>
-                          <div className="col-lg-7">
-                            <span className="fw-bold fs-6 text-dark text-hover-primary">
-                              {userDetails?.wallet?.depositBalance}{" "}
-                            </span>
-                          </div>
+                      {/* 🔹 Tab Contents */}
+                      <div className="tab-content" id="pills-tabContent">
+                        {/* 2️⃣ User Game Details Tab */}
+                        <div className="tab-pane fade" id="pills-two" role="tabpanel" aria-labelledby="pills-two-tab">
+                          <DataTableBase
+                            columns={UserGameDetails}
+                            data={gameData || []}
+                            pagination={false}
+                          />
                         </div>
 
-                        <div className="row mb-3">
-                          <label className="col-lg-5 fw-bold text-muted">
-                            Available Winning:
-                          </label>
-                          <div className="col-lg-7">
-                            <span className="fw-bold fs-6 text-dark text-hover-primary">
-                              {userDetails?.wallet?.winningAmount}{" "}
-                            </span>
-                          </div>
+                        {/* 3️⃣ User KYC Details Tab */}
+                        <div className="tab-pane fade show active" id="pills-three" role="tabpanel" aria-labelledby="pills-three-tab">
+                          <DataTableBase columns={UserKycDetails} data={userKycDetail || []} />
                         </div>
-                        <div className="row mb-3">
-                          <label className="col-lg-5 fw-bold text-muted">
-                            Available  Bonus:
-                          </label>
-                          <div className="col-lg-7">
-                            <span className="fw-bold fs-6 text-dark text-hover-primary">
-                              {userDetails?.wallet?.bonus}{" "}
-                            </span>
-                          </div>
+
+                        {/* 4️⃣ User Bank / UPI Details Tab */}
+                        <div className="tab-pane fade" id="pills-four" role="tabpanel" aria-labelledby="pills-four-tab">
+                          <DataTableBase columns={BankDetailscolumns} data={userBankData || []} pagination />
                         </div>
-                        <div className="table-responsive" width="100%">
-                          <DataTableBase columns={allTransColumns} data={allTransacactions} pagination={false} />
+
+                        {/* 5️⃣ User Referral Details Tab */}
+                        <div className="tab-pane fade" id="pills-five" role="tabpanel" aria-labelledby="pills-five-tab">
+                          <DataTableBase columns={UserReferralDetails} data={referData} pagination />
                         </div>
-                        <div className="align-items-center mt-3 d-flex justify-content-between" >
-                          <div className=" pl_row d-flex justify-content-start gap-3 align-items-center">
-                            <label htmlFor="rowsPerPage">Rows per page: </label>
-                            <select className="form-select form-select-sm my-0" id="rowsPerPage" value={itemsPerPage} onChange={(e) => setItemsPerPage(e.target.value)}>
-                              <option value={10}>10</option>
-                              <option value={25}>25</option>
-                              <option value={50}>50</option>
-                              <option value={100}>100</option>
-                            </select>
-                          </div>
-                          {<ReactPaginate
-                            pageCount={pageCount}
-                            onPageChange={handlePageChange}
-                            containerClassName={'customPagination'}
-                            activeClassName={'active'}
-                          />}
+
+                        {/* 6️⃣ User Commission Details Tab */}
+                        <div className="tab-pane fade" id="pills-six" role="tabpanel" aria-labelledby="pills-six-tab">
+                          <DataTableBase columns={UserCommissionDetails} data={userCommissionData} pagination />
                         </div>
                       </div>
-                      {/* Game Statistics Tab */}
-                      <div className="tab-pane fade" id="pills-three" role="tabpanel" aria-labelledby="pills-three-tab">
-                        <DataTableBase columns={GameStatisticscolumns} data={[allTransacactions]} pagination={false} />
-                      </div>
-                      {/* Game History Tab */}
-                      <div className="tab-pane fade" id="pills-four" role="tabpanel" aria-labelledby="pills-four-tab">
-                        <DataTableBase columns={GameHistorycolumns} data={[userKycDetails]} pagination={false} />
-                      </div>
-                      {/* User KYC Tab */}
-                      <div className="tab-pane fade" id="pills-five" role="tabpanel" aria-labelledby="pills-five-tab">
-                        <h3>Aadhar Card Details</h3>
-                        <DataTableBase columns={UserAadhharColumns} data={[userKycDetails]} pagination />
-                        <hr />
-                        <br />
-                        <br />
-                        <h3>Pan Card Details</h3>
-                        <div className="table-responsive">
-                          <DataTableBase columns={UserPanColumns} data={[userKycDetails]} pagination />
-                        </div>
-                      </div>
-                      {/* Bank / UPI Tab */}
-                      <div className="tab-pane fade" id="pills-six" role="tabpanel" aria-labelledby="pills-six-tab">
-                        <div className="row mb-3 d-flex justify-content-end">
-                          <select
-                            className="form-control form-select form-control-solid w-auto m-0"
-                            name="game"
-                            id=""
-                            value={dataType}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              handleTypeChange(value);
-                              if (value === "upiList") {
-                                handleUserUpiDetails();
-                              } else if (value === "bankList") {
-                                handleUserBankDetails();
-                              }
-                            }}
-                          >
-                            <option value="upiList">UPI List</option>
-                            <option value="bankList">Bank List</option>
-                          </select>
-                        </div>
-                        <DataTableBase columns={dataType === "upiList" ? UpiDetailscolumns : BankDetailscolumns} data={data} pagination={false} />
-                      </div>
-                      {/* Earning Report Tab */}
-                      <div
-                        className="tab-pane fade"
-                        id="pills-seven"
-                        role="tabpanel"
-                        aria-labelledby="pills-seven-tab"
-                      >
-                        <DataTableBase columns={EarningReportColumns} data={[panCardKycDetail]} pagination={false} />
-                      </div>
-                      {/* Reffer and Earn */}
-                      <div className="tab-pane fade" id="pills-eight" role="tabpanel" aria-labelledby="pills-eight-tab">
-                        <DataTableBase columns={ReferEarnColumns} data={referData} pagination={true} />
-                      </div>
-                      {/* Resposible Game Data */}
-
-                      <div className="tab-pane fade show" id="pills-fifty" role="tabpanel" aria-labelledby="pills-fifty-tab">
-                        <div className="doc_img py-5 px-4 my-4">
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Deposit Amount Limit :
-                            </label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">
-                                {responsibleData?.depositAmountLimit
-                                  ? responsibleData?.depositAmountLimit
-                                  : "N/A"}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Deposit Break :
-                            </label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">
-                                {responsibleData?.depositBreak === true ? "Yes" : "No"}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Despoit Break Time :
-                            </label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">
-                                {responsibleData?.depositBreakTime
-                                  ? moment(responsibleData.depositBreakTime).format("DD MMM YYYY LT")
-                                  : "N/A"}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Deposit No Limit :
-                            </label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">
-                                {responsibleData?.depositNoLimit
-                                  ? responsibleData?.depositNoLimit
-                                  : "N/A"}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Poker Break :
-                            </label>
-                            <div className="col-lg-7 fv-row">
-                              <span className="fw-bolder fs-6 text-dark">
-                                {responsibleData?.pokerBreak === true ? "Yes" : "No"}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Poker Break Limit :
-                            </label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark text-hover-primary">
-                                {responsibleData?.pokerBreakLimit === true ? "Yes" : "No"}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Screen Time Break :
-                            </label>
-                            <div className="col-lg-7 fv-row">
-                              <span className="fw-bolder fs-6 text-dark">
-                                {responsibleData?.screenTimeBreak === true ? "Yes" : "No"}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Screen Time Limit :
-                            </label>
-                            <div className="col-lg-7 fv-row">
-                              <span className="fw-bolder fs-6 text-dark">
-                                ₹{" "}
-                                {responsibleData?.screenTimeLimit
-                                  ? responsibleData?.screenTimeLimit
-                                  : "N/A"}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Self Excluded:
-                            </label>
-                            <div className="col-lg-7 fv-row">
-                              <label className="switch">
-                                <input
-                                  type="checkbox"
-                                  checked={responsibleData?.isPrimeUser || false}
-                                  onChange={(e) =>
-                                    setResponsibleData((prev) => ({
-                                      ...prev,
-                                      isPrimeUser: e.target.checked,
-                                    }))
-                                  }
-                                />
-                                <span className="slider round"></span>
-                              </label>
-                            </div>
-                          </div>
-
-
-
-                        </div>
-                      </div>
-
                     </div>
                   </div>
                 </div>
@@ -1097,12 +896,20 @@ function UserDetails() {
                     />
                   </div>
 
-                  <div class="col-md-12"><label>Select Wallet Type <span class="text-danger">* </span></label>
-                  <select className="form-control">
-                    <option>INR</option>
-                    <option>USDT</option>
+                  <div className="col-md-12">
+                    <label>
+                      Select Wallet Type <span className="text-danger">*</span>
+                    </label>
+                    <select
+                      className="form-control"
+                      value={winingWalletType}
+                      onChange={(e) => setWiningWalletType(e.target.value)}
+                    >
+                      <option value="INR">INR</option>
+                      <option value="USDT">USDT</option>
                     </select>
-                    </div>
+                  </div>
+
                 </div>
               </div>
               <div className="modal-footer">
@@ -1116,7 +923,7 @@ function UserDetails() {
                 <button
                   type="button"
                   className="btn btn-primary px-5"
-                  data-bs-dismiss="modal" onClick={() => handleAddAmount("winningAmount", amount)}
+                  data-bs-dismiss="modal" onClick={() => handleAddWinningAmount(winingWalletType, amount)}
                 >
                   Submit
                 </button>
@@ -1160,11 +967,15 @@ function UserDetails() {
                   </div>
                   <div className="col-md-12">
                     <label>
-                      Select Wallet Type <span className="text-danger">* </span>
+                      Select Wallet Type <span className="text-danger">*</span>
                     </label>
-                    <select className="form-control">
-                      <option>INR</option>
-                      <option>USDT</option>
+                    <select
+                      className="form-control"
+                      value={walletType}
+                      onChange={(e) => setWalletType(e.target.value)}
+                    >
+                      <option value="INR">INR</option>
+                      <option value="USDT">USDT</option>
                     </select>
                   </div>
                 </div>
@@ -1181,7 +992,7 @@ function UserDetails() {
                 <button
                   type="button"
                   className="btn btn-primary px-5"
-                  data-bs-dismiss="modal" onClick={() => handleAddAmount("depositBalance", amount)}
+                  data-bs-dismiss="modal" onClick={() => handleAddDepositAmount(walletType, amount)}
                 >
                   Submit
                 </button>
@@ -1189,62 +1000,7 @@ function UserDetails() {
             </div>
           </div>
         </div>
-        {/* Add Bonus_modal  */}
-        <div
-          className="modal fade"
-          id="Bonus_modal"
-          tabindex="-1"
-          ariaLabelledby="add_modalLabel"
-          ariaHidden="true"
-        >
-          <div className="modal-dialog modal-l modal-dialog-centered">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="add_modalLabel">
-                  Add Bonus
-                </h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
 
-              <div className="modal-body">
-                <div className="row g-4 gx-md-5">
-                  <div className="col-md-12">
-                    <label>
-                      Bonus<span className="text-danger">* </span>
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control form-control-solid"
-                      name="bonus" onChange={(e) => setAmount(e.target.value)}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-dark  px-5"
-                  data-bs-dismiss="modal"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary px-5"
-                  data-bs-dismiss="modal" onClick={() => handleAddAmount("bonus", amount)}
-                >
-                  Submit
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
         {/*wallet history Modal  */}
         <div
           className="modal fade"
@@ -1265,18 +1021,6 @@ function UserDetails() {
                   data-bs-dismiss="modal"
                   aria-label="Close">
                 </button>
-              </div>
-              <div className="modal-body">
-                <div className="card-body">
-                  <div className="table-responsive" width="100%">
-                    <DataTableBase
-                      columns={createDynamicColumns(transDetails)}
-                      data={transDetails}
-                      pagination
-                      highlightOnHover
-                    />
-                  </div>
-                </div>
               </div>
             </div>
           </div>

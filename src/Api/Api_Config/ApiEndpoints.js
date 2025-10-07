@@ -11,6 +11,18 @@ export const ApiConfig = {
   getResolvedTickets: "get-resolve-tickets",
   blogList: "blog-list",
   getUserDetails: "userProfileOverallData",
+  getuserGameTransations: "userGamesTransaction",
+  getuserKycDetails: "userKycDetails",
+  getUserBankDetails: "userBankAndUpiDetails",
+  getUserReferralDetails: "userReferBonusDetails",
+  getUserCommissionDetails: "userCommissionBonusDetails",
+  addUserWinningAmount: "addCashToUserWinningAmount",
+  addDepositAmount: "addCashToUser",
+
+
+
+
+
   // notificationList: "notification-list",
   usersStatusUpdate: "users-status-update",
   addNotification: "add-notification",
@@ -67,6 +79,12 @@ export const ApiConfig = {
   getDisputeUsersRespose: "getUsersRespose",
   getParticularResponseView: "getParticularResponseView",
   chooseWinner: "chooseWinner",
+
+  // bank Details add
+
+  addAdminBankDetails: "addAdminBankDetails",
+  getAdminBankDetails: "adminBankDetailsList",
+  updateStatusAdminBank: "updateStatusAdminBank",
 
 
 

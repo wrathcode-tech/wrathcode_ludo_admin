@@ -231,6 +231,38 @@ const AuthService = {
 
     return ApiCallPost(url, params, headers);
   },
+  addUserWinningAmount: async (userId, walletType, amount) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, addUserWinningAmount } = ApiConfig;
+    const url = baseUrl + addUserWinningAmount;
+    const params = {
+      userId: userId,
+      walletType: walletType,
+      amount
+    }
+    const headers = {
+      "Content-Type": "application/json",
+      'Authorization': token
+    };
+
+    return ApiCallPost(url, params, headers);
+  },
+  addDepositAmount: async (userId, walletType, amount) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, addDepositAmount } = ApiConfig;
+    const url = baseUrl + addDepositAmount;
+    const params = {
+      userId: userId,
+      walletType: walletType,
+      amount
+    }
+    const headers = {
+      "Content-Type": "application/json",
+      'Authorization': token
+    };
+
+    return ApiCallPost(url, params, headers);
+  },
   allCompletedLudoGameList: async () => {
     const token = sessionStorage.getItem("token");
     const { baseUrl, allCompletedLudoGameList } = ApiConfig;
@@ -255,6 +287,56 @@ const AuthService = {
     const token = sessionStorage.getItem("token");
     const { baseUrl, getUserDetails } = ApiConfig;
     const url = `${baseUrl}${getUserDetails}?userId=${userId}`;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  userGameTransations: async (userId) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, getuserGameTransations } = ApiConfig;
+    const url = `${baseUrl}${getuserGameTransations}?userId=${userId}`;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  getuserKycDetails: async (userId) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, getuserKycDetails } = ApiConfig;
+    const url = `${baseUrl}${getuserKycDetails}?userId=${userId}`;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  getUserBankDetails: async (userId) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, getUserBankDetails } = ApiConfig;
+    const url = `${baseUrl}${getUserBankDetails}?userId=${userId}`;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  getUserReferralDetails: async (userId) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, getUserReferralDetails } = ApiConfig;
+    const url = `${baseUrl}${getUserReferralDetails}?userId=${userId}`;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  getUserCommissionDetails: async (userId) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, getUserCommissionDetails } = ApiConfig;
+    const url = `${baseUrl}${getUserCommissionDetails}?userId=${userId}`;
     const headers = {
       'Content-Type': 'application/json',
       Authorization: token
@@ -413,7 +495,6 @@ const AuthService = {
 
     return ApiCallPost(url, params, headers);
   },
-
 
   usersList: async (page, pageSize) => {
     const token = sessionStorage.getItem("token");
@@ -576,6 +657,17 @@ const AuthService = {
 
     return ApiCallPost(url, formData, headers);
   },
+  addAdminBankDetails: async (formData) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, addAdminBankDetails } = ApiConfig;
+    const url = baseUrl + addAdminBankDetails;
+    const headers = {
+      "Content-Type": "multipart/form-data",
+      Authorization: token,
+    };
+
+    return ApiCallPost(url, formData, headers);
+  },
 
   ticketSubmit: async (formData) => {
     const token = sessionStorage.getItem("token");
@@ -648,6 +740,16 @@ const AuthService = {
     };
     return ApiCallGet(url, headers);
   },
+  getAdminBankDetails: async (userId) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, getAdminBankDetails } = ApiConfig;
+    const url = `${baseUrl}${getAdminBankDetails}`;
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+    return ApiCallGet(url, headers);
+  },
   allMsg: async (userId) => {
     const token = sessionStorage.getItem("token");
     const { baseSupport, allMsg } = ApiConfig;
@@ -667,6 +769,20 @@ const AuthService = {
     const params = {
       userId,
       viewer
+    };
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+    return ApiCallPost(url, params, headers);
+  },
+  updateStatusAdminBank: async (id, status) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, updateStatusAdminBank } = ApiConfig;
+    const url = baseUrl + updateStatusAdminBank;
+    const params = {
+      id: id,
+      status
     };
     const headers = {
       "Content-Type": "application/json",

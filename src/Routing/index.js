@@ -23,6 +23,7 @@ import UserDetails from "../Components/AllUser/UserDetails";
 import BannerManagement from "../Components/BannerManagement/BannerManagement";
 import DisputeResponse from "../Components/DisputeResponse/DisputeResponse";
 import CommissionBonusList from "../Components/AllCommissionBonusList/CommissionBonusList";
+import AddBankDetails from "../Components/AdminBankDetails/AddBankDetails";
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -56,6 +57,7 @@ const Routing = () => {
         <Route path="BannerManagement" element={<ProtectedRoute> <BannerManagement /></ProtectedRoute>} />
         <Route path="disputeResponse" element={<ProtectedRoute> <DisputeResponse /></ProtectedRoute>} />
         <Route path="commissionBonusList" element={<ProtectedRoute> <CommissionBonusList /></ProtectedRoute>} />
+        <Route path="addBank" element={<ProtectedRoute> <AddBankDetails /></ProtectedRoute>} />
 
 
 
