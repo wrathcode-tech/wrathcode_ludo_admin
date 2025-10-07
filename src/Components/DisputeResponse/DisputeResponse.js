@@ -33,7 +33,7 @@ function DisputeResponse() {
     };
 
     // Handle Winner/Loser selection
-    const handleSelectWinner = async (eventId, winnerId) => {
+    const handleSelectResult = async (eventId, winnerId) => {
         if (!selectedWinningData) return;
         try {
             LoaderHelper.loaderStatus(true);
@@ -176,12 +176,12 @@ function DisputeResponse() {
                 <div className="modal_overlay">
                     <div className="modal_content">
                         <h3>Winning Details</h3>
-                        <p><strong>Event ID:</strong> {selectedWinningData.eventId}</p>
-                        <p><strong>Created By:</strong> {selectedWinningData.createdBy}</p>
-                        <p><strong>Joined By:</strong> {selectedWinningData.joinedBy}</p>
-                        <p><strong>Total Amount:</strong> ₹{selectedWinningData.amount}</p>
+                        <p><strong>Event ID:</strong> {selectedWinningData.eventId || "—"}</p>
+                        <p><strong>Created By:</strong> {selectedWinningData.createdBy || "—"}</p>
+                        <p><strong>Joined By:</strong> {selectedWinningData.joinedBy || "—"}</p>
+                        <p><strong>Total Amount:</strong> ₹{selectedWinningData.amount || 0}</p>
 
-                        <h5>User Responses:</h5>
+                        <h5 className="mt-3">User Responses:</h5>
                         <table className="table table-bordered table-striped">
                             <thead>
                                 <tr>
@@ -194,42 +194,79 @@ function DisputeResponse() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {selectedWinningData.allUserResponse?.map((u, index) => (
-                                    <tr key={index}>
-                                        <td>{u.userId.fullName}</td>
-                                        <td>{u.userId.uuid || '—'}</td>
-                                        <td>₹{u.amount || 0}</td>
-                                        <td>{u.status || '—'}</td>
-                                        <td>
-                                            {u.paymentProof && (
-                                                <img src={imageUrl + u.paymentProof} alt="proof" style={{ width: 50, height: 50 }} />
-                                            )}
-                                        </td>
-                                        <td>
-                                            <button
-                                                className="btn btn-success btn-sm me-1"
-                                                onClick={() => handleSelectWinner(u.userId._id, 'WINNER')}
-                                            >
-                                                Winner
-                                            </button>
-                                            <button
-                                                className="btn btn-danger btn-sm"
-                                                onClick={() => handleSelectWinner(u.createdBy ? u.createdBy : u.joinedBy)}
-                                            >
-                                                Loser
-                                            </button>
+                                {selectedWinningData?.allUserResponse?.length > 0 ? (
+                                    selectedWinningData?.allUserResponse.map((u, index) => (
+                                        <tr key={index}>
+                                            <td>{u?.userId?.fullName || "—"}</td>
+                                            <td>{u?.userId?.uuid || "—"}</td>
+                                            <td>₹{selectedWinningData?.amount || ""}</td>
+                                            <td>{u?.choice || "—"}</td>
+                                            <td>
+                                                {u?.proof ? (
+                                                    <img
+                                                        src={imageUrl + u.proof}
+                                                        alt="proof"
+                                                        style={{ width: 50, height: 50, borderRadius: 5 }}
+                                                    />
+                                                ) : (
+                                                    "—"
+                                                )}
+                                            </td>
+                                            <td>
+                                                <td>
+                                                    <button
+                                                        className="btn btn-success btn-sm me-1"
+                                                        onClick={() =>
+                                                            handleSelectResult(
+                                                                selectedWinningData.eventId,
+                                                                u.userId._id === selectedWinningData.createdBy
+                                                                    ? selectedWinningData.createdBy
+                                                                    : selectedWinningData.joinedBy,
+                                                                "WINNER"
+                                                            )
+                                                        }
+                                                    >
+                                                        Winner
+                                                    </button>
+
+                                                    <button
+                                                        className="btn btn-danger btn-sm"
+                                                        onClick={() =>
+                                                            handleSelectResult(
+                                                                selectedWinningData.eventId,
+                                                                u.userId._id === selectedWinningData.createdBy
+                                                                    ? selectedWinningData.createdBy
+                                                                    : selectedWinningData.joinedBy,
+                                                                "LOSER"
+                                                            )
+                                                        }
+                                                    >
+                                                        Loser
+                                                    </button>
+                                                </td>
+
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="6" className="text-center text-muted">
+                                            No user responses found
                                         </td>
                                     </tr>
-                                ))}
+                                )}
                             </tbody>
                         </table>
 
                         <div className="modal_actions mt-3">
-                            <button className="btn btn-secondary" onClick={() => setShowModal(false)}>Close</button>
+                            <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
+                                Close
+                            </button>
                         </div>
                     </div>
                 </div>
             )}
+
 
             <style jsx>{`
                 .modal_overlay {

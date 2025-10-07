@@ -251,6 +251,16 @@ const AuthService = {
     };
     return ApiCallGet(url, headers);
   },
+  getUserDetails: async (userId) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, getUserDetails } = ApiConfig;
+    const url = `${baseUrl}${getUserDetails}?userId=${userId}`;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
   allRunningLudoGameList: async () => {
     const token = sessionStorage.getItem("token");
     const { baseUrl, allRunningLudoGameList } = ApiConfig;

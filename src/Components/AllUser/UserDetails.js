@@ -137,8 +137,8 @@ function UserDetails() {
       if (result?.success) {
         LoaderHelper.loaderStatus(false);
         setUserDetails(result?.data);
-        setUserIds(result?.data?.sponsoredUsers);
-        setResponsibleData(result?.data?.selfExcluded);
+        // setUserIds(result?.data?.sponsoredUsers);
+        // setResponsibleData(result?.data?.selfExcluded);
       } else {
         alertErrorMessage(result?.message);
       }
@@ -590,191 +590,96 @@ function UserDetails() {
                           <div>
                             {userDetails?.avatar && userDetails?.avatar !== "" ? (
                               <img
-                                className="img-account-profile rounded-circle mb-2 mb-lg-0" crossOrigin="anonymous"
-                                src={ApiConfig + userDetails?.avatar} alt="" />
+                                className="img-account-profile rounded-circle mb-2 mb-lg-0"
+                                crossOrigin="anonymous"
+                                src={ApiConfig + userDetails?.avatar}
+                                alt="avatar"
+                              />
                             ) : (
-                              <img className="img-account-profile rounded-circle mb-2 mb-lg-0" src="/assets/img/dummy.png" alt="dummy" />
+                              <img
+                                className="img-account-profile rounded-circle mb-2 mb-lg-0"
+                                src="/assets/img/dummy.png"
+                                alt="dummy"
+                              />
                             )}
                             <div className="col-lg-7">
                               <span className="fw-bolder fs-6 text-dark">
-                                {userDetails?.fullName
-                                  ? userDetails?.fullName
-                                  : userDetails?.userName}
+                                {userDetails?.fullName ? userDetails?.fullName : userDetails?.userName}
                               </span>
                             </div>
                           </div>
-                          <button type="button" className="btn btn-primary btn-muted" data-bs-toggle="modal" data-bs-target="#add_modal">
+                          <button
+                            type="button"
+                            className="btn btn-primary btn-muted"
+                            data-bs-toggle="modal"
+                            data-bs-target="#add_modal"
+                          >
                             <i className="far fa-edit"></i>
                           </button>
                         </div>
+
                         <div className="doc_img py-5 px-4 my-4">
+                          {/* 🔹 Basic Info */}
                           <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Full Name:
-                            </label>
+                            <label className="col-lg-5 fw-bold text-muted">Full Name:</label>
                             <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">
-                                {userDetails?.fullName
-                                  ? userDetails?.fullName
-                                  : "N/A"}
-                              </span>
+                              <span className="fw-bolder fs-6 text-dark">{userDetails?.fullName || "N/A"}</span>
                             </div>
                           </div>
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              User Name:
-                            </label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">
-                                {userDetails?.userName
-                                  ? userDetails?.userName
-                                  : "N/A"}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              User Id:
-                            </label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">
-                                {userDetails?._id
-                                  ? userDetails?._id?.toUpperCase()?.substring(0, 8)
-                                  : "N/A"}
-                              </span>
-                            </div>
 
-                          </div>
+
                           <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Email Id:
-                            </label>
+                            <label className="col-lg-5 fw-bold text-muted">Email Id:</label>
                             <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">
-                                {userDetails?.emailId
-                                  ? userDetails?.emailId
-                                  : "N/A"}
-                              </span>
+                              <span className="fw-bolder fs-6 text-dark">{userDetails?.emailId || "N/A"}</span>
                             </div>
                           </div>
 
                           <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Phone Number:
-                            </label>
+                            <label className="col-lg-5 fw-bold text-muted">UUID:</label>
                             <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">
-                                {userDetails?.mobileNumber
-                                  ? userDetails?.mobileNumber
-                                  : "N/A"}
-                              </span>
+                              <span className="fw-bolder fs-6 text-dark">{userDetails?.uuid || "N/A"}</span>
                             </div>
                           </div>
                           <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Date of Birth:
-                            </label>
+                            <label className="col-lg-5 fw-bold text-muted">Mobile Number:</label>
                             <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">
-                                {userDetails?.dob ? userDetails?.dob : "N/A"}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Aadhar Status:
-                            </label>
-                            <div className="col-lg-7 fv-row">
-                              <span className="fw-bolder fs-6 text-dark">
-                                {userDetails?.kycStatus
-                                  ? userDetails?.kycStatus
-                                  : "N/A"}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Pan Status:
-                            </label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark text-hover-primary">
-                                {userDetails?.panStatus ? userDetails?.panStatus : "N/A"}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Device Type:
-                            </label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark text-hover-primary">
-                                {userDetails?.deviceOS ? userDetails?.deviceOS : "N/A"}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Device Name:
-                            </label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark text-hover-primary">
-                                {userDetails?.deviceType ? userDetails?.deviceType : "N/A"}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Referral Code:
-                            </label>
-                            <div className="col-lg-7 fv-row">
-                              <span className="fw-bolder fs-6 text-dark">
-
-                                {userDetails?.referralCode
-                                  ? userDetails?.referralCode
-                                  : "N/A"}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Total Referrer Bonus:
-                            </label>
-                            <div className="col-lg-7 fv-row">
-                              <span className="fw-bolder fs-6 text-dark">
-                                ₹{" "}
-                                {userDetails?.referrerBonus
-                                  ? userDetails?.referrerBonus
-                                  : "N/A"}
-                              </span>
+                              <span className="fw-bolder fs-6 text-dark">{userDetails?.mobileNumber || "N/A"}</span>
                             </div>
                           </div>
 
                           <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Winning Wallet:
-                            </label>
-                            <div className="col-lg-7 d-flex justify-content-between">
-                              <div>  <span className="fw-bolder fs-6 text-dark text-hover-primary">
-                                ₹{" "}
-                                {userDetails?.wallet?.winningAmount || 0}
-                              </span></div>
-                              <button type="button" className="btn btn-sm btn-success" data-bs-toggle="modal"
-                                data-bs-target="#winning_modal" >
-                                + Add Winning Cash
-                              </button>
+                            <label className="col-lg-5 fw-bold text-muted">KYC Status:</label>
+                            <div className="col-lg-7">
+                              <span className="fw-bolder fs-6 text-dark">{userDetails?.kycVerified || "N/A"}</span>
                             </div>
                           </div>
+
+                          {/* 🔹 Referral Info */}
                           <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Deposit Wallet:
-                            </label>
-                            <div className="col-lg-7  d-flex justify-content-between">
-                              <span className="fw-bolder fs-6 text-dark text-hover-primary">
-                                ₹{" "}
-                                {userDetails?.wallet?.depositBalance
-                                  ? userDetails?.wallet?.depositBalance
-                                  : 0}
-                              </span>
+                            <label className="col-lg-5 fw-bold text-muted">Referral Code:</label>
+                            <div className="col-lg-7">
+                              <span className="fw-bolder fs-6 text-dark">{userDetails?.referCodeOfUser || "N/A"}</span>
+                            </div>
+                          </div>
+
+                          <div className="row mb-3">
+                            <label className="col-lg-5 fw-bold text-muted">Total Referral Bonus:</label>
+                            <div className="col-lg-7">
+                              <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.totalRefferalBlanceByUser || 0}</span>
+                            </div>
+                          </div>
+
+                          {/* 🔹 Wallet Section */}
+                          <hr />
+                          <h5 className="fw-bold mb-3 text-primary">Wallet Details</h5>
+
+                          <div className="row align-items-center mb-3">
+                            <label className="col-lg-5 fw-bold text-muted">Available Balance:</label>
+                            <div className="col-lg-4">
+                              <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.availableBalance || 0}</span>
+                            </div>
+                            <div className="col-lg-3 text-end">
                               <button type="button" className="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#Deposit_modal"
                               >
                                 + Add Deposit Cash
@@ -782,108 +687,71 @@ function UserDetails() {
                             </div>
                           </div>
 
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Bonus Wallet:
-                            </label>
-                            <div className="col-lg-7  d-flex justify-content-between">
-                              <div>
-                                <span className="fw-bolder fs-6 text-dark text-hover-primary">
-                                  ₹{" "}
-                                  {userDetails?.wallet?.bonus
-                                    ? userDetails?.wallet?.bonus
-                                    : 0}
-                                </span></div>
-                              <button type="button" className="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#Bonus_modal"
-                              >
-                                + Add Bonus
+                          <div className="row align-items-center mb-3">
+                            <label className="col-lg-5 fw-bold text-muted">Winning Balance:</label>
+                            <div className="col-lg-4">
+                              <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.availableWinningBalance || 0}</span>
+                            </div>
+                            <div className="col-lg-3 text-end">
+                              <button type="button" className="btn btn-sm btn-success" data-bs-toggle="modal"
+                                data-bs-target="#winning_modal" >
+                                + Add Winning Cash
                               </button>
                             </div>
                           </div>
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Total Wallet Balance:
-                            </label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark text-hover-primary">
-                                ₹{" "}
-                                {userDetails
-                                  ? (userDetails?.wallet?.winningAmount || 0) +
-                                  (userDetails?.wallet?.depositBalance || 0) +
-                                  (userDetails?.wallet?.bonus || 0)
-                                  : 0}
-                              </span>
 
+                          <div className="row mb-3">
+                            <label className="col-lg-5 fw-bold text-muted">Referral Bonus Wallet:</label>
+                            <div className="col-lg-7">
+                              <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.availableRefferalBonusBalance || 0}</span>
                             </div>
                           </div>
 
                           <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Total Deposits:
-                            </label>
+                            <label className="col-lg-5 fw-bold text-muted">Commission Bonus Wallet:</label>
                             <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark text-hover-primary">
-                                ₹{" "}
-                                {userDetails?.wallet?.totalDepositedBalance
-                                  ? userDetails?.wallet?.totalDepositedBalance.toFixed(2)
-                                  : 0}
-                              </span>
+                              <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.availableUserCommissionBonusBalance || 0}</span>
                             </div>
                           </div>
 
                           <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Total Withdrawals:
-                            </label>
+                            <label className="col-lg-5 fw-bold text-muted">Locked Balance:</label>
                             <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark text-hover-primary">
-                                ₹{" "}
-                                {userDetails?.wallet?.totalWithdrawnAmount
-                                  ? userDetails?.wallet?.totalWithdrawnAmount
-                                  : 0}
-                              </span>
+                              <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.availableLockedBalance || 0}</span>
                             </div>
                           </div>
+
+                          {/* 🔹 Totals */}
+                          <hr />
+                          <h5 className="fw-bold mb-3 text-primary">Transaction Summary</h5>
+
                           <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              First Deposit Date & Time:
-                            </label>
+                            <label className="col-lg-5 fw-bold text-muted">Total Deposits:</label>
                             <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark text-hover-primary">
-                                {userDetails?.firstDepositDate
-                                  ? moment(userDetails?.firstDepositDate).format("DD MMM YYYY LT")
-                                  : "N/A"}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Register Date & Time:
-                            </label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark text-hover-primary">
-                                {userDetails?.createdAt
-                                  ? moment(userDetails?.createdAt).format("DD MMM YYYY LT")
-                                  : "N/A"}
-                              </span>
+                              <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.totalDepositByUser || 0}</span>
                             </div>
                           </div>
 
                           <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">
-                              Last Login Time & Date:
-                            </label>
+                            <label className="col-lg-5 fw-bold text-muted">Total Withdrawals:</label>
                             <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark text-hover-primary">
-
-                                {userDetails?.lastLoginTime
-                                  ? moment(userDetails?.lastLoginTime).format("DD MMM YYYY LT")
-                                  : 0}
-                              </span>
+                              <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.totalWithdrawalByUser || 0}</span>
                             </div>
                           </div>
+
+                          <div className="row mb-3">
+                            <label className="col-lg-5 fw-bold text-muted">Total Commission Earned:</label>
+                            <div className="col-lg-7">
+                              <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.totalCommissionBalanceByUser || 0}</span>
+                            </div>
+                          </div>
+
+                          {/* 🔹 UUID */}
+                          <hr />
+
                         </div>
                       </div>
+
                       {/* Wallet History Tab */}
                       <div className="tab-pane fade" id="pills-two" role="tabpanel" aria-labelledby="pills-two-tab">
                         <div className="row mb-3">
@@ -899,7 +767,7 @@ function UserDetails() {
 
                         <div className="row mb-3">
                           <label className="col-lg-5 fw-bold text-muted">
-                            Available  Winning:
+                            Available Winning:
                           </label>
                           <div className="col-lg-7">
                             <span className="fw-bold fs-6 text-dark text-hover-primary">

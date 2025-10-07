@@ -10,6 +10,7 @@ export const ApiConfig = {
   getClosedTickets: "get-close-tickets",
   getResolvedTickets: "get-resolve-tickets",
   blogList: "blog-list",
+  getUserDetails: "userProfileOverallData",
   // notificationList: "notification-list",
   usersStatusUpdate: "users-status-update",
   addNotification: "add-notification",
@@ -66,6 +67,8 @@ export const ApiConfig = {
   getDisputeUsersRespose: "getUsersRespose",
   getParticularResponseView: "getParticularResponseView",
   chooseWinner: "chooseWinner",
+
+
 
 
 

@@ -8,7 +8,6 @@ import DataTable from 'react-data-table-component';
 
 function UserKyc() {
     const [kycPendingList, setKycPendingList] = useState([]);
-    console.log("🚀 ~ UserKyc ~ kycPendingList:", kycPendingList)
     const [activeTab, setActiveTab] = useState("PENDING");
     const [kycApprovedList, setKycApprovedList] = useState([]);
     const [kycRejectedList, setKycRejectedList] = useState([]);
@@ -27,7 +26,7 @@ function UserKyc() {
             if (result?.success) {
                 setKycPendingList(result?.data?.reverse());
             } else {
-                alertErrorMessage(result?.message);
+                // alertErrorMessage(result?.message);
             }
         } catch (error) {
             alertErrorMessage(error?.message);
