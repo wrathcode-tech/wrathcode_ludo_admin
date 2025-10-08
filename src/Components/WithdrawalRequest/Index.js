@@ -202,6 +202,7 @@ function WithdrawalRequest() {
 
                         <div className="p-4">
                             {activeTab === "PENDING" && (
+                              <div className='table-responsive'>  
                                 <DataTable
                                     columns={withdrawalRequest}
                                     data={withdrawalRequestData}
@@ -214,9 +215,11 @@ function WithdrawalRequest() {
                                     onChangePage={(page) => setCurrentPage(page)}
                                     noDataComponent="No pending records found"
                                 />
+                                </div>
                             )}
 
                             {activeTab === "APPROVED" && (
+                              <div className='table-responsive'>  
                                 <DataTable
                                     columns={approvedWithdrawalList}
                                     data={withdrawalApprovedList}
@@ -229,9 +232,11 @@ function WithdrawalRequest() {
                                     onChangePage={(page) => setCurrentPage(page)}
                                     noDataComponent="No approved records found"
                                 />
+                                </div>
                             )}
 
                             {activeTab === "REJECTED" && (
+                                <div className='table-responsive'>
                                 <DataTable
                                     columns={rejectedWithdrawalList}
                                     data={withdrawalRejectedList}
@@ -244,6 +249,7 @@ function WithdrawalRequest() {
                                     onChangePage={(page) => setCurrentPage(page)}
                                     noDataComponent="No rejected records found"
                                 />
+                                </div>
                             )}
                         </div>
                     </div>

@@ -197,7 +197,7 @@ const Notification = () => {
                                 <div className="page-header-content pt-4">
                                     <h1 className="page-header-title mb-0">Notification Management</h1>
                                 </div>
-                                <ul className="nav nav-pills mb-3">
+                                <ul className="nav nav-pills mb-3 tabs_top">
                                     {["sendToUser", "bulkNotification", "announceToAll", "managementNotification"].map(tab => (
                                         <li key={tab} className="nav-item" onClick={resetInput}>
                                             <button
@@ -385,7 +385,7 @@ const Notification = () => {
                                         <div className="card mb-4 bg-white border shadow-sm">
                                             <div className="card-body d-flex flex-column p-4">
                                                 <h4 className="mb-4 text-dark">Notifications List</h4>
-                                                <DataTableBase columns={columns} data={allUsers} pagination />
+                                                <DataTableBase columns={columns} data={allUsers} pagination  />
                                             </div>
                                         </div>
                                     )}

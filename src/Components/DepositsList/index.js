@@ -126,11 +126,11 @@ function PendingDepositRequest() {
             <div class="dashboard_right">
                 <UserHeader />
                 <div class="dashboard_outer_s">
-                    <h2>Pending Deposits Request List</h2>
+                    <h2>All Pending Deposits List</h2>
                     <div class="dashboard_detail_s user_list_table user_summary_t">
                         <div class="user_list_top">
                             <div class="user_list_l">
-                                <h4>All Deposits Pending Requests</h4>
+                                <h4>All Pending Deposits Requests</h4>
                                 {/* <p>Active Members</p> */}
                             </div>
                             <div class="user_search">

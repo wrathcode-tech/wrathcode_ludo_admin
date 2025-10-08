@@ -202,10 +202,10 @@ const BannerManagement = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <ul className="nav nav-pills mb-3" role="tablist">
+                                    <ul className="nav nav-pills mb-3 tabs_top" role="tablist">
                                         <li className="nav-item" role="presentation" onClick={resetInput}>
                                             <button
-                                                className={`m-0 nav-link text-white ${activeTab === "sendToBanner" ? "active" : ""}`}
+                                                className={`m-0 nav-link ${activeTab === "sendToBanner" ? "active" : ""}`}
                                                 type="button"
                                                 role="tab"
                                                 onClick={() => setActiveTab("sendToBanner")}
@@ -216,7 +216,7 @@ const BannerManagement = () => {
                                         </li>
                                         <li className="nav-item" role="presentation" onClick={resetInput}>
                                             <button
-                                                className={`m-0 nav-link text-white ${activeTab === "AnnouncementBannerManagement" || activeTab === "AnnouncementBannerManagement" ? "active" : ""}`}
+                                                className={`m-0 nav-link ${activeTab === "AnnouncementBannerManagement" || activeTab === "AnnouncementBannerManagement" ? "active" : ""}`}
                                                 type="button"
                                                 role="tab"
                                                 onClick={() => setActiveTab("AnnouncementBannerManagement")}

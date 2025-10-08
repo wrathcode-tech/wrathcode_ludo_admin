@@ -187,7 +187,9 @@ function SupportChat() {
     <div className="dashboard_right">
       <div className="dashboard_outer_s">
         <h2>Support Chat</h2>
+        <div className="table-responsive">
         <DataTableBase columns={columns} data={allMsgData} pagination />
+        </div>
 
         {/* Show chat only if a ticket is selected */}
         {selectedTicket && (

@@ -192,26 +192,40 @@ function DisputeResponse() {
             {/* Winning Data Modal */}
             {showModal && selectedWinningData && (
                 <div className="modal_overlay">
-                    <div className="modal_content">
+                    <div className="modal_content winning_details">
                         <h3>Winning Details</h3>
-                        <p>
-                            <strong>Event ID:</strong> {selectedWinningData.eventId || "—"}{" "}
-                            <button
-                                className="btn btn-success btn-sm ms-2 justify-content-end"
-                                onClick={() => handleEventRefund(selectedWinningData.eventId, "Refund")}
-                            >
-                                Refund
-                            </button>
-                        </p>
+                        <div className='row'>
+                            <div className='col-sm-9'>
+                                <div className='event_details'>
+                                <p>
+                                    <strong>Event ID:</strong> {selectedWinningData.eventId || "—"}{" "}
+                                </p>
 
-                        <p>
-                            <strong>Created By:</strong> {selectedWinningData.createdBy || "—"}
-                        </p>
+                                <p>
+                                    <strong>Created By:</strong> {selectedWinningData.createdBy || "—"}
+                                </p>
 
-                        <p><strong>Joined By:</strong> {selectedWinningData.joinedBy || "—"}</p>
-                        <p><strong>Total Amount:</strong> ₹{selectedWinningData.amount || 0}</p>
+                                <p><strong>Joined By:</strong> {selectedWinningData.joinedBy || "—"}</p>
+                                <p><strong>Total Amount:</strong> ₹{selectedWinningData.amount || 0}</p>
+
+                            </div>    
+                            </div>
+
+                            <div className='col-sm-3'>
+                                <div className='refundbtn'>
+                                <button
+                                    className="btn btn-success btn-sm ms-2 justify-content-end"
+                                    onClick={() => handleEventRefund(selectedWinningData.eventId, "Refund")}
+                                >
+                                    Refund
+                                </button>
+                                </div>
+                                </div>
+
+                        </div>
 
                         <h5 className="mt-3">User Responses:</h5>
+                        <div className='table-responsive'>
                         <table className="table table-bordered table-striped">
                             <thead>
                                 <tr>
@@ -289,7 +303,7 @@ function DisputeResponse() {
                                 )}
                             </tbody>
                         </table>
-
+</div>
                         <div className="modal_actions mt-3">
                             <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
                                 Close

@@ -29,7 +29,7 @@ h2 {
 }
 
 .leftside_menu {
-    width: 18%;
+    width: 340px;
     background-color: #fff;
     padding: 0px;
     position: absolute !important;
@@ -82,7 +82,7 @@ h2 {
     position: fixed;
     top: 0px;
     content: "";
-    width: 18%;
+    width: 340px;
     left: 0;
     /* height: 100%; */
     background-color: #fff;
@@ -235,7 +235,20 @@ ul.list_dashboard_cate {
 }
 
 .width-70 {
-    width: 70%;
+    width: 100%;
+}
+
+.rdt_Table .table-img {
+    width: 70px !important;
+    padding: 10px;
+}
+
+.img-account-profile {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    border-radius: 100%;
+    overflow: hidden;
 }
 
 .dashboard_detail_s {
@@ -296,6 +309,7 @@ tbody td {
 .dashboard_info_s ul li .low_market span {
     color: #F93C65;
 }
+
 
 .dashboard_detail_s h3 {
     font-size: 24px;
@@ -379,8 +393,14 @@ body .btn-primary:hover {
     align-items: center;
 }
 
-.user_detail_info label{ font-size: 14px; }
-.user_detail_info span{ font-size: 14px; }
+.user_detail_info label {
+    font-size: 14px;
+}
+
+.user_detail_info span {
+    font-size: 14px;
+}
+
 .profile_lft {
     min-width: 300px;
     width: 300px;
@@ -390,6 +410,15 @@ body .btn-primary:hover {
 .user_list_l p {
     font-size: 14px;
     color: #16C098;
+    font-weight: 500;
+}
+
+
+.dashboard_outer_s h4 {
+    font-weight: 500;
+}
+
+.user_list_table h4 {
     font-weight: 500;
 }
 
@@ -721,6 +750,11 @@ textarea.input_inb {
     padding: 6px 15px;
 }
 
+.rdt_TableCell img {
+    width: 50px !important;
+    padding: 5px;
+}
+
 .user_list_table table thead tr th.first_coloum {
     width: 260px;
 }
@@ -752,6 +786,13 @@ textarea.input_inb {
 
 .control_input {
     width: 100%;
+}
+
+
+.tabs_top {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow: auto;
 }
 
 .support_form lable {
@@ -847,7 +888,42 @@ textarea.input_inb {
 }
 
 .navi_sidebar ul.list-unstyled li a img {
-    width: 18px;
+    width: 20px;
+}
+
+.refundbtn {
+    text-align: right;
+}
+
+.event_details {
+    font-size: 14px;
+}
+
+.winning_details h3 {
+    text-align: center;
+    color: #0ca3b7;
+    font-size: 24px;
+}
+
+.winning_details table tr th {
+    font-size: 14px;
+}
+
+.winning_details table tr td {
+    font-size: 14px;
+}
+
+.winning_details .modal_actions.mt-3 {
+    text-align: right;
+    margin-top: 0px !important;
+}
+
+.modal_content.winning_details {
+    padding: 30px;
+}
+
+.winning_details .row {
+    padding-top: 24px;
 }
 
 .tab-content .ticket_support_team {
@@ -892,8 +968,12 @@ ul.customPagination li a {
     margin: 15px 0px;
 }
 
-.tabs_top li .nav-link {
+.dashboard_right .tabs_top li .nav-link {
     color: #000;
+}
+
+.dashboard_right .tabs_top li .nav-link.active {
+    color: #fff;
 }
 
 .ticket_resolved {
@@ -952,7 +1032,7 @@ button.closed_btn {
 }
 
 .responsive_scrool {
-    height: 70vh;
+    height: 83vh;
     overflow: auto;
 }
 
@@ -961,7 +1041,7 @@ button.closed_btn {
     position: fixed;
     bottom: 0px;
     left: 0px;
-    width: 18%;
+    width: 340px;
     z-index: 999;
 }
 
@@ -1003,15 +1083,6 @@ button.closed_btn {
     margin: 7px auto;
 }
 
-@media screen and (max-width:1550px) {
-
-    .dashboard_right {
-        padding-left: 275px;
-    }
-
-}
-
-
 
 @media screen and (max-width:1367px) {
 
@@ -1019,15 +1090,9 @@ button.closed_btn {
         font-size: 24px;
     }
 
-    .dashboard_right {
-        padding-left: 255px;
-    }
-
     .dashboard_info_s ul li .user_cnt_top h3 {
         font-size: 22px;
     }
-
-
 
 }
 
@@ -1038,16 +1103,20 @@ button.closed_btn {
         gap: 18px;
     }
 
+    .leftside_menu {
+        width: 260px;
+    }
+
     .rdt_TableCell {
         word-break: keep-all !important;
     }
 
     .leftside_menu:after {
-        width: 25%;
+        width: 260px;
     }
 
     .logout_btn {
-        width: 25%;
+        width: 260px;
     }
 
     ul.list-unstyled.ps-0 {
@@ -1090,6 +1159,31 @@ button.closed_btn {
         grid-template-columns: repeat(2, 1fr);
     }
 
+    .dashboard_right .tabs_top li .nav-link {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+
+    .user_detail_info span {
+        font-size: 14px !important;
+    }
+
+    .h1,
+    h1 {
+        font-size: 24px;
+    }
+
+    .page-header-icon {
+        font-size: 24px !important;
+    }
+
+    .dashboard_icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50px;
+        padding: 10px;
+    }
+
     .dashboard_detail_s {
         padding: 24px;
     }
@@ -1102,12 +1196,9 @@ button.closed_btn {
         overflow: auto;
     }
 
-    .leftside_menu {
-        width: 25%;
-    }
-
     .dashboard_right {
-        width: 75%;
+        width: 100%;
+        padding-left: 290px;
     }
 
     .dashboard_outer_s h2 {
@@ -1131,12 +1222,51 @@ button.closed_btn {
         width: 25%;
     }
 
+    .user_list_table h4 {
+        font-size: 18px;
+    }
+
+    .dashboard_outer_s h2 {
+        font-size: 20px;
+    }
+
+    .dashboard_right .user_info_d h3 {
+        font-size: 16px;
+    }
+
+    .perpage_list {
+        font-size: 14px;
+    }
+
+    ul.customPagination {
+        font-size: 14px;
+    }
+
 }
 
 
 @media screen and (max-width:991px) {
 
+    .user_detail_info .tab-content .row.mb-3 {
+        flex-wrap: nowrap;
+    }
 
+    .user_detail_info .tab-content .row>* {
+        flex-shrink: inherit;
+    }
+
+    .ekcsgb {
+        margin: 0 10px !important;
+    }
+
+    .user_detail_info .tab-content .row .col-lg-3.text-end {
+        width: 100%;
+        flex-shrink: 0;
+    }
+
+    .user_detail_info .tab-content .row.align-items-center.mb-3 {
+        flex-wrap: wrap !important;
+    }
 
     .dashboard_detail_s {
         overflow: auto;
@@ -1148,17 +1278,21 @@ button.closed_btn {
     }
 
     .dashboard_right {
-        padding-left: 195px;
-    }
-
-    .width-70 {
-        width: 80%;
+        padding-left: 285px;
     }
 
     .dashboard_right.notification_s ul.nav.nav-pills.mb-3 .nav-link {
         font-size: 14px;
         padding: 5px 12px;
     }
+
+    .dashboard_outer_s h4 {
+    font-size: 20px;
+}
+
+.form-control {  font-size:13px; }
+.btn {
+    font-size: 13px !important; }
 
 }
 
@@ -1169,10 +1303,37 @@ button.closed_btn {
         width: 100%;
     }
 
+    textarea.form-control {
+        min-height: 60px;
+        max-height: 60px;
+    }
+
+    button.btn {
+        font-size: 14px;
+    }
+
+    .custom-modal .btn {
+        font-size: 14px !important;
+    }
+
+    .winning_details .btn-secondary {
+        font-size: 13px;
+    }
+
     body .h4,
     h4 {
         font-size: 18px;
     }
+
+    .winning_details .row {
+        padding-top: 7px;
+    }
+
+    .modal_content.winning_details {
+        padding: 20px;
+    }
+
+
 
     body .h1,
     h1 {
@@ -1235,6 +1396,7 @@ button.closed_btn {
 
     .user_list_table .table-responsive {
         max-height: 400px;
+        min-height: 100px;
     }
 
     body {
@@ -1421,9 +1583,12 @@ button.closed_btn {
     }
 
     .sticky-sidebar {
-        position: relative !important;
-        height: 100%;
+        height: auto;
     }
+
+    .page-header-content.pt-4 {
+    padding-top: 0px !important;
+}
 
     .logout_btn {
         position: relative;
@@ -1431,7 +1596,7 @@ button.closed_btn {
     }
 
     .dashboard_outer_s {
-        padding: 20px 15px 20px 15px;
+        padding: 10px 0px;
         gap: 15px;
     }
 
@@ -1500,8 +1665,33 @@ button.closed_btn {
         margin-bottom: 0px !important;
     }
 
+    .winning_details table tr td {
+        font-size: 13px;
+    }
 
+    .winning_details table tr th {
+        font-size: 13px;
+    }
 
+    .winning_details table tr td button.btn {
+        font-size: 12px;
+    }
+
+    .top_header_dash {
+        margin-bottom: 10px;
+    }
+
+    .user_detail_info label {
+        font-size: 13px;
+    }
+
+    .user_detail_info span {
+        font-size: 13px !important;
+    }
+
+    .card-body.py-4.pb-0 {
+        padding-bottom: 15px !important;
+    }
 
 }
 
@@ -1509,6 +1699,39 @@ button.closed_btn {
 
     .dashboard_summary ul.nav-tabs li button {
         padding: 6px 12px;
+    }
+
+    .dashboard_right .tabs_top li .nav-link {
+        padding: 5px 15px;
+    }
+
+    body .h1,
+    h1 {
+        font-size: 22px;
+    }
+
+    .page-header-icon {
+        font-size: 20px !important;
+    }
+
+    .refundbtn {
+        margin-top: -32px;
+    }
+
+    .dashboard_right h3 {
+        font-size: 18px;
+    }
+
+    .custom-modal .btn {
+        font-size: 13px !important;
+    }
+
+    .refundbtn button {
+        margin: 0px !important;
+    }
+
+    .winning_details table tr td button.btn {
+        margin: 5px 0px;
     }
 
     .user_list_top {
@@ -1520,6 +1743,7 @@ button.closed_btn {
 
     .dashboard_outer_s h2 {
         font-size: 22px;
+        margin-bottom: 0px;
     }
 
     ul.customPagination {

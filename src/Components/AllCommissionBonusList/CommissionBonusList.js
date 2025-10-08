@@ -80,6 +80,7 @@ function CommissionBonusList() {
                             />
                         </div>
                     </div>
+                    <div className='table-responsive'>
                     <DataTable
                         columns={Columns}
                         data={userList}
@@ -92,6 +93,7 @@ function CommissionBonusList() {
                         striped
                         responsive
                     />
+                    </div>
                 </div>
             </div>
         </div>

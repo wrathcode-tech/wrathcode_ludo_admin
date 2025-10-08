@@ -603,7 +603,7 @@ function UserDetails() {
                             ) : (
                               <img
                                 className="img-account-profile rounded-circle mb-2 mb-lg-0"
-                                src="/public/images/.png"
+                                src="/images/user_profile_img.png"
                                 alt="dummy"
                               />
                             )}

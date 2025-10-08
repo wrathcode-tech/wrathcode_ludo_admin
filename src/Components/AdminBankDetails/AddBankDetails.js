@@ -106,7 +106,7 @@ function AddBankDetails() {
                         <div className="container2">
                             <h1 className="page-header-title mb-0">User Bank Details</h1>
 
-                            <ul className="nav nav-pills mt-3 mb-3">
+                            <ul className="nav nav-pills tabs_top mt-3 mb-3">
                                 <li className="nav-item">
                                     <button className={`nav-link ${activeTab === "add" ? "active" : ""}`} onClick={() => setActiveTab("add")}>Add Bank Details</button>
                                 </li>
@@ -135,7 +135,7 @@ function AddBankDetails() {
                                 </form>
                             )}
 
-                            {activeTab === "list" && <DataTableBase columns={columns} data={bankList} pagination />}
+                            {activeTab === "list" && <div className="table-responsive"><DataTableBase columns={columns} data={bankList} pagination /></div>}
                         </div>
                     </header>
                 </main>
