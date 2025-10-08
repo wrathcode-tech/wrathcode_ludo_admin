@@ -79,6 +79,7 @@ export const ApiConfig = {
   getDisputeUsersRespose: "getUsersRespose",
   getParticularResponseView: "getParticularResponseView",
   chooseWinner: "chooseWinner",
+  refundEventFund: "refundEventFund",
 
   // bank Details add
 

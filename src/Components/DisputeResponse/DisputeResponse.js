@@ -31,6 +31,22 @@ function DisputeResponse() {
             LoaderHelper.loaderStatus(false);
         }
     };
+    const handleEventRefund = async (eventId) => {
+        try {
+            LoaderHelper.loaderStatus(true);
+            const result = await AuthService.refundEventFund(eventId); // API to get winning data
+            if (result?.success) {
+                setSelectedWinningData(result.data);
+                setShowModal(true);
+            } else {
+                alertErrorMessage(result?.message);
+            }
+        } catch (error) {
+            alertErrorMessage(error?.message);
+        } finally {
+            LoaderHelper.loaderStatus(false);
+        }
+    };
 
     // Handle Winner/Loser selection
     const handleSelectResult = async (eventId, winnerId) => {
@@ -160,14 +176,14 @@ function DisputeResponse() {
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                         <div className='table-responsive'>
-                        <DataTable
-                            columns={commonColumns}
-                            data={filteredData}
-                            pagination
-                            highlightOnHover
-                            striped
-                            responsive
-                        />
+                            <DataTable
+                                columns={commonColumns}
+                                data={filteredData}
+                                pagination
+                                highlightOnHover
+                                striped
+                                responsive
+                            />
                         </div>
                     </div>
                 </div>
@@ -178,8 +194,20 @@ function DisputeResponse() {
                 <div className="modal_overlay">
                     <div className="modal_content">
                         <h3>Winning Details</h3>
-                        <p><strong>Event ID:</strong> {selectedWinningData.eventId || "—"}</p>
-                        <p><strong>Created By:</strong> {selectedWinningData.createdBy || "—"}</p>
+                        <p>
+                            <strong>Event ID:</strong> {selectedWinningData.eventId || "—"}{" "}
+                            <button
+                                className="btn btn-success btn-sm ms-2 justify-content-end"
+                                onClick={() => handleEventRefund(selectedWinningData.eventId, "Refund")}
+                            >
+                                Refund
+                            </button>
+                        </p>
+
+                        <p>
+                            <strong>Created By:</strong> {selectedWinningData.createdBy || "—"}
+                        </p>
+
                         <p><strong>Joined By:</strong> {selectedWinningData.joinedBy || "—"}</p>
                         <p><strong>Total Amount:</strong> ₹{selectedWinningData.amount || 0}</p>
 
@@ -200,6 +228,7 @@ function DisputeResponse() {
                                     selectedWinningData?.allUserResponse.map((u, index) => (
                                         <tr key={index}>
                                             <td>{u?.userId?.fullName || "—"}</td>
+
                                             <td>{u?.userId?.uuid || "—"}</td>
                                             <td>₹{selectedWinningData?.amount || ""}</td>
                                             <td>{u?.choice || "—"}</td>
@@ -245,6 +274,7 @@ function DisputeResponse() {
                                                     >
                                                         Loser
                                                     </button>
+
                                                 </td>
 
                                             </td>

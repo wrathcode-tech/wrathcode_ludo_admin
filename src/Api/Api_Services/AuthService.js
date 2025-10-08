@@ -216,6 +216,18 @@ const AuthService = {
 
     return ApiCallPost(url, params, headers);
   },
+  refundEventFund: async (eventId) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, refundEventFund } = ApiConfig;
+    const url = `${baseUrl}${refundEventFund}?eventId=${eventId}`;
+
+    const headers = {
+      "Content-Type": "application/json",
+      'Authorization': token
+    };
+
+    return ApiCallGet(url, headers);
+  },
   chooseWinner: async (eventId, winnerId) => {
     const token = sessionStorage.getItem("token");
     const { baseUrl, chooseWinner } = ApiConfig;
