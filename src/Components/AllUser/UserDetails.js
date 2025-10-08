@@ -613,14 +613,14 @@ function UserDetails() {
                               </span>
                             </div>
                           </div>
-                          <button
+                          {/* <button
                             type="button"
                             className="btn btn-primary btn-muted"
                             data-bs-toggle="modal"
                             data-bs-target="#add_modal"
                           >
                             <i className="far fa-edit"></i>
-                          </button>
+                          </button> */}
                         </div>
 
                         <div className="doc_img py-3 px-2 my-2">

@@ -1,7 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import LoaderHelper from "../../Utils/Loading/LoaderHelper";
+import AuthService from "../../Api/Api_Services/AuthService";
+import { alertErrorMessage } from "../../Utils/CustomAlertMessage";
 const UserHeader = () => {
 
-const emailId = sessionStorage.getItem("emailId")
+    const [profileData, setProfileData] = useState([]);
+
+    useEffect(() => {
+        handleDashboardData();
+    }, []);
+
+    const handleDashboardData = async () => {
+
+        try {
+            LoaderHelper.loaderStatus(true);
+            const result = await AuthService.dashboardData();
+            if (result?.success) {
+                setProfileData(result?.data);
+            } else {
+                alertErrorMessage(result?.message);
+            }
+        } catch (error) {
+            alertErrorMessage(error?.message);
+        } finally {
+            LoaderHelper.loaderStatus(false);
+        }
+    };
+
+    const emailId = sessionStorage.getItem("emailId")
     return (
         <>
             <div class="top_header_dash">
@@ -11,7 +37,7 @@ const emailId = sessionStorage.getItem("emailId")
                             <img src="/images/user_profile_img.png" alt="user" />
                         </div> */}
                         <div class="user_profile_cnt">
-                            <h3>{emailId||"---"}</h3>
+                            <h3> {profileData?.adminProfile?.emailId || "---"}</h3>
                             <span>Admin</span>
                         </div>
                     </div>

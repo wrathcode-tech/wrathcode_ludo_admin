@@ -49,19 +49,12 @@ function CommissionBonusList() {
     };
 
     const Columns = [
-        {
-            name: 'S.No',
-            width: '80px',
-            selector: (row, index) => index + 1 + (currentPage - 1) * perPage,
-            sortable: true,
-            wrap: true
-        },
+        { name: 'S.No', width: '80px', selector: (row, index) => index + 1 + (currentPage - 1) * perPage, sortable: true, wrap: true },
         { name: 'User Id', selector: row => row?.userId || '—', sortable: true, wrap: true },
         { name: 'Full Name', selector: row => row?.fullName || '—', sortable: true, wrap: true },
-        { name: 'Email', selector: row => row?.email || '—', sortable: true, wrap: true, width: '200px' },
-        { name: 'Total Deposit', selector: row => row?.totalDeposit || '—', sortable: true, wrap: true },
-        { name: 'Total Withdrawal', selector: row => row?.totalWithdrawal || '—', sortable: true, wrap: true },
-        { name: 'Net', selector: row => row?.net || '—', sortable: true, wrap: true },
+        { name: 'Email', selector: row => row?.emailId || '—', sortable: true, wrap: true, width: '200px' },
+        { name: 'Total Credits', selector: row => row?.totalCredit || '—', sortable: true, wrap: true },
+        { name: 'Total Debits', selector: row => row?.totalDebit || '—', sortable: true, wrap: true },
     ];
 
     const handlePageChange = (page) => setCurrentPage(page);

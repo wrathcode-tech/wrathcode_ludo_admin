@@ -146,35 +146,35 @@ function DashboardPage() {
                     <div className="dashboard_detail_s">
                         <h3>Login Details</h3>
                         <div className='table-responsive'>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th className="first_child">Activity</th>
-                                    <th>IP Address</th>
-                                    <th>Date - Time</th>
-                                    {/* <th>Admin ID</th> */}
-                                    {/* <th className="last_child">User ID</th> */}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {dashboardList?.map((log, index) => (
-                                    <tr key={log._id || index}>
-                                        <td>
-                                            <div className="td_first">
-                                                <div className="product">
-                                                    <img src="/images/product_img_t.png" alt="activity" />
-                                                </div>
-                                                <div className="title">{log.Activity}</div>
-                                            </div>
-                                        </td>
-                                        <td>{log.adminIP || "-"}</td>
-                                        <td>{new Date(log.createdAt).toLocaleString()}</td>
-                                        {/* <td>{log.adminId || "-"}</td> */}
-                                        {/* <td>{log.userId || "-"}</td> */}
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th className="first_child">Activity</th>
+                                        <th>IP Address</th>
+                                        <th>Date - Time</th>
+                                        {/* <th>Admin ID</th> */}
+                                        {/* <th className="last_child">User ID</th> */}
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {dashboardList?.map((log, index) => (
+                                        <tr key={log._id || index}>
+                                            <td>
+                                                <div className="td_first">
+                                                    <div className="product">
+                                                        <img src="/images/product_img_t.png" alt="activity" />
+                                                    </div>
+                                                    <div className="title">{log.Activity}</div>
+                                                </div>
+                                            </td>
+                                            <td>{log.adminIP || "-"}</td>
+                                            <td>{new Date(log.createdAt).toLocaleString()}</td>
+                                            {/* <td>{log.adminId || "-"}</td> */}
+                                            {/* <td>{log.userId || "-"}</td> */}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

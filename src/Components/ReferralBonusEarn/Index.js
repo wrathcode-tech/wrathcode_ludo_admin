@@ -59,9 +59,9 @@ function OverAllReferralEarnList() {
         { name: 'User Id', selector: row => row?.userId || '—', sortable: true, wrap: true },
         { name: 'Full Name', selector: row => row?.fullName || '—', sortable: true, wrap: true },
         { name: 'Email', selector: row => row?.email || '—', sortable: true, wrap: true, width: '200px' },
-        { name: 'Total Deposit', selector: row => row?.totalDeposit || '—', sortable: true, wrap: true },
-        { name: 'Total Withdrawal', selector: row => row?.totalWithdrawal || '—', sortable: true, wrap: true },
-        { name: 'Net', selector: row => row?.net || '—', sortable: true, wrap: true },
+        { name: 'Total Credits', selector: row => row?.totalCredit || '—', sortable: true, wrap: true },
+        { name: 'Total Dabits', selector: row => row?.totalDebit || '—', sortable: true, wrap: true },
+        { name: 'Net Balance', selector: row => row?.netBalance || '—', sortable: true, wrap: true },
     ];
 
     const handlePageChange = (page) => setCurrentPage(page);
@@ -88,18 +88,18 @@ function OverAllReferralEarnList() {
                         </div>
                     </div>
                     <div className='table-responsive'>
-                    <DataTable
-                        columns={Columns}
-                        data={userList}
-                        pagination
-                        paginationServer
-                        paginationTotalRows={totalRows} // ✅ correct total rows
-                        onChangePage={handlePageChange}
-                        onChangeRowsPerPage={handlePerRowsChange}
-                        highlightOnHover
-                        striped
-                        responsive
-                    />
+                        <DataTable
+                            columns={Columns}
+                            data={userList}
+                            pagination
+                            paginationServer
+                            paginationTotalRows={totalRows} // ✅ correct total rows
+                            onChangePage={handlePageChange}
+                            onChangeRowsPerPage={handlePerRowsChange}
+                            highlightOnHover
+                            striped
+                            responsive
+                        />
                     </div>
                 </div>
             </div>

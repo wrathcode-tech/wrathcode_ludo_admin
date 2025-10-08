@@ -34,15 +34,10 @@ function MatchDetails() {
 
     const columns = [
         { name: "Created At", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-        { name: "User Name", selector: (row) => row?.userId?.fullName, sortable: true, wrap: true },
-        { name: "Amount", selector: (row) => `₹ ${row?.amount}`, sortable: true, wrap: true },
-        { name: "UTR Number", selector: (row) => row?.utrNumber, sortable: true, wrap: true },
         {
-            name: "Payment Proof", cell: (row) => (<a href={imageUrl + row?.paymentProof} target="_blank" rel="noopener noreferrer" style={{
-                width: "50px", height: "50px"
-            }}>
-                <img src={imageUrl + row?.paymentProof} alt="proof" /></a>),
+            name: "Event Id", selector: (row) => row?.eventId, sortable: true, wrap: true
         },
+        { name: "Match Amount", selector: (row) => `₹ ${row?.matchAmount}`, sortable: true, wrap: true },
         {
             name: "Status", selector: (row) => row.status, cell: (row) => (<span style={{ color: "#1eb5c0" }}>{row?.status}</span>), sortable: true, wrap: true
         },
@@ -103,9 +98,9 @@ function MatchDetails() {
                             </div>
                         </div>
                         <div className='table-responsive'>
-                        <div className="p-2 mobilep">
-                            <DataTable columns={columns} data={responseData} pagination highlightOnHover striped responsive />
-                        </div>
+                            <div className="p-2 mobilep">
+                                <DataTable columns={columns} data={responseData} pagination highlightOnHover striped responsive />
+                            </div>
                         </div>
                     </div>
                 </div>
