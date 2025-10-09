@@ -758,11 +758,7 @@ function UserDetails() {
                       <div className="tab-content" id="pills-tabContent">
                         {/* 2️⃣ User Game Details Tab */}
                         <div className="tab-pane fade" id="pills-two" role="tabpanel" aria-labelledby="pills-two-tab">
-                          <DataTableBase
-                            columns={UserGameDetails}
-                            data={gameData || []}
-                            pagination={false}
-                          />
+                          <DataTableBase columns={UserGameDetails} data={gameData || []} pagination />
                         </div>
 
                         {/* 3️⃣ User KYC Details Tab */}
