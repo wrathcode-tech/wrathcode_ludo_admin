@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import UserHeader from '../../Layout/UserHeader';
 import LoaderHelper from '../../Utils/Loading/LoaderHelper';
-import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertMessage';
+import { alertErrorMessage } from '../../Utils/CustomAlertMessage';
 import AuthService from '../../Api/Api_Services/AuthService';
-import ReactPaginate from 'react-paginate';
-import copy from "copy-to-clipboard";
 import DataTableBase from '../../Utils/DataTable';
 
 function DepostiWithdraSummary() {
@@ -15,17 +13,10 @@ function DepostiWithdraSummary() {
     const [totalData, setTotalData] = useState(0);
 
 
-    const copyUserId = (row) => {
-        copy(row.userId);
-        alertSuccessMessage("User ID copied!!");
-    };
-    const pageCount = Math.ceil(totalData / itemsPerPage);
 
     useEffect(() => {
-        handleUserBalData(currentPage, itemsPerPage);
-    }, [currentPage, itemsPerPage]);
-
-    // const pageCount = Math.ceil(totalData / itemsPerPage);
+        handleUserBalData();
+    }, []);
 
 
     const handleUserBalData = async (page, pageSize) => {
@@ -46,18 +37,26 @@ function DepostiWithdraSummary() {
             LoaderHelper.loaderStatus(false);
         }
     };
-    const handlePageChange = ({ selected }) => {
-        setCurrentPage(selected + 1); // kyunki selected 0-based hota hai
-    };
-
     const handleSearch = (e) => {
         const value = e.target.value;
         setSearch(value);
+
         if (value) {
-            const filteredData = userList.filter(item =>
-                (item?.email || '').toLowerCase().includes(value.toLowerCase()) ||
-                (item?.userId || '').includes(value)
-            );
+            const filteredData = userList.filter(item => {
+                const email = String(item?.email || "").toLowerCase();
+                const userId = String(item?.userId || "");
+                const fullName = String(item?.fullName || "").toLowerCase();
+                const totalDeposit = String(item?.totalDeposit || "");
+                const totalWithdrawal = String(item?.totalWithdrawal || "");
+                return (
+                    email.includes(value.toLowerCase()) ||
+                    userId.includes(value) ||
+                    fullName.includes(value.toLowerCase()) ||
+                    totalDeposit.includes(value) ||
+                    totalWithdrawal.includes(value)
+                );
+            });
+
             setUserList(filteredData);
         } else {
             handleUserBalData(currentPage, itemsPerPage);
@@ -77,11 +76,6 @@ function DepostiWithdraSummary() {
         { name: 'Total Withdrawal', selector: row => row?.totalWithdrawal || '—', sortable: true, wrap: true },
         { name: 'Net', selector: row => row?.net || '—', sortable: true, wrap: true },
     ];
-
-    // ✅ ReactPaginate gives { selected: number }
-    // const handlePageChange = ({ selected }) => {
-    //     setCurrentPage(selected + 1); // because selected is 0-based
-    // };
 
     return (
         <div className="dashboard_right">
@@ -104,34 +98,6 @@ function DepostiWithdraSummary() {
                         <div className="table-responsive" width="100%">
                             <DataTableBase columns={columns} data={userList} pagination />
                         </div>
-                        {/* <div className="align-items-center mt-3 d-flex justify-content-between">
-                            <div className="pl_row d-flex justify-content-start gap-3 align-items-center perpage_list">
-                                <label htmlFor="rowsPerPage">Rows per page: </label>
-                                <select
-                                    className="form-select form-select-sm my-0"
-                                    id="rowsPerPage"
-                                    value={itemsPerPage}
-                                    onChange={(e) => {
-                                        const newSize = Number(e.target.value);
-                                        setItemsPerPage(newSize);
-                                        setCurrentPage(1);
-                                        handleUserBalData(1, newSize); // 👈 force reload with new size
-                                    }}
-                                >
-                                    <option value={10}>10</option>
-                                    <option value={25}>25</option>
-                                    <option value={50}>50</option>
-                                    <option value={100}>100</option>
-                                </select>
-                            </div>
-                            <ReactPaginate
-                                pageCount={pageCount}
-                                onPageChange={handlePageChange}
-                                forcePage={currentPage - 1} // keep paginate in sync with currentPage
-                                containerClassName={'customPagination'}
-                                activeClassName={'active'}
-                            />
-                        </div> */}
                     </div>
                 </div>
             </div>

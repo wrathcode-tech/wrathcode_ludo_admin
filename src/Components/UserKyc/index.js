@@ -4,7 +4,6 @@ import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import AuthService from '../../Api/Api_Services/AuthService';
 import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertMessage';
 import moment from 'moment';
-import DataTable from 'react-data-table-component';
 import DataTableBase from '../../Utils/DataTable';
 
 function UserKyc() {
@@ -237,20 +236,20 @@ function UserKyc() {
                         <div className="p-4">
                             {activeTab === "PENDING" && (
                                 <div className='table-responsive'>
-                    <DataTableBase columns={PendingKycList} data={kycPendingList || []} pagination />
+                                    <DataTableBase columns={PendingKycList} data={kycPendingList || []} pagination />
 
                                 </div>
                             )}
 
                             {activeTab === "APPROVED" && (
-                                 <div className='table-responsive'>
-                                <DataTableBase columns={ApprovedKycList} data={kycApprovedList || []} pagination />
+                                <div className='table-responsive'>
+                                    <DataTableBase columns={ApprovedKycList} data={kycApprovedList || []} pagination />
                                 </div>
                             )}
 
                             {activeTab === "REJECTED" && (
                                 <div className='table-responsive'>
-                                <DataTableBase columns={RejectedKycList} data={kycRejectedList || []} pagination />
+                                    <DataTableBase columns={RejectedKycList} data={kycRejectedList || []} pagination />
                                 </div>
                             )}
                         </div>

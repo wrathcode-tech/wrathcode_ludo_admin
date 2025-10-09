@@ -3,7 +3,6 @@ import UserHeader from '../../Layout/UserHeader';
 import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import AuthService from '../../Api/Api_Services/AuthService';
 import { alertErrorMessage } from '../../Utils/CustomAlertMessage';
-import DataTable from 'react-data-table-component';
 import { imageUrl } from '../../Api/Api_Config/ApiEndpoints';
 import moment from 'moment';
 import DataTableBase from '../../Utils/DataTable';

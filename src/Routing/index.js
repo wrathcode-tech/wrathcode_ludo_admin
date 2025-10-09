@@ -10,7 +10,6 @@ import { Outlet } from "react-router-dom";
 import BlogPage from "../Components/BlogPage";
 // import Chatpage from "../Components/SupportPage/Chatpage";
 import ContactusList from "../Components/ContactusList";
-import PendingDepositRequest from "../Components/DepositsList";
 import UserKyc from "../Components/UserKyc";
 import MatchDetails from "../Components/MatchDetails/Index";
 import AllLudoList from "../Components/LudoList/AllLudoList";
@@ -24,6 +23,7 @@ import BannerManagement from "../Components/BannerManagement/BannerManagement";
 import DisputeResponse from "../Components/DisputeResponse/DisputeResponse";
 import CommissionBonusList from "../Components/AllCommissionBonusList/CommissionBonusList";
 import AddBankDetails from "../Components/AdminBankDetails/AddBankDetails";
+import DepositRequest from "../Components/DepositsList/DepositRequest";
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -44,7 +44,7 @@ const Routing = () => {
         <Route path="support" element={<ProtectedRoute> <SupportPage /></ProtectedRoute>} />
         <Route path="userList" element={<ProtectedRoute> <AllUserList /></ProtectedRoute>} />
         <Route path="UserKyc" element={<ProtectedRoute> <UserKyc /></ProtectedRoute>} />
-        <Route path="pendingDeposit" element={<ProtectedRoute> <PendingDepositRequest /></ProtectedRoute>} />
+        <Route path="DespositRequest" element={<ProtectedRoute> <DepositRequest /></ProtectedRoute>} />
         <Route path="matchDetails" element={<ProtectedRoute> <MatchDetails /></ProtectedRoute>} />
         <Route path="blog" element={<ProtectedRoute> <BlogPage /></ProtectedRoute>} />
         <Route path="contactRequest" element={<ProtectedRoute> <ContactusList /></ProtectedRoute>} />

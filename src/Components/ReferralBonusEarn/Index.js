@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import UserHeader from '../../Layout/UserHeader';
-import DataTable from 'react-data-table-component';
 import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import { alertErrorMessage } from '../../Utils/CustomAlertMessage';
 import AuthService from '../../Api/Api_Services/AuthService';
@@ -89,7 +88,7 @@ function OverAllReferralEarnList() {
                         </div>
                     </div>
                     <div className='table-responsive'>
-                     <DataTableBase columns={Columns} data={userList} pagination />    
+                        <DataTableBase columns={Columns} data={userList} pagination />
                     </div>
                 </div>
             </div>

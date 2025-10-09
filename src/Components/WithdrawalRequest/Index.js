@@ -4,7 +4,6 @@ import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import AuthService from '../../Api/Api_Services/AuthService';
 import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertMessage';
 import moment from 'moment';
-import DataTable from 'react-data-table-component';
 import DataTableBase from '../../Utils/DataTable';
 
 function WithdrawalRequest() {
@@ -217,7 +216,7 @@ function WithdrawalRequest() {
 
                             {activeTab === "REJECTED" && (
                                 <div className='table-responsive'>
-                                      <DataTableBase columns={rejectedWithdrawalList} data={withdrawalRejectedList || []} pagination />
+                                    <DataTableBase columns={rejectedWithdrawalList} data={withdrawalRejectedList || []} pagination />
                                 </div>
                             )}
                         </div>

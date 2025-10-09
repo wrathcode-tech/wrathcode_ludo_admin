@@ -3,9 +3,9 @@ import UserHeader from '../../Layout/UserHeader'
 import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import AuthService from '../../Api/Api_Services/AuthService';
 import { alertErrorMessage } from '../../Utils/CustomAlertMessage';
-import DataTable from "react-data-table-component";
 import { imageUrl } from '../../Api/Api_Config/ApiEndpoints';
 import moment from 'moment';
+import DataTableBase from '../../Utils/DataTable';
 
 function MatchDetails() {
 
@@ -34,13 +34,9 @@ function MatchDetails() {
 
     const columns = [
         { name: "Created At", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-        {
-            name: "Event Id", selector: (row) => row?.eventId, sortable: true, wrap: true
-        },
+        { name: "Event Id", selector: (row) => row?.eventId, sortable: true, wrap: true },
         { name: "Match Amount", selector: (row) => `₹ ${row?.matchAmount}`, sortable: true, wrap: true },
-        {
-            name: "Status", selector: (row) => row.status, cell: (row) => (<span style={{ color: "#1eb5c0" }}>{row?.status}</span>), sortable: true, wrap: true
-        },
+        { name: "Status", selector: (row) => row.status, cell: (row) => (<span style={{ color: "#1eb5c0" }}>{row?.status}</span>), sortable: true, wrap: true },
     ];
     function searchObjects(e) {
         const keysToSearch = ["userId.fullName", "utrNumber", "amount"];
@@ -99,7 +95,7 @@ function MatchDetails() {
                         </div>
                         <div className='table-responsive'>
                             <div className="p-2 mobilep">
-                                <DataTable columns={columns} data={responseData} pagination highlightOnHover striped responsive />
+                                <DataTableBase columns={columns} data={responseData} pagination />
                             </div>
                         </div>
                     </div>

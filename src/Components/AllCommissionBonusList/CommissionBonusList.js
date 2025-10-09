@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import UserHeader from '../../Layout/UserHeader';
-import DataTable from 'react-data-table-component';
 import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import { alertErrorMessage } from '../../Utils/CustomAlertMessage';
 import AuthService from '../../Api/Api_Services/AuthService';

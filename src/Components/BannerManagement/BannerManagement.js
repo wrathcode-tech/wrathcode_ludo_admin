@@ -351,26 +351,12 @@ const BannerManagement = () => {
 
                                         )}
                                     </div>
-
-                                    {/* Uncomment if needed */}
-                                    {/* <div className="col-xl-8">
-      <div className="card">
-        <div className="card-body">
-          <div className="table-responsive">
-            <DataTableBase columns={columns} data={notificationList} />
-          </div>
-        </div>
-      </div>
-    </div> */}
                                 </div>
                             </div>
-
                         </main >
                     </div>
                 </div>
             </div>
-
-
         </>
     );
 };

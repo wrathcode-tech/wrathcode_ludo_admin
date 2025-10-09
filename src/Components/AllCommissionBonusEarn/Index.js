@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import UserHeader from '../../Layout/UserHeader';
-import DataTable from 'react-data-table-component';
 import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import { alertErrorMessage } from '../../Utils/CustomAlertMessage';
 import AuthService from '../../Api/Api_Services/AuthService';
+import DataTableBase from '../../Utils/DataTable';
 
 function OverAllCommissionEarnList() {
     const [userList, setUserList] = useState([]);
@@ -87,18 +87,7 @@ function OverAllCommissionEarnList() {
                             />
                         </div>
                     </div>
-                    <DataTable
-                        columns={Columns}
-                        data={userList}
-                        pagination
-                        paginationServer
-                        paginationTotalRows={totalRows} // ✅ correct total rows
-                        onChangePage={handlePageChange}
-                        onChangeRowsPerPage={handlePerRowsChange}
-                        highlightOnHover
-                        striped
-                        responsive
-                    />
+                    <DataTableBase columns={Columns} data={userList} pagination />
                 </div>
             </div>
         </div>

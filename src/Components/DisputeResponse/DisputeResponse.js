@@ -3,7 +3,6 @@ import UserHeader from '../../Layout/UserHeader';
 import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import AuthService from '../../Api/Api_Services/AuthService';
 import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertMessage';
-import DataTable from 'react-data-table-component';
 import { imageUrl } from '../../Api/Api_Config/ApiEndpoints';
 import moment from 'moment';
 import DataTableBase from '../../Utils/DataTable';
@@ -177,7 +176,7 @@ function DisputeResponse() {
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                         <div className='table-responsive'>
-                     <DataTableBase columns={commonColumns} data={filteredData} pagination />        
+                            <DataTableBase columns={commonColumns} data={filteredData} pagination />
                         </div>
                     </div>
                 </div>
@@ -191,113 +190,113 @@ function DisputeResponse() {
                         <div className='row'>
                             <div className='col-sm-9'>
                                 <div className='event_details'>
-                                <p>
-                                    <strong>Event ID:</strong> {selectedWinningData.eventId || "—"}{" "}
-                                </p>
+                                    <p>
+                                        <strong>Event ID:</strong> {selectedWinningData.eventId || "—"}{" "}
+                                    </p>
 
-                                <p>
-                                    <strong>Created By:</strong> {selectedWinningData.createdBy || "—"}
-                                </p>
+                                    <p>
+                                        <strong>Created By:</strong> {selectedWinningData.createdBy || "—"}
+                                    </p>
 
-                                <p><strong>Joined By:</strong> {selectedWinningData.joinedBy || "—"}</p>
-                                <p><strong>Total Amount:</strong> ₹{selectedWinningData.amount || 0}</p>
+                                    <p><strong>Joined By:</strong> {selectedWinningData.joinedBy || "—"}</p>
+                                    <p><strong>Total Amount:</strong> ₹{selectedWinningData.amount || 0}</p>
 
-                            </div>    
+                                </div>
                             </div>
 
                             <div className='col-sm-3'>
                                 <div className='refundbtn'>
-                                <button
-                                    className="btn btn-success btn-sm ms-2 justify-content-end"
-                                    onClick={() => handleEventRefund(selectedWinningData.eventId, "Refund")}
-                                >
-                                    Refund
-                                </button>
+                                    <button
+                                        className="btn btn-success btn-sm ms-2 justify-content-end"
+                                        onClick={() => handleEventRefund(selectedWinningData.eventId, "Refund")}
+                                    >
+                                        Refund
+                                    </button>
                                 </div>
-                                </div>
+                            </div>
 
                         </div>
 
                         <h5 className="mt-3">User Responses:</h5>
                         <div className='table-responsive'>
-                        <table className="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>UUID</th>
-                                    <th>Amount</th>
-                                    <th>Choice</th>
-                                    <th>Payment Proof</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {selectedWinningData?.allUserResponse?.length > 0 ? (
-                                    selectedWinningData?.allUserResponse.map((u, index) => (
-                                        <tr key={index}>
-                                            <td>{u?.userId?.fullName || "—"}</td>
+                            <table className="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>UUID</th>
+                                        <th>Amount</th>
+                                        <th>Choice</th>
+                                        <th>Payment Proof</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {selectedWinningData?.allUserResponse?.length > 0 ? (
+                                        selectedWinningData?.allUserResponse.map((u, index) => (
+                                            <tr key={index}>
+                                                <td>{u?.userId?.fullName || "—"}</td>
 
-                                            <td>{u?.userId?.uuid || "—"}</td>
-                                            <td>₹{selectedWinningData?.amount || ""}</td>
-                                            <td>{u?.choice || "—"}</td>
-                                            <td>
-                                                {u?.proof ? (
-                                                    <img
-                                                        src={imageUrl + u.proof}
-                                                        alt="proof"
-                                                        style={{ width: 50, height: 50, borderRadius: 5 }}
-                                                    />
-                                                ) : (
-                                                    "—"
-                                                )}
-                                            </td>
-                                            <td>
+                                                <td>{u?.userId?.uuid || "—"}</td>
+                                                <td>₹{selectedWinningData?.amount || ""}</td>
+                                                <td>{u?.choice || "—"}</td>
                                                 <td>
-                                                    <button
-                                                        className="btn btn-success btn-sm me-1"
-                                                        onClick={() =>
-                                                            handleSelectResult(
-                                                                selectedWinningData.eventId,
-                                                                u.userId._id === selectedWinningData.createdBy
-                                                                    ? selectedWinningData.createdBy
-                                                                    : selectedWinningData.joinedBy,
-                                                                "WINNER"
-                                                            )
-                                                        }
-                                                    >
-                                                        Winner
-                                                    </button>
+                                                    {u?.proof ? (
+                                                        <img
+                                                            src={imageUrl + u.proof}
+                                                            alt="proof"
+                                                            style={{ width: 50, height: 50, borderRadius: 5 }}
+                                                        />
+                                                    ) : (
+                                                        "—"
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    <td>
+                                                        <button
+                                                            className="btn btn-success btn-sm me-1"
+                                                            onClick={() =>
+                                                                handleSelectResult(
+                                                                    selectedWinningData.eventId,
+                                                                    u.userId._id === selectedWinningData.createdBy
+                                                                        ? selectedWinningData.createdBy
+                                                                        : selectedWinningData.joinedBy,
+                                                                    "WINNER"
+                                                                )
+                                                            }
+                                                        >
+                                                            Winner
+                                                        </button>
 
-                                                    <button
-                                                        className="btn btn-danger btn-sm"
-                                                        onClick={() =>
-                                                            handleSelectResult(
-                                                                selectedWinningData.eventId,
-                                                                u.userId._id === selectedWinningData.createdBy
-                                                                    ? selectedWinningData.createdBy
-                                                                    : selectedWinningData.joinedBy,
-                                                                "LOSER"
-                                                            )
-                                                        }
-                                                    >
-                                                        Loser
-                                                    </button>
+                                                        <button
+                                                            className="btn btn-danger btn-sm"
+                                                            onClick={() =>
+                                                                handleSelectResult(
+                                                                    selectedWinningData.eventId,
+                                                                    u.userId._id === selectedWinningData.createdBy
+                                                                        ? selectedWinningData.createdBy
+                                                                        : selectedWinningData.joinedBy,
+                                                                    "LOSER"
+                                                                )
+                                                            }
+                                                        >
+                                                            Loser
+                                                        </button>
+
+                                                    </td>
 
                                                 </td>
-
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="6" className="text-center text-muted">
+                                                No user responses found
                                             </td>
                                         </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="6" className="text-center text-muted">
-                                            No user responses found
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-</div>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                         <div className="modal_actions mt-3">
                             <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
                                 Close
