@@ -4,10 +4,10 @@ import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import AuthService from '../../Api/Api_Services/AuthService';
 import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertMessage';
 import moment from 'moment';
-import ReactPaginate from 'react-paginate';
+// import ReactPaginate from 'react-paginate';
 import DataTableBase from '../../Utils/DataTable';
 import { useNavigate } from 'react-router-dom';
-import copy from 'copy-to-clipboard';
+// import copy from 'copy-to-clipboard';
 
 function AllUserList() {
 
@@ -179,9 +179,6 @@ function AllUserList() {
         },
     ];
 
-
-
-
     return (
         <>
             <div class="dashboard_right">
@@ -200,9 +197,9 @@ function AllUserList() {
                         </div>
                         <div className="card-body userlisttable">
                             <div className="table-responsive" width="100%">
-                                <DataTableBase columns={columns} data={userList} pagination={false} />
+                                <DataTableBase columns={columns} data={userList} pagination />
                             </div>
-                            <div className="align-items-center mt-3 d-flex justify-content-between">
+                            {/* <div className="align-items-center mt-3 d-flex justify-content-between">
                                 <div className="pl_row d-flex justify-content-start gap-3 align-items-center perpage_list">
                                     <label htmlFor="rowsPerPage">Rows per page: </label>
                                     <select
@@ -229,7 +226,7 @@ function AllUserList() {
                                     containerClassName={'customPagination'}
                                     activeClassName={'active'}
                                 />
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

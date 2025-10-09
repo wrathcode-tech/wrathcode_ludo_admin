@@ -61,6 +61,7 @@ h2 {
     font-size: 14px;
     color: #000;
     font-weight: 600;
+    text-decoration: none;
     border-radius: 6px;
     align-items: center;
     display: flex;
@@ -790,7 +791,7 @@ textarea.input_inb {
 
 
 .tabs_top {
-    flex-wrap: nowrap;
+    flex-wrap: nowrap !important;
     white-space: nowrap;
     overflow: auto;
 }
@@ -974,6 +975,7 @@ ul.customPagination li a {
 
 .dashboard_right .tabs_top li .nav-link.active {
     color: #fff;
+    background-color: #1fb6c2;
 }
 
 .ticket_resolved {
@@ -1571,7 +1573,7 @@ button.closed_btn {
 
     .dashboard_right {
         width: 100%;
-        padding: 0px 20px;
+        padding: 0px 20px 20px;
     }
 
     .userdetails {

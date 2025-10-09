@@ -4,6 +4,7 @@ import DataTable from 'react-data-table-component';
 import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import { alertErrorMessage } from '../../Utils/CustomAlertMessage';
 import AuthService from '../../Api/Api_Services/AuthService';
+import DataTableBase from '../../Utils/DataTable';
 
 function OverAllReferralEarnList() {
     const [userList, setUserList] = useState([]);
@@ -88,18 +89,7 @@ function OverAllReferralEarnList() {
                         </div>
                     </div>
                     <div className='table-responsive'>
-                        <DataTable
-                            columns={Columns}
-                            data={userList}
-                            pagination
-                            paginationServer
-                            paginationTotalRows={totalRows} // ✅ correct total rows
-                            onChangePage={handlePageChange}
-                            onChangeRowsPerPage={handlePerRowsChange}
-                            highlightOnHover
-                            striped
-                            responsive
-                        />
+                     <DataTableBase columns={Columns} data={userList} pagination />    
                     </div>
                 </div>
             </div>

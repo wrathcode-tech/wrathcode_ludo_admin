@@ -385,7 +385,7 @@ const Notification = () => {
                                         <div className="card mb-4 bg-white border shadow-sm">
                                             <div className="card-body d-flex flex-column p-4">
                                                 <h4 className="mb-4 text-dark">Notifications List</h4>
-                                                <DataTableBase columns={columns} data={allUsers} pagination  />
+                                                <DataTableBase columns={columns} data={allUsers} pagination />
                                             </div>
                                         </div>
                                     )}

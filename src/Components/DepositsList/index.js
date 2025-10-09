@@ -141,7 +141,7 @@ function PendingDepositRequest() {
                         </div>
                         <div className="card-body">
                             <div className="table-responsive" width="100%">
-                                <DataTableBase columns={columns} data={pendingDepositRequest} pagination={false} />
+                                <DataTableBase columns={columns} data={pendingDepositRequest} pagination />
                             </div>
                             <div className="align-items-center mt-3 d-flex justify-content-between">
                                 <div className="pl_row d-flex justify-content-start gap-3 align-items-center perpage_list">

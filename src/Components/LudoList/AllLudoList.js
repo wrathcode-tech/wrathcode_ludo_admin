@@ -6,6 +6,7 @@ import { alertErrorMessage } from '../../Utils/CustomAlertMessage';
 import DataTable from 'react-data-table-component';
 import { imageUrl } from '../../Api/Api_Config/ApiEndpoints';
 import moment from 'moment';
+import DataTableBase from '../../Utils/DataTable';
 
 function AllLudoList() {
     const [allData, setAllData] = useState([]);
@@ -151,18 +152,11 @@ function AllLudoList() {
                             />
                         </div>
                     </div>
-                    
-                        <div className='table-responsive'>
-                    <div className="p-2 mobilep">
-                        <DataTable
-                            columns={commonColumns}
-                            data={filteredData}
-                            pagination
-                            highlightOnHover
-                            striped
-                            responsive
-                        />
-                    </div>
+
+                    <div className='table-responsive'>
+                        <div className="p-2 mobilep">
+                            <DataTableBase columns={commonColumns} data={filteredData} pagination />
+                        </div>
                     </div>
                 </div>
             </div>

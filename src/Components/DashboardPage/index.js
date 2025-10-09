@@ -3,6 +3,7 @@ import UserHeader from '../../Layout/UserHeader'
 import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import AuthService from '../../Api/Api_Services/AuthService';
 import { alertErrorMessage } from '../../Utils/CustomAlertMessage';
+import DataTableBase from '../../Utils/DataTable';
 
 function DashboardPage() {
 
@@ -30,7 +31,33 @@ function DashboardPage() {
             LoaderHelper.loaderStatus(false);
         }
     };
-
+    const columns = [
+        {
+            name: "Activity",
+            selector: (row) => row.Activity,
+            sortable: true,
+            cell: (row) => (
+                <div className="td_first" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <div className="product">
+                        <img src="/images/product_img_t.png" alt="activity" width={40} height={40} />
+                    </div>
+                    <div className="title">{row.Activity}</div>
+                </div>
+            ),
+        },
+        {
+            name: "IP Address",
+            selector: (row) => row.adminIP || "-",
+            sortable: true,
+            wrap: true,
+        },
+        {
+            name: "Date - Time",
+            selector: (row) => new Date(row.createdAt).toLocaleString(),
+            sortable: true,
+            wrap: true,
+        },
+    ];
 
     return (
 
@@ -146,35 +173,7 @@ function DashboardPage() {
                     <div className="dashboard_detail_s">
                         <h3>Login Details</h3>
                         <div className='table-responsive'>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th className="first_child">Activity</th>
-                                        <th>IP Address</th>
-                                        <th>Date - Time</th>
-                                        {/* <th>Admin ID</th> */}
-                                        {/* <th className="last_child">User ID</th> */}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {dashboardList?.map((log, index) => (
-                                        <tr key={log._id || index}>
-                                            <td>
-                                                <div className="td_first">
-                                                    <div className="product">
-                                                        <img src="/images/product_img_t.png" alt="activity" />
-                                                    </div>
-                                                    <div className="title">{log.Activity}</div>
-                                                </div>
-                                            </td>
-                                            <td>{log.adminIP || "-"}</td>
-                                            <td>{new Date(log.createdAt).toLocaleString()}</td>
-                                            {/* <td>{log.adminId || "-"}</td> */}
-                                            {/* <td>{log.userId || "-"}</td> */}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                            <DataTableBase columns={columns} data={dashboardList} pagination />
                         </div>
                     </div>
                 </div>

@@ -5,6 +5,7 @@ import AuthService from '../../Api/Api_Services/AuthService';
 import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertMessage';
 import moment from 'moment';
 import DataTable from 'react-data-table-component';
+import DataTableBase from '../../Utils/DataTable';
 
 function UserKyc() {
     const [kycPendingList, setKycPendingList] = useState([]);
@@ -236,52 +237,20 @@ function UserKyc() {
                         <div className="p-4">
                             {activeTab === "PENDING" && (
                                 <div className='table-responsive'>
-                                <DataTable
-                                    columns={PendingKycList}
-                                    data={kycPendingList}
-                                    pagination
-                                    highlightOnHover
-                                    striped
-                                    responsive
-                                    paginationPerPage={rowsPerPage}
-                                    paginationRowsPerPageOptions={[rowsPerPage]}
-                                    onChangePage={(page) => setCurrentPage(page)}
-                                    noDataComponent="No pending records found"
-                                />
+                    <DataTableBase columns={PendingKycList} data={kycPendingList || []} pagination />
+
                                 </div>
                             )}
 
                             {activeTab === "APPROVED" && (
                                  <div className='table-responsive'>
-                                <DataTable
-                                    columns={ApprovedKycList}
-                                    data={kycApprovedList}
-                                    pagination
-                                    highlightOnHover
-                                    striped
-                                    responsive
-                                    paginationPerPage={rowsPerPage}
-                                    paginationRowsPerPageOptions={[rowsPerPage]}
-                                    onChangePage={(page) => setCurrentPage(page)}
-                                    noDataComponent="No approved records found"
-                                />
+                                <DataTableBase columns={ApprovedKycList} data={kycApprovedList || []} pagination />
                                 </div>
                             )}
 
                             {activeTab === "REJECTED" && (
                                 <div className='table-responsive'>
-                                <DataTable
-                                    columns={RejectedKycList}
-                                    data={kycRejectedList}
-                                    pagination
-                                    highlightOnHover
-                                    striped
-                                    responsive
-                                    paginationPerPage={rowsPerPage}
-                                    paginationRowsPerPageOptions={[rowsPerPage]}
-                                    onChangePage={(page) => setCurrentPage(page)}
-                                    noDataComponent="No rejected records found"
-                                />
+                                <DataTableBase columns={RejectedKycList} data={kycRejectedList || []} pagination />
                                 </div>
                             )}
                         </div>

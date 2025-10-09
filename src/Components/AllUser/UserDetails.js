@@ -28,7 +28,7 @@ function UserDetails() {
   const [userCommissionData, setUserCommissionData] = useState([]);
   const [userBankData, setUserBankData] = useState([]);
   const [gameData, setGameData] = useState([]);
-
+  const [activeTab, setActiveTab] = useState("UserProfile");
 
 
 
@@ -49,11 +49,11 @@ function UserDetails() {
   // Api functions start header
   useEffect(() => {
     handleUserDetails();
-    // handleUserGameTransaction();
-    // handleUserKycDetails();
-    // handleUserBankDetails();
-    // handleReferAndEarn();
-    // handleUserCommissionDetails()
+    handleUserGameTransaction();
+    handleUserKycDetails();
+    handleUserBankDetails();
+    handleUserReferralDetails();
+    handleUserCommissionDetails()
   }, []);
 
 
@@ -443,16 +443,75 @@ function UserDetails() {
     { name: "Net Credited Amount", selector: (row) => row?.notCredit, sortable: true },
   ];
   const UserCommissionDetails = [
-    { name: "Sr. No.", selector: (row, index) => index + 1, width: "80px" },
-    { name: "User Name", selector: (row) => row?.userName ? row?.userName : "-----", sortable: true },
-    { name: "Mobile Number", selector: (row) => row?.mobileNumber ? row?.mobileNumber : "-----", sortable: true },
-    { name: "Referred User Id", selector: (row) => row?.uuid ? row?.uuid : "-----", sortable: true },
-    { name: "Referral Bonus", selector: (row) => row?.referralBonus ? row?.referralBonus : "-----", sortable: true },
-    { name: "Referrer Bonus", selector: (row) => row?.referrerBonus ? row?.referrerBonus : "-----", sortable: true },
-    { name: "Date & Time", width: "180px", selector: (row) => moment(row?.createdAt).format("DD-MM-YYYY LT"), sortable: true },
-    { name: "Description", selector: (row) => row?.description ? row?.description : "-----", sortable: true },
-
+    {
+      name: "Sr. No.",
+      selector: (row, index) => index + 1,
+      width: "80px",
+      sortable: false,
+    },
+    {
+      name: "User Name",
+      selector: (row) => row?.userId?.fullName || "-----",
+      sortable: true,
+    },
+    {
+      name: "User UUID",
+      selector: (row) => row?.userId?.uuid || "-----",
+      sortable: true,
+    },
+    {
+      name: "Sponsor Name",
+      selector: (row) => row?.sponserId?.fullName || "-----",
+      sortable: true,
+    },
+    {
+      name: "Sponsor UUID",
+      selector: (row) => row?.sponserId?.uuid || "-----",
+      sortable: true,
+    },
+    {
+      name: "Commission Amount",
+      selector: (row) => `₹ ${row?.commissionAmount?.toFixed(2) || 0}`,
+      sortable: true,
+    },
+    {
+      name: "Total Bet Amount",
+      selector: (row) => `₹ ${row?.totalBetAmmount || 0}`,
+      sortable: true,
+    },
+    {
+      name: "Transaction Type",
+      selector: (row) => row?.transactionType || "-----",
+      sortable: true,
+    },
+    {
+      name: "Status",
+      selector: (row) => row?.status || "-----",
+      sortable: true,
+    },
+    {
+      name: "Wallet Type",
+      selector: (row) => row?.walletType || "-----",
+      sortable: true,
+    },
+    {
+      name: "Date & Time",
+      width: "180px",
+      selector: (row) => moment(row?.createdAt).format("DD-MM-YYYY hh:mm A"),
+      sortable: true,
+    },
   ];
+
+  const resetInput = () => {
+    // setSuggestions([]);
+    // setUserInput("");
+    // setNotificationTitle("");
+    // setNotification("");
+    // setNotificationLink("");
+    // setSelectedUsers([]);
+  };
+
+
 
 
   return (
@@ -477,108 +536,23 @@ function UserDetails() {
                   </div>
                 </div>
               </div>
-              <ul className="nav nav-pills mb-3 tabs_top" id="pills-tab" role="tablist">
-                {/* 1️⃣ User Profile */}
-                <li className="nav-item" role="presentation">
-                  <button
-                    className="m-0 nav-link active"
-                    id="pills-one-tab"
-                    data-bs-toggle="pill"
-                    data-bs-target="#pills-one"
-                    type="button"
-                    role="tab"
-                    aria-controls="pills-one"
-                    aria-selected="true"
-                  >
-                    User Profile
-                  </button>
-                </li>
-
-                {/* 2️⃣ Game Transactions */}
-                <li className="nav-item" role="presentation">
-                  <button
-                    className="m-0 nav-link"
-                    id="pills-two-tab"
-                    data-bs-toggle="pill"
-                    data-bs-target="#pills-two"
-                    type="button"
-                    role="tab"
-                    aria-controls="pills-two"
-                    aria-selected="false"
-                    onClick={() => handleUserGameTransaction(skip, itemsPerPage)}
-                  >
-                    Game Transactions
-                  </button>
-                </li>
-
-                {/* 3️⃣ User KYC */}
-                <li className="nav-item" role="presentation">
-                  <button
-                    className="m-0 nav-link"
-                    id="pills-three-tab"
-                    data-bs-toggle="pill"
-                    data-bs-target="#pills-three"
-                    type="button"
-                    role="tab"
-                    aria-controls="pills-three"
-                    aria-selected="false"
-                    onClick={handleUserKycDetails}
-                  >
-                    User KYC
-                  </button>
-                </li>
-
-                {/* 4️⃣ Bank / UPI */}
-                <li className="nav-item" role="presentation">
-                  <button
-                    className="m-0 nav-link"
-                    id="pills-four-tab"
-                    data-bs-toggle="pill"
-                    data-bs-target="#pills-four"
-                    type="button"
-                    role="tab"
-                    aria-controls="pills-four"
-                    aria-selected="false"
-                    onClick={handleUserBankDetails}
-                  >
-                    Bank / UPI
-                  </button>
-                </li>
-
-                {/* 5️⃣ Referral Details */}
-                <li className="nav-item" role="presentation">
-                  <button
-                    className="m-0 nav-link"
-                    id="pills-five-tab"
-                    data-bs-toggle="pill"
-                    data-bs-target="#pills-five"
-                    type="button"
-                    role="tab"
-                    aria-controls="pills-five"
-                    aria-selected="false"
-                    onClick={handleUserReferralDetails}
-                  >
-                    Referral Details
-                  </button>
-                </li>
-
-                {/* 6️⃣ Commission Details */}
-                <li className="nav-item" role="presentation">
-                  <button
-                    className="m-0 nav-link"
-                    id="pills-six-tab"
-                    data-bs-toggle="pill"
-                    data-bs-target="#pills-six"
-                    type="button"
-                    role="tab"
-                    aria-controls="pills-six"
-                    aria-selected="false"
-                    onClick={handleUserCommissionDetails}
-
-                  >
-                    Commission Details
-                  </button>
-                </li>
+              <ul className="nav nav-pills mb-3 tabs_top">
+                {["UserProfile", "GameTransactions", "UserKYC", "Bank/UPI", "ReferralDetails", "CommissionDetails"].map(tab => (
+                  <li key={tab} className="nav-item" onClick={resetInput}>
+                    <button
+                      className={`m-0 nav-link ${activeTab === tab ? "active" : ""}`}
+                      type="button"
+                      onClick={() => setActiveTab(tab)}
+                    >
+                      {tab === "UserProfile" ? "User Profile" :
+                        tab === "GameTransactions" ? "Game Transactions" :
+                          tab === "UserKYC" ? "User KYC" :
+                            tab === "Bank/UPI" ? "Bank / UPI" :
+                              tab === "ReferralDetails" ? "Referral Details" :
+                                "Commission Details"}
+                    </button>
+                  </li>
+                ))}
               </ul>
             </div>
           </header>
@@ -590,30 +564,31 @@ function UserDetails() {
                     <div className="tab-content">
 
                       {/* User Profile Tab */}
-                      <div className="tab-pane fade show active" id="pills-one" role="tabpanel" aria-labelledby="pills-one-tab">
-                        <div className="list_profile">
-                          <div className="profile_lft">
-                            {userDetails?.avatar && userDetails?.avatar !== "" ? (
-                              <img
-                                className="img-account-profile rounded-circle mb-2 mb-lg-0"
-                                crossOrigin="anonymous"
-                                src={ApiConfig + userDetails?.avatar}
-                                alt="avatar"
-                              />
-                            ) : (
-                              <img
-                                className="img-account-profile rounded-circle mb-2 mb-lg-0"
-                                src="/images/user_profile_img.png"
-                                alt="dummy"
-                              />
-                            )}
-                            <div className="col-lg-12">
-                              <span className="fw-bolder fs-6 text-dark">
-                                {userDetails?.fullName ? userDetails?.fullName : userDetails?.userName}
-                              </span>
+                      {activeTab === "UserProfile" && (
+                        <div className="tab-pane fade show active" id="pills-one" role="tabpanel" aria-labelledby="pills-one-tab">
+                          <div className="list_profile">
+                            <div className="profile_lft">
+                              {userDetails?.avatar && userDetails?.avatar !== "" ? (
+                                <img
+                                  className="img-account-profile rounded-circle mb-2 mb-lg-0"
+                                  crossOrigin="anonymous"
+                                  src={ApiConfig + userDetails?.avatar}
+                                  alt="avatar"
+                                />
+                              ) : (
+                                <img
+                                  className="img-account-profile rounded-circle mb-2 mb-lg-0"
+                                  src="/images/user_profile_img.png"
+                                  alt="dummy"
+                                />
+                              )}
+                              <div className="col-lg-12">
+                                <span className="fw-bolder fs-6 text-dark">
+                                  {userDetails?.fullName ? userDetails?.fullName : userDetails?.userName}
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                          {/* <button
+                            {/* <button
                             type="button"
                             className="btn btn-primary btn-muted"
                             data-bs-toggle="modal"
@@ -621,169 +596,198 @@ function UserDetails() {
                           >
                             <i className="far fa-edit"></i>
                           </button> */}
+                          </div>
+
+                          <div className="doc_img py-3 px-2 my-2">
+                            {/* 🔹 Basic Info */}
+                            <div className="row mb-3">
+                              <label className="col-lg-5 fw-bold text-muted">Full Name:</label>
+                              <div className="col-lg-7">
+                                <span className="fw-bolder fs-6 text-dark">{userDetails?.fullName || "N/A"}</span>
+                              </div>
+                            </div>
+
+
+                            <div className="row mb-3">
+                              <label className="col-lg-5 fw-bold text-muted">Email Id:</label>
+                              <div className="col-lg-7">
+                                <span className="fw-bolder fs-6 text-dark">{userDetails?.emailId || "N/A"}</span>
+                              </div>
+                            </div>
+
+                            <div className="row mb-3">
+                              <label className="col-lg-5 fw-bold text-muted">UUID:</label>
+                              <div className="col-lg-7">
+                                <span className="fw-bolder fs-6 text-dark">{userDetails?.uuid || "N/A"}</span>
+                              </div>
+                            </div>
+                            <div className="row mb-3">
+                              <label className="col-lg-5 fw-bold text-muted">Mobile Number:</label>
+                              <div className="col-lg-7">
+                                <span className="fw-bolder fs-6 text-dark">{userDetails?.mobileNumber || "N/A"}</span>
+                              </div>
+                            </div>
+
+                            <div className="row mb-3">
+                              <label className="col-lg-5 fw-bold text-muted">KYC Status:</label>
+                              <div className="col-lg-7">
+                                <span className="fw-bolder fs-6 text-dark">{userDetails?.kycVerified || "N/A"}</span>
+                              </div>
+                            </div>
+
+                            {/* 🔹 Referral Info */}
+                            <div className="row mb-3">
+                              <label className="col-lg-5 fw-bold text-muted">Referral Code:</label>
+                              <div className="col-lg-7">
+                                <span className="fw-bolder fs-6 text-dark">{userDetails?.referCodeOfUser || "N/A"}</span>
+                              </div>
+                            </div>
+
+                            <div className="row mb-3">
+                              <label className="col-lg-5 fw-bold text-muted">Total Referral Bonus:</label>
+                              <div className="col-lg-7">
+                                <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.totalRefferalBlanceByUser || 0}</span>
+                              </div>
+                            </div>
+
+                            {/* 🔹 Wallet Section */}
+                            <hr />
+                            <h5 className="fw-bold mb-3 text-primary">Wallet Details</h5>
+
+                            <div className="row align-items-center mb-3">
+                              <label className="col-lg-5 fw-bold text-muted">Available Balance:</label>
+                              <div className="col-lg-4">
+                                <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.availableBalance || 0}</span>
+                              </div>
+                              <div className="col-lg-3 text-end">
+                                <button
+                                  type="button"
+                                  className="btn btn-sm btn-success"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#Deposit_modal"
+                                >
+                                  + Add Deposit Cash
+                                </button>
+                              </div>
+                            </div>
+
+                            <div className="row align-items-center mb-3">
+                              <label className="col-lg-5 fw-bold text-muted">Winning Balance:</label>
+                              <div className="col-lg-4">
+                                <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.availableWinningBalance || 0}</span>
+                              </div>
+                              <div className="col-lg-3 text-end">
+                                <button type="button" className="btn btn-sm btn-success" data-bs-toggle="modal"
+                                  data-bs-target="#winning_modal" >
+                                  + Add Winning Cash
+                                </button>
+                              </div>
+                            </div>
+
+                            <div className="row mb-3">
+                              <label className="col-lg-5 fw-bold text-muted">Referral Bonus Wallet:</label>
+                              <div className="col-lg-7">
+                                <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.availableRefferalBonusBalance || 0}</span>
+                              </div>
+                            </div>
+
+                            <div className="row mb-3">
+                              <label className="col-lg-5 fw-bold text-muted">Commission Bonus Wallet:</label>
+                              <div className="col-lg-7">
+                                <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.availableUserCommissionBonusBalance || 0}</span>
+                              </div>
+                            </div>
+
+                            <div className="row mb-3">
+                              <label className="col-lg-5 fw-bold text-muted">Locked Balance:</label>
+                              <div className="col-lg-7">
+                                <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.availableLockedBalance || 0}</span>
+                              </div>
+                            </div>
+
+                            {/* 🔹 Totals */}
+                            <hr />
+                            <h5 className="fw-bold mb-3 text-primary">Transaction Summary</h5>
+
+                            <div className="row mb-3">
+                              <label className="col-lg-5 fw-bold text-muted">Total Deposits:</label>
+                              <div className="col-lg-7">
+                                <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.totalDepositByUser || 0}</span>
+                              </div>
+                            </div>
+
+                            <div className="row mb-3">
+                              <label className="col-lg-5 fw-bold text-muted">Total Withdrawals:</label>
+                              <div className="col-lg-7">
+                                <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.totalWithdrawalByUser || 0}</span>
+                              </div>
+                            </div>
+
+                            <div className="row mb-3">
+                              <label className="col-lg-5 fw-bold text-muted">Total Commission Earned:</label>
+                              <div className="col-lg-7">
+                                <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.totalCommissionBalanceByUser || 0}</span>
+                              </div>
+                            </div>
+                            <hr />
+                          </div>
                         </div>
-
-                        <div className="doc_img py-3 px-2 my-2">
-                          {/* 🔹 Basic Info */}
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">Full Name:</label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">{userDetails?.fullName || "N/A"}</span>
-                            </div>
-                          </div>
-
-
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">Email Id:</label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">{userDetails?.emailId || "N/A"}</span>
-                            </div>
-                          </div>
-
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">UUID:</label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">{userDetails?.uuid || "N/A"}</span>
-                            </div>
-                          </div>
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">Mobile Number:</label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">{userDetails?.mobileNumber || "N/A"}</span>
-                            </div>
-                          </div>
-
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">KYC Status:</label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">{userDetails?.kycVerified || "N/A"}</span>
-                            </div>
-                          </div>
-
-                          {/* 🔹 Referral Info */}
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">Referral Code:</label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">{userDetails?.referCodeOfUser || "N/A"}</span>
-                            </div>
-                          </div>
-
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">Total Referral Bonus:</label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.totalRefferalBlanceByUser || 0}</span>
-                            </div>
-                          </div>
-
-                          {/* 🔹 Wallet Section */}
-                          <hr />
-                          <h5 className="fw-bold mb-3 text-primary">Wallet Details</h5>
-
-                          <div className="row align-items-center mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">Available Balance:</label>
-                            <div className="col-lg-4">
-                              <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.availableBalance || 0}</span>
-                            </div>
-                            <div className="col-lg-3 text-end">
-                              <button type="button" className="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#Deposit_modal"
-                              >
-                                + Add Deposit Cash
-                              </button>
-                            </div>
-                          </div>
-
-                          <div className="row align-items-center mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">Winning Balance:</label>
-                            <div className="col-lg-4">
-                              <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.availableWinningBalance || 0}</span>
-                            </div>
-                            <div className="col-lg-3 text-end">
-                              <button type="button" className="btn btn-sm btn-success" data-bs-toggle="modal"
-                                data-bs-target="#winning_modal" >
-                                + Add Winning Cash
-                              </button>
-                            </div>
-                          </div>
-
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">Referral Bonus Wallet:</label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.availableRefferalBonusBalance || 0}</span>
-                            </div>
-                          </div>
-
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">Commission Bonus Wallet:</label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.availableUserCommissionBonusBalance || 0}</span>
-                            </div>
-                          </div>
-
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">Locked Balance:</label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.availableLockedBalance || 0}</span>
-                            </div>
-                          </div>
-
-                          {/* 🔹 Totals */}
-                          <hr />
-                          <h5 className="fw-bold mb-3 text-primary">Transaction Summary</h5>
-
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">Total Deposits:</label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.totalDepositByUser || 0}</span>
-                            </div>
-                          </div>
-
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">Total Withdrawals:</label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.totalWithdrawalByUser || 0}</span>
-                            </div>
-                          </div>
-
-                          <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">Total Commission Earned:</label>
-                            <div className="col-lg-7">
-                              <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.totalCommissionBalanceByUser || 0}</span>
-                            </div>
-                          </div>
-                          <hr />
-                        </div>
-                      </div>
-
+                      )}
                       {/* 🔹 Tab Contents */}
                       <div className="tab-content" id="pills-tabContent">
-                        {/* 2️⃣ User Game Details Tab */}
-                        <div className="tab-pane fade" id="pills-two" role="tabpanel" aria-labelledby="pills-two-tab">
-                          <DataTableBase
-                            columns={UserGameDetails}
-                            data={gameData || []}
-                            pagination={false}
-                          />
-                        </div>
+                        {/* 2️⃣ Game Transactions */}
+                        {activeTab === "GameTransactions" && (
+                          <div className="tab-pane fade show active">
+                            <DataTableBase
+                              columns={UserGameDetails}
+                              data={gameData || []}
+                              pagination
+                            />
+                          </div>
+                        )}
 
-                        {/* 3️⃣ User KYC Details Tab */}
-                        <div className="tab-pane fade show active" id="pills-three" role="tabpanel" aria-labelledby="pills-three-tab">
-                          <DataTableBase columns={UserKycDetails} data={userKycDetail || []} />
-                        </div>
+                        {/* 3️⃣ User KYC */}
+                        {activeTab === "UserKYC" && (
+                          <div className="tab-pane fade show active">
+                            <DataTableBase
+                              columns={UserKycDetails}
+                              data={userKycDetail || []}
+                            />
+                          </div>
+                        )}
 
-                        {/* 4️⃣ User Bank / UPI Details Tab */}
-                        <div className="tab-pane fade" id="pills-four" role="tabpanel" aria-labelledby="pills-four-tab">
-                          <DataTableBase columns={BankDetailscolumns} data={userBankData || []} pagination />
-                        </div>
+                        {/* 4️⃣ Bank / UPI */}
+                        {activeTab === "Bank/UPI" && (
+                          <div className="tab-pane fade show active">
+                            <DataTableBase
+                              columns={BankDetailscolumns}
+                              data={userBankData || []}
+                              pagination
+                            />
+                          </div>
+                        )}
 
-                        {/* 5️⃣ User Referral Details Tab */}
-                        <div className="tab-pane fade" id="pills-five" role="tabpanel" aria-labelledby="pills-five-tab">
-                          <DataTableBase columns={UserReferralDetails} data={referData} pagination />
-                        </div>
+                        {/* 5️⃣ Referral Details */}
+                        {activeTab === "ReferralDetails" && (
+                          <div className="tab-pane fade show active">
+                            <DataTableBase
+                              columns={UserReferralDetails}
+                              data={referData || []}
+                              pagination
+                            />
+                          </div>
+                        )}
 
-                        {/* 6️⃣ User Commission Details Tab */}
-                        <div className="tab-pane fade" id="pills-six" role="tabpanel" aria-labelledby="pills-six-tab">
-                          <DataTableBase columns={UserCommissionDetails} data={userCommissionData} pagination />
-                        </div>
+                        {/* 6️⃣ Commission Details */}
+                        {activeTab === "CommissionDetails" && (
+                          <div className="tab-pane fade show active">
+                            <DataTableBase
+                              columns={UserCommissionDetails}
+                              data={userCommissionData || []}
+                              pagination
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -935,9 +939,9 @@ function UserDetails() {
         <div
           className="modal fade"
           id="Deposit_modal"
-          tabindex="-1"
-          ariaLabelledby="add_modalLabel"
-          ariaHidden="true"
+          tabIndex="-1"
+          aria-labelledby="add_modalLabel"
+          aria-hidden="true"
         >
           <div className="modal-dialog modal-l modal-dialog-centered">
             <div className="modal-content">
@@ -1118,8 +1122,8 @@ function UserDetails() {
           </div>
         </div>
         {/* Image Detail  */}
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }
 export default UserDetails;

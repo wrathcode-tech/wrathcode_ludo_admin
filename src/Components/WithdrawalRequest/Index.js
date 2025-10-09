@@ -5,6 +5,7 @@ import AuthService from '../../Api/Api_Services/AuthService';
 import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertMessage';
 import moment from 'moment';
 import DataTable from 'react-data-table-component';
+import DataTableBase from '../../Utils/DataTable';
 
 function WithdrawalRequest() {
     const [activeTab, setActiveTab] = useState("PENDING");
@@ -202,53 +203,21 @@ function WithdrawalRequest() {
 
                         <div className="p-4">
                             {activeTab === "PENDING" && (
-                              <div className='table-responsive'>  
-                                <DataTable
-                                    columns={withdrawalRequest}
-                                    data={withdrawalRequestData}
-                                    pagination
-                                    highlightOnHover
-                                    striped
-                                    responsive
-                                    paginationPerPage={rowsPerPage}
-                                    paginationRowsPerPageOptions={[rowsPerPage]}
-                                    onChangePage={(page) => setCurrentPage(page)}
-                                    noDataComponent="No pending records found"
-                                />
+                                <div className='table-responsive'>
+                                    <DataTableBase columns={withdrawalRequest} data={withdrawalRequestData || []} pagination />
+
                                 </div>
                             )}
 
                             {activeTab === "APPROVED" && (
-                              <div className='table-responsive'>  
-                                <DataTable
-                                    columns={approvedWithdrawalList}
-                                    data={withdrawalApprovedList}
-                                    pagination
-                                    highlightOnHover
-                                    striped
-                                    responsive
-                                    paginationPerPage={rowsPerPage}
-                                    paginationRowsPerPageOptions={[rowsPerPage]}
-                                    onChangePage={(page) => setCurrentPage(page)}
-                                    noDataComponent="No approved records found"
-                                />
+                                <div className='table-responsive'>
+                                    <DataTableBase columns={approvedWithdrawalList} data={withdrawalApprovedList || []} pagination />
                                 </div>
                             )}
 
                             {activeTab === "REJECTED" && (
                                 <div className='table-responsive'>
-                                <DataTable
-                                    columns={rejectedWithdrawalList}
-                                    data={withdrawalRejectedList}
-                                    pagination
-                                    highlightOnHover
-                                    striped
-                                    responsive
-                                    paginationPerPage={rowsPerPage}
-                                    paginationRowsPerPageOptions={[rowsPerPage]}
-                                    onChangePage={(page) => setCurrentPage(page)}
-                                    noDataComponent="No rejected records found"
-                                />
+                                      <DataTableBase columns={rejectedWithdrawalList} data={withdrawalRejectedList || []} pagination />
                                 </div>
                             )}
                         </div>

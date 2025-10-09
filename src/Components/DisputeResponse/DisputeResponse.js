@@ -6,6 +6,7 @@ import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertM
 import DataTable from 'react-data-table-component';
 import { imageUrl } from '../../Api/Api_Config/ApiEndpoints';
 import moment from 'moment';
+import DataTableBase from '../../Utils/DataTable';
 
 function DisputeResponse() {
     const [allData, setAllData] = useState([]);
@@ -176,14 +177,7 @@ function DisputeResponse() {
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                         <div className='table-responsive'>
-                            <DataTable
-                                columns={commonColumns}
-                                data={filteredData}
-                                pagination
-                                highlightOnHover
-                                striped
-                                responsive
-                            />
+                     <DataTableBase columns={commonColumns} data={filteredData} pagination />        
                         </div>
                     </div>
                 </div>
