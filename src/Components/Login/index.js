@@ -58,10 +58,10 @@ function LoginPage() {
         <div className="login_section">
             <div className="left_side_cnt">
                 <h1>
-                    Welcome to <span>Battle Ludo</span> Admin Dashboard
+                    Welcome to <span>PlayFista Ludo</span> Admin Dashboard
                 </h1>
                 <div className="logo_vector">
-                    <img src="/images/logo_login.svg" alt="logo" />
+                    <img src="/images/logoplayfista.png" alt="logo" />
                 </div>
             </div>
 

@@ -37,8 +37,8 @@ const AuthService = {
   },
 
   getOtp: async (emailId) => {
-    const { baseUsers, getOtp } = ApiConfig;
-    const url = baseUsers + getOtp;
+    const { baseUrl, getOtp } = ApiConfig;
+    const url = baseUrl + getOtp;
     const params = {
       email_or_phone: emailId,
       resent: true,

@@ -8,10 +8,12 @@ import moment from 'moment';
 import DataTableBase from '../../Utils/DataTable';
 
 function DepositRequest() {
-
     const [pendingDepositRequest, setPendingDepositRequest] = useState([]);
     const [allData, setAllData] = useState([]);
 
+    useEffect(() => {
+        handlePendingDepositReq();
+    }, [])
     const handlePendingDepositReq = async (page, pageSize) => {
         try {
             LoaderHelper.loaderStatus(true);
@@ -19,6 +21,10 @@ function DepositRequest() {
             if (result?.success) {
                 setAllData(result?.data);
                 setPendingDepositRequest(result?.data);
+                if (!sessionStorage.getItem("kycReloaded")) {
+                    sessionStorage.setItem("kycReloaded", "true");
+                    window.location.reload();
+                }
             } else {
                 // alertErrorMessage(result?.message);
             }
@@ -113,10 +119,10 @@ function DepositRequest() {
                             </div>
                         </div>
                         <div className="card-body">
-                     
-                                <DataTableBase columns={columns} data={pendingDepositRequest} pagination />
-                            </div>
-                       
+
+                            <DataTableBase columns={columns} data={pendingDepositRequest} pagination />
+                        </div>
+
                     </div>
                 </div>
             </div >

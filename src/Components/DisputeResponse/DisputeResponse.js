@@ -165,7 +165,7 @@ function DisputeResponse() {
         <div className="dashboard_right">
             <UserHeader />
             <div className="dashboard_outer_s">
-                <h2>All Ludo Games List</h2>
+                <h2>Dispute Ludo Games List</h2>
                 <div className="dashboard_detail_s user_list_table user_summary_t">
                     <div className="p-2">
                         <input
@@ -175,8 +175,8 @@ function DisputeResponse() {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
-                            <DataTableBase columns={commonColumns} data={filteredData} pagination />
-                       
+                        <DataTableBase columns={commonColumns} data={filteredData} pagination />
+
                     </div>
                 </div>
             </div>

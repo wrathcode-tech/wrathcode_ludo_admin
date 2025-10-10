@@ -19,14 +19,18 @@ function UserKyc() {
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [rejectReason, setRejectReason] = useState("");
 
+
     const handlePendingList = async () => {
         try {
             LoaderHelper.loaderStatus(true);
             const result = await AuthService.getpendingKycList();
             if (result?.success) {
                 setKycPendingList(result?.data?.reverse());
-            } else {
-                // alertErrorMessage(result?.message);
+                // Reload page only once
+                if (!sessionStorage.getItem("kycReloaded")) {
+                    sessionStorage.setItem("kycReloaded", "true");
+                    window.location.reload();
+                }
             }
         } catch (error) {
             alertErrorMessage(error?.message);
@@ -34,10 +38,10 @@ function UserKyc() {
             LoaderHelper.loaderStatus(false);
         }
     };
-
     useEffect(() => {
         handlePendingList();
     }, []);
+
 
     const handleApprovedList = async () => {
         try {
@@ -102,6 +106,8 @@ function UserKyc() {
         }
     }, [activeTab]);
 
+
+
     // ---------------- Columns ----------------
     const PendingKycList = [
         { name: "SR No", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
@@ -135,7 +141,9 @@ function UserKyc() {
                     <button
                         className="btn btn-success btn-sm"
                         onClick={() => handleKycStatus(row._id, "APPROVED")}
+
                     >
+
                         Approve
                     </button>
                     <button
@@ -149,6 +157,7 @@ function UserKyc() {
             ignoreRowClick: true,
             allowOverflow: true,
             button: true,
+
         },
     ];
 
@@ -235,15 +244,15 @@ function UserKyc() {
 
                         <div className="p-4">
                             {activeTab === "PENDING" && (
-                                    <DataTableBase columns={PendingKycList} data={kycPendingList || []} pagination />
+                                <DataTableBase columns={PendingKycList} data={kycPendingList || []} pagination />
                             )}
 
                             {activeTab === "APPROVED" && (
-                                    <DataTableBase columns={ApprovedKycList} data={kycApprovedList || []} pagination />
+                                <DataTableBase columns={ApprovedKycList} data={kycApprovedList || []} pagination />
                             )}
 
                             {activeTab === "REJECTED" && (
-                                    <DataTableBase columns={RejectedKycList} data={kycRejectedList || []} pagination />
+                                <DataTableBase columns={RejectedKycList} data={kycRejectedList || []} pagination />
                             )}
                         </div>
                     </div>
