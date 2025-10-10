@@ -23,7 +23,7 @@ const Sidebar = () => {
             <div class="leftside_menu">
                 <div class="leftside_items">
                     <div class="logo">
-                        <img src="/images/logoplayfista.png" alt="logo" />
+                        <Link to="/dashboard/home" onClick={() => setActived("home")}><img src="/images/logoplayfista.png" alt="logo" /></Link>
                     </div>
                     <div class="toggle_menu" id="toggleBtn">
                         <img src="/images/toggle_icon.svg" alt="toggle" />
@@ -31,15 +31,11 @@ const Sidebar = () => {
                     <div class="navi_sidebar" id="content">
                         <div className="responsive_scrool">
                             <ul className="list-unstyled ps-0">
-
-                                {/* 🏠 Dashboard */}
                                 <li className={actived === "home" ? "active" : ""}>
                                     <Link to="/dashboard/home" onClick={() => setActived("home")}>
                                         <img src="/images/dashboard_icon.png" alt="Dashboard" />Dashboard
                                     </Link>
                                 </li>
-
-                                {/* 👥 User Management */}
                                 <li className={actived === "userList" ? "active" : ""}>
                                     <Link to="/dashboard/userList" onClick={() => setActived("userList")}>
                                         <img src="/images/user_icon.png" alt="User List" />User List
@@ -51,8 +47,6 @@ const Sidebar = () => {
                                         <img src="/images/user_kyc_icon.png" alt="User KYC" />User KYC Verification
                                     </Link>
                                 </li>
-
-                                {/* 💰 Finance Management */}
                                 <li className={actived === "DespositRequest" ? "active" : ""}>
                                     <Link to="/dashboard/DespositRequest" onClick={() => setActived("DespositRequest")}>
                                         <img src="/images/deposit_icon.png" alt="Deposit Requests" />Deposit Requests
