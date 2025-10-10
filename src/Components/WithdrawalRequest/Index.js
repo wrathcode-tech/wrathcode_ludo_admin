@@ -202,22 +202,19 @@ function WithdrawalRequest() {
 
                         <div className="p-4">
                             {activeTab === "PENDING" && (
-                                <div className='table-responsive'>
                                     <DataTableBase columns={withdrawalRequest} data={withdrawalRequestData || []} pagination />
 
-                                </div>
+                               
                             )}
 
                             {activeTab === "APPROVED" && (
-                                <div className='table-responsive'>
                                     <DataTableBase columns={approvedWithdrawalList} data={withdrawalApprovedList || []} pagination />
-                                </div>
+                              
                             )}
 
                             {activeTab === "REJECTED" && (
-                                <div className='table-responsive'>
                                     <DataTableBase columns={rejectedWithdrawalList} data={withdrawalRejectedList || []} pagination />
-                                </div>
+                             
                             )}
                         </div>
                     </div>

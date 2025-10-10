@@ -135,7 +135,7 @@ function AddBankDetails() {
                                 </form>
                             )}
 
-                            {activeTab === "list" && <div className="table-responsive"><DataTableBase columns={columns} data={bankList} pagination /></div>}
+                            {activeTab === "list" && <DataTableBase columns={columns} data={bankList} pagination />}
                         </div>
                     </header>
                 </main>

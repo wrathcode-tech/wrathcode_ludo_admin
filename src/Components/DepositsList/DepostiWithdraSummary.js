@@ -95,10 +95,10 @@ function DepostiWithdraSummary() {
                         </div>
                     </div>
                     <div className="card-body">
-                        <div className="table-responsive" width="100%">
+                      
                             <DataTableBase columns={columns} data={userList} pagination />
                         </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>

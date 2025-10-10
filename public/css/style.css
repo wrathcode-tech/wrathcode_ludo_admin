@@ -233,6 +233,7 @@ ul.list_dashboard_cate {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 30px;
+    padding: 0px;
 }
 
 .width-70 {
@@ -414,7 +415,6 @@ body .btn-primary:hover {
     font-weight: 500;
 }
 
-
 .dashboard_outer_s h4 {
     font-weight: 500;
 }
@@ -427,9 +427,15 @@ body .btn-primary:hover {
     display: flex;
     gap: 5px;
     background-color: #eff3fb;
-    padding: 8px;
-    border-radius: 10px;
+    padding: 10px;
+    border-radius: 7px;
     font-size: 14px;
+}
+
+.user_search select {
+    border-color: #9999;
+    border-radius: 4px;
+    padding: 2px;
 }
 
 
@@ -448,7 +454,7 @@ body .btn-primary:hover {
 }
 
 .rdt_Table .rdt_TableCol {
-    padding: 0px 10px !important;
+    padding: 0px 16px !important;
 }
 
 .user_search button {
@@ -752,8 +758,9 @@ textarea.input_inb {
 }
 
 .rdt_TableCell img {
-    width: 50px !important;
+    width: 40px !important;
     padding: 5px;
+    height: auto;
 }
 
 .user_list_table table thead tr th.first_coloum {
@@ -1082,7 +1089,7 @@ button.closed_btn {
 
 .leftside_items .logo {
     max-width: 110px;
-    margin: 7px auto;
+    margin: 18px auto;
 }
 
 
@@ -1289,12 +1296,16 @@ button.closed_btn {
     }
 
     .dashboard_outer_s h4 {
-    font-size: 20px;
-}
+        font-size: 20px;
+    }
 
-.form-control {  font-size:13px; }
-.btn {
-    font-size: 13px !important; }
+    .form-control {
+        font-size: 13px;
+    }
+
+    .btn {
+        font-size: 13px !important;
+    }
 
 }
 
@@ -1303,6 +1314,11 @@ button.closed_btn {
 
     .width-70 {
         width: 100%;
+    }
+
+    body .h1,
+    h1 {
+        font-size: 24px;
     }
 
     textarea.form-control {
@@ -1335,11 +1351,9 @@ button.closed_btn {
         padding: 20px;
     }
 
-
-
     body .h1,
     h1 {
-        font-size: 24px;
+        font-size: 24px !important;
     }
 
     .form-control {
@@ -1406,7 +1420,22 @@ button.closed_btn {
     }
 
     .leftside_items .logo {
-        max-width: 60px;
+        max-width: 90px;
+        margin: 10px auto;
+    }
+
+    .dashboard_right .tabs_top li .nav-link {
+        line-height: 18px;
+        font-size: 13px;
+    }
+
+    .dashboard_outer_s h4 {
+        font-size: 18px;
+        margin-bottom: 12px !important;
+    }
+
+    .form-control {
+    font-size: 12px !important;
     }
 
     .leftside_menu .responsive_scrool {
@@ -1589,8 +1618,8 @@ button.closed_btn {
     }
 
     .page-header-content.pt-4 {
-    padding-top: 0px !important;
-}
+        padding-top: 0px !important;
+    }
 
     .logout_btn {
         position: relative;
@@ -1695,6 +1724,14 @@ button.closed_btn {
         padding-bottom: 15px !important;
     }
 
+label {
+    font-size: 14px;
+}
+
+.dashboard_outer_s form .mb-3 {
+    margin-bottom: 8px !important;
+}
+
 }
 
 @media screen and (max-width:580px) {
@@ -1709,7 +1746,7 @@ button.closed_btn {
 
     body .h1,
     h1 {
-        font-size: 22px;
+        font-size: 22px !important;
     }
 
     .page-header-icon {
@@ -1722,6 +1759,7 @@ button.closed_btn {
 
     .dashboard_right h3 {
         font-size: 18px;
+        padding-bottom: 5px;
     }
 
     .custom-modal .btn {

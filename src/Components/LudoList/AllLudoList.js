@@ -152,11 +152,10 @@ function AllLudoList() {
                         </div>
                     </div>
 
-                    <div className='table-responsive'>
                         <div className="p-2 mobilep">
                             <DataTableBase columns={commonColumns} data={filteredData} pagination />
                         </div>
-                    </div>
+                  
                 </div>
             </div>
         </div>

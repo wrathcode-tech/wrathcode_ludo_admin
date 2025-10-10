@@ -93,11 +93,9 @@ function MatchDetails() {
 
                             </div>
                         </div>
-                        <div className='table-responsive'>
                             <div className="p-2 mobilep">
                                 <DataTableBase columns={columns} data={responseData} pagination />
                             </div>
-                        </div>
                     </div>
                 </div>
             </div >

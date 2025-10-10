@@ -175,9 +175,8 @@ function DisputeResponse() {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
-                        <div className='table-responsive'>
                             <DataTableBase columns={commonColumns} data={filteredData} pagination />
-                        </div>
+                       
                     </div>
                 </div>
             </div>

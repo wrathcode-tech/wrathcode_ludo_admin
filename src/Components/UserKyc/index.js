@@ -235,22 +235,15 @@ function UserKyc() {
 
                         <div className="p-4">
                             {activeTab === "PENDING" && (
-                                <div className='table-responsive'>
                                     <DataTableBase columns={PendingKycList} data={kycPendingList || []} pagination />
-
-                                </div>
                             )}
 
                             {activeTab === "APPROVED" && (
-                                <div className='table-responsive'>
                                     <DataTableBase columns={ApprovedKycList} data={kycApprovedList || []} pagination />
-                                </div>
                             )}
 
                             {activeTab === "REJECTED" && (
-                                <div className='table-responsive'>
                                     <DataTableBase columns={RejectedKycList} data={kycRejectedList || []} pagination />
-                                </div>
                             )}
                         </div>
                     </div>

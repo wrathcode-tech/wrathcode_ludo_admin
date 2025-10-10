@@ -172,9 +172,7 @@ function DashboardPage() {
                     </div>
                     <div className="dashboard_detail_s">
                         <h3>Login Details</h3>
-                        <div className='table-responsive'>
                             <DataTableBase columns={columns} data={dashboardList} pagination />
-                        </div>
                     </div>
                 </div>
             </div>

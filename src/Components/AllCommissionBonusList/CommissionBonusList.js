@@ -80,10 +80,9 @@ function CommissionBonusList() {
                             />
                         </div>
                     </div>
-                    <div className='table-responsive'>
                         <DataTableBase columns={Columns} data={userList} pagination />
                     </div>
-                </div>
+             
             </div>
         </div>
     );

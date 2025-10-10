@@ -113,10 +113,10 @@ function DepositRequest() {
                             </div>
                         </div>
                         <div className="card-body">
-                            <div className="table-responsive" width="100%">
+                     
                                 <DataTableBase columns={columns} data={pendingDepositRequest} pagination />
                             </div>
-                        </div>
+                       
                     </div>
                 </div>
             </div >

@@ -23,7 +23,7 @@ const Sidebar = () => {
             <div class="leftside_menu">
                 <div class="leftside_items">
                     <div class="logo">
-                        <img src="/images/logo_login.svg" alt="logo" />
+                        <img src="/images/logoplayfista.png" alt="logo" />
                     </div>
                     <div class="toggle_menu" id="toggleBtn">
                         <img src="/images/toggle_icon.svg" alt="toggle" />
