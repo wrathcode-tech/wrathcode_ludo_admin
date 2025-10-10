@@ -642,6 +642,12 @@ body .user_list_table button.chat {
     text-align: center;
 }
 
+.rdt_TableBody button.btn {
+    max-width: 100%;
+    font-size: 13px;
+    padding: 6px 10px;
+}
+
 .form_login h2 {
     font-size: 22px;
     font-weight: 800;
@@ -759,8 +765,12 @@ textarea.input_inb {
 
 .rdt_TableCell img {
     width: 40px !important;
-    padding: 5px;
     height: auto;
+}
+
+.rdt_TableBody .rdt_TableCell {
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .user_list_table table thead tr th.first_coloum {

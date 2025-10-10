@@ -603,7 +603,7 @@ function UserDetails() {
                             ) : (
                               <img
                                 className="img-account-profile rounded-circle mb-2 mb-lg-0"
-                                src="/public/images/.png"
+                                src="/images/user_profile_img.png"
                                 alt="dummy"
                               />
                             )}
@@ -677,7 +677,7 @@ function UserDetails() {
 
                           {/* 🔹 Wallet Section */}
                           <hr />
-                          <h5 className="fw-bold mb-3 text-primary">Wallet Details</h5>
+                          <h5 className="fw-bold mb-3">Wallet Details</h5>
 
                           <div className="row align-items-center mb-3">
                             <label className="col-lg-5 fw-bold text-muted">Available Balance:</label>
@@ -728,7 +728,7 @@ function UserDetails() {
 
                           {/* 🔹 Totals */}
                           <hr />
-                          <h5 className="fw-bold mb-3 text-primary">Transaction Summary</h5>
+                          <h5 className="fw-bold mb-3">Transaction Summary</h5>
 
                           <div className="row mb-3">
                             <label className="col-lg-5 fw-bold text-muted">Total Deposits:</label>
@@ -762,7 +762,7 @@ function UserDetails() {
                         </div>
 
                         {/* 3️⃣ User KYC Details Tab */}
-                        <div className="tab-pane fade show active" id="pills-three" role="tabpanel" aria-labelledby="pills-three-tab">
+                        <div className="tab-pane fade" id="pills-three" role="tabpanel" aria-labelledby="pills-three-tab">
                           <DataTableBase columns={UserKycDetails} data={userKycDetail || []} />
                         </div>
 
