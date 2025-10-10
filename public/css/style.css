@@ -949,7 +949,7 @@ textarea.input_inb {
 }
 
 .userlisttable .rdt_TableRow .rdt_TableCell {
-    padding: 8px 10px;
+    padding: 8px 16px;
 }
 
 
@@ -1325,6 +1325,10 @@ button.closed_btn {
     .width-70 {
         width: 100%;
     }
+
+.userlisttable .rdt_TableRow .rdt_TableCell {
+    padding: 5px 16px;
+}    
 
     body .h1,
     h1 {
