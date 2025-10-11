@@ -1,5 +1,5 @@
-const appUrl = "http://3.110.173.10:3009/v1";
-export const imageUrl = "http://3.110.173.10:3009/";
+const appUrl = "https://backend.playfist.com/v1";
+export const imageUrl = "https://backend.playfist.com/";
 export const deployedUrl = `${window.origin}/`
 
 export const ApiConfig = {
