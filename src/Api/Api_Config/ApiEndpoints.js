@@ -1,5 +1,5 @@
-const appUrl = "https://backend.playfist.com/v1";
-export const imageUrl = "https://backend.playfist.com/";
+const appUrl = "https://backend.playfista.com/v1";
+export const imageUrl = "https://backend.playfista.com/";
 export const deployedUrl = `${window.origin}/`
 
 export const ApiConfig = {
