@@ -36,9 +36,9 @@ function DepositRequest() {
     };
 
     const columns = [
-        { name: "Created At", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-        { name: "User Name", selector: (row) => row?.userId?.fullName, sortable: true, wrap: true },
-        { name: "Amount", selector: (row) => `₹ ${row?.amount}`, sortable: true, wrap: true },
+        { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
+        { name: "Name", selector: (row) => row?.userId?.fullName, sortable: true, wrap: true },
+        { name: "Deposit Amount", selector: (row) => `₹ ${row?.amount}`, sortable: true, wrap: true },
         { name: "UTR Number", selector: (row) => row?.utrNumber, sortable: true, wrap: true },
         {
             name: "Payment Proof", cell: (row) => (<a href={imageUrl + row?.paymentProof} target="_blank" rel="noopener noreferrer" style={{
@@ -65,22 +65,31 @@ function DepositRequest() {
         },
     ];
 
-    const handleStatusUpdate = async (userId, transactionId, status, rejectReason) => {
-        try {
-            LoaderHelper.loaderStatus(true);
-            const result = await AuthService.updateDepositRequest(userId, transactionId, status, rejectReason);
-            if (result?.success) {
-                alertSuccessMessage(`Deposit ${status} successfully`);
-                handlePendingDepositReq();
-            } else {
-                alertErrorMessage(result?.message);
-            }
-        } catch (error) {
-            alertErrorMessage(error?.message);
-        } finally {
-            LoaderHelper.loaderStatus(false);
+const handleStatusUpdate = async (userId, transactionId, status, rejectReason) => {
+    try {
+        LoaderHelper.loaderStatus(true);
+        const result = await AuthService.updateDepositRequest(userId, transactionId, status, rejectReason);
+        if (result?.success) {
+            alertSuccessMessage(`Deposit ${status} successfully`);
+
+            // Remove the updated row from the current state immediately
+            setPendingDepositRequest(prev =>
+                prev.filter(item => item._id !== transactionId)
+            );
+
+            // Optionally also update allData to keep search consistent
+            setAllData(prev => prev.filter(item => item._id !== transactionId));
+
+        } else {
+            alertErrorMessage(result?.message);
         }
-    };
+    } catch (error) {
+        alertErrorMessage(error?.message);
+    } finally {
+        LoaderHelper.loaderStatus(false);
+    }
+};
+
 
     function searchObjects(e) {
         const keysToSearch = ["userId.fullName", "utrNumber", "amount"];

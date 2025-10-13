@@ -18,6 +18,7 @@ const BannerManagement = () => {
     const [previewImage, setPreviewImage] = useState(null);
     const [bannerImage, setBannerImage] = useState(null);
     const [dateFormat, setDateFormat] = useState("");
+    const [displayOn, setDisplayOn] = useState("Landing");
 
 
     useEffect(() => {
@@ -141,13 +142,9 @@ const BannerManagement = () => {
         LoaderHelper.loaderStatus(true);
         try {
             const formData = new FormData();
-
-            // Send displayOn as an array (no need to stringify)
-            const displayOnArray = ["Landing"];  // You can add more display locations here
-            formData.append("displayOn", displayOnArray);  // Directly append the array
+            formData.append("displayOn", [displayOn]);
             formData.append("startDate", startDate);
             formData.append("endDate", endDate);
-
             if (bannerLink) {
                 formData.append("link", bannerLink);
             }
@@ -176,7 +173,8 @@ const BannerManagement = () => {
     };
 
 
-    const today = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
+
+    const today = new Date().toISOString().split("T")[0];
 
 
     return (
@@ -281,6 +279,18 @@ const BannerManagement = () => {
                                                             className="form-control"
                                                             placeholder="Enter Link"
                                                         />
+                                                    </div>
+
+                                                    <div className="form-group mb-3">
+                                                        <label className="small mb-1">Display On <span className="text-danger">*</span></label>
+                                                        <select
+                                                            className="form-control"
+                                                            value={displayOn}
+                                                            onChange={(e) => setDisplayOn(e.target.value)}
+                                                        >
+                                                            <option value="Landing">Landing</option>
+                                                            <option value="Dashboard">Dashboard</option>
+                                                        </select>
                                                     </div>
 
                                                     {/* Preview Section */}

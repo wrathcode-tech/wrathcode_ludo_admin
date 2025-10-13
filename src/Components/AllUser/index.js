@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react'
 import UserHeader from '../../Layout/UserHeader'
 import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import AuthService from '../../Api/Api_Services/AuthService';
-import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertMessage';
 import moment from 'moment';
 // import ReactPaginate from 'react-paginate';
 import DataTableBase from '../../Utils/DataTable';
 import { useNavigate } from 'react-router-dom';
+import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertMessage';
 // import copy from 'copy-to-clipboard';
 
 function AllUserList() {

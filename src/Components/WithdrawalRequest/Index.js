@@ -128,7 +128,7 @@ function WithdrawalRequest() {
     ];
 
     const approvedWithdrawalList = [
-        { name: "Sr. No.", center: true, wrap: true, selector: (row, index) => currentPage + 1 + index, },
+        { name: "SR No", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
         { name: "Created At", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
         { name: "Transaction Type", selector: (row) => row?.transactionType, sortable: true, wrap: true },
         { name: "Amount", selector: (row) => row?.amount, sortable: true, wrap: true },
@@ -137,7 +137,7 @@ function WithdrawalRequest() {
     ];
 
     const rejectedWithdrawalList = [
-        { name: "SR No", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
+ { name: "SR No", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
         { name: "Full Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
         { name: "Email", selector: (row) => row?.emailId, sortable: true, wrap: true },
         {
@@ -174,10 +174,10 @@ function WithdrawalRequest() {
                     <div className="user_list_top">
                         <div className="user_list_l">
                             <h4 className="text-xl font-semibold mb-4">
-                                Withdrawal Request List{" "}
-                                {activeTab === "PENDING" && <span style={{ color: "orange" }}>(Pending)</span>}
-                                {activeTab === "APPROVED" && <span style={{ color: "green" }}>(Approved)</span>}
-                                {activeTab === "REJECTED" && <span style={{ color: "red" }}>(Rejected)</span>}
+                                {/* Withdrawal Request List{" "} */}
+                                {activeTab === "PENDING" && <span >Pending Withdrawal Request List</span>}
+                                {activeTab === "APPROVED" && <span>Approved Withdrawal Request List</span>}
+                                {activeTab === "REJECTED" && <span>Rejected Withdrawal Request List</span>}
                             </h4>
                         </div>
                     </div>

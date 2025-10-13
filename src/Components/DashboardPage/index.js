@@ -172,7 +172,7 @@ function DashboardPage() {
                     </div>
                     <div className="dashboard_detail_s">
                         <h3>Login Details</h3>
-                            <DataTableBase columns={columns} data={dashboardList} pagination />
+                        <DataTableBase columns={columns} data={dashboardList} pagination />
                     </div>
                 </div>
             </div>
