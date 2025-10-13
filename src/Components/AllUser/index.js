@@ -184,11 +184,11 @@ function AllUserList() {
             <div class="dashboard_right">
                 <UserHeader />
                 <div class="dashboard_outer_s">
-                    <h2>User List</h2>
+                    <h2>All User List</h2>
                     <div class="dashboard_detail_s user_list_table user_summary_t">
                         <div class="user_list_top">
                             <div class="user_list_l">
-                                <h4>All User</h4>
+                                <h4>User List</h4>
                             </div>
                             <div class="user_search">
                                 <button><img src="/images/search_icon.svg" alt="search" /></button>

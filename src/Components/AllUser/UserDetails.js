@@ -14,17 +14,15 @@ function UserDetails() {
   const location = useLocation();
   const [userDetails, setUserDetails] = useState([]);
   const [userKycDetail, setUserKycDetail] = useState([]);
-  console.log("🚀 ~ UserDetails ~ userKycDetail:", userKycDetail)
   const [referData, setReferData] = useState([]);
-  const [data, setData] = useState([]);
-  const [walletType, setWalletType] = useState("");
+  const [walletType, setWalletType] = useState("INR");
   const [amount, setAmount] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalData, setTotalData] = useState(0)
   const [username, setUsername] = useState("");
   const [showImage, setShowImage] = useState("");
-  const [winingWalletType, setWiningWalletType] = useState("");
+  const [winingWalletType, setWiningWalletType] = useState("INR");
   const [userCommissionData, setUserCommissionData] = useState([]);
   const [userBankData, setUserBankData] = useState([]);
   const [gameData, setGameData] = useState([]);
