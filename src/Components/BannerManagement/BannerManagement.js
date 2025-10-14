@@ -6,9 +6,7 @@ import moment from "moment";
 import { ApiConfig, imageUrl } from "../../Api/Api_Config/ApiEndpoints";
 import DataTableBase from "../../Utils/DataTable";
 
-
 const BannerManagement = () => {
-
     const [bannerLink, setBannerLink] = useState('');
     const [activeTab, setActiveTab] = useState("sendToBanner");
     const [allUsers, setAllUsers] = useState([]);
@@ -17,9 +15,7 @@ const BannerManagement = () => {
     const [endDate, setEndDate] = useState("");
     const [previewImage, setPreviewImage] = useState(null);
     const [bannerImage, setBannerImage] = useState(null);
-    const [dateFormat, setDateFormat] = useState("");
     const [displayOn, setDisplayOn] = useState("Landing");
-
 
     useEffect(() => {
         handleAnnouncementBannerList();
@@ -58,6 +54,7 @@ const BannerManagement = () => {
             alertErrorMessage("Error deleting Banner.");
         }
     };
+
     const linkFollow = (row) => {
         return (
             <div className="d-flex gap-2">
@@ -84,7 +81,6 @@ const BannerManagement = () => {
                     </button>
                 )}
             </div>
-
         );
     };
 
@@ -110,11 +106,16 @@ const BannerManagement = () => {
                 ) : "No image"
             )
         },
-
-        { name: "Expiry Date", shrink: true, wrap: true, selector: row => row?.isPermanent === false ? moment(row?.activeUntil).format("DD/MM/YYYY ") : "No Expiration" },
+        {
+            name: "Expiry Date",
+            shrink: true,
+            wrap: true,
+            selector: row => row?.isPermanent === false
+                ? moment(row?.activeUntil).format("DD/MM/YYYY ")
+                : "No Expiration"
+        },
         { name: "Action", wrap: true, selector: linkFollow, },
     ];
-
 
     const handleStatus = async (id, status) => {
         LoaderHelper.loaderStatus(true);
@@ -133,11 +134,16 @@ const BannerManagement = () => {
         }
     };
 
-    const resetInput = () => {
+    // ✅ Reset form fields helper
+    const resetForm = () => {
         setBannerLink("");
-        setDateFormat('');
-        setBannerImage('');
-    }
+        setStartDate("");
+        setEndDate("");
+        setBannerImage(null);
+        setPreviewImage(null);
+        setDisplayOn("Landing");
+    };
+
     const handleAnnouncementBanner = async (bannerImage, startDate, endDate, bannerLink) => {
         LoaderHelper.loaderStatus(true);
         try {
@@ -145,6 +151,7 @@ const BannerManagement = () => {
             formData.append("displayOn", [displayOn]);
             formData.append("startDate", startDate);
             formData.append("endDate", endDate);
+
             if (bannerLink) {
                 formData.append("link", bannerLink);
             }
@@ -158,28 +165,27 @@ const BannerManagement = () => {
             }
 
             const result = await AuthService.announcementBanner(formData);
-
             LoaderHelper.loaderStatus(false);
+
             if (result?.success) {
                 alertSuccessMessage(result?.message);
                 handleAnnouncementBannerList();
+
+                // ✅ Reset inputs after successful submit
+                resetForm();
             } else {
                 alertErrorMessage("Something went wrong while fetching notifications.");
             }
-        } catch (result) {
+        } catch (error) {
             LoaderHelper.loaderStatus(false);
-            alertErrorMessage(result?.message);
+            alertErrorMessage(error?.message);
         }
     };
 
-
-
     const today = new Date().toISOString().split("T")[0];
-
 
     return (
         <>
-
             <div className="dashboard_right">
                 <div className="dashboard_outer_s">
                     <div id="layoutSidenav_content">
@@ -190,9 +196,6 @@ const BannerManagement = () => {
                                         <div className="row align-items-center justify-content-between">
                                             <div className="col-auto">
                                                 <div className="d-flex align-items-center">
-                                                    <button
-                                                        className="btn p-0 page-header-icon">
-                                                    </button>
                                                     <h1 className="page-header-title mb-0">
                                                         Announcement Banner Management
                                                     </h1>
@@ -200,21 +203,21 @@ const BannerManagement = () => {
                                             </div>
                                         </div>
                                     </div>
+
                                     <ul className="nav nav-pills mb-3 tabs_top" role="tablist">
-                                        <li className="nav-item" role="presentation" onClick={resetInput}>
+                                        <li className="nav-item" role="presentation" onClick={resetForm}>
                                             <button
                                                 className={`m-0 nav-link ${activeTab === "sendToBanner" ? "active" : ""}`}
                                                 type="button"
                                                 role="tab"
                                                 onClick={() => setActiveTab("sendToBanner")}
                                             >
-
                                                 Send Banner
                                             </button>
                                         </li>
-                                        <li className="nav-item" role="presentation" onClick={resetInput}>
+                                        <li className="nav-item" role="presentation" onClick={resetForm}>
                                             <button
-                                                className={`m-0 nav-link ${activeTab === "AnnouncementBannerManagement" || activeTab === "AnnouncementBannerManagement" ? "active" : ""}`}
+                                                className={`m-0 nav-link ${activeTab === "AnnouncementBannerManagement" ? "active" : ""}`}
                                                 type="button"
                                                 role="tab"
                                                 onClick={() => setActiveTab("AnnouncementBannerManagement")}
@@ -225,6 +228,7 @@ const BannerManagement = () => {
                                     </ul>
                                 </div>
                             </header>
+
                             <div className="container2 mt-n10 width-70">
                                 <div className="row">
                                     <div className="col-xl-12">
@@ -253,20 +257,16 @@ const BannerManagement = () => {
                                                         />
                                                     </div>
 
-                                                    {/* Start and End Date in same row with labels */}
-                                                    <div className="d-flex gap-3 flex-wrap">
-
-                                                        <div className="flex-grow-1">
-                                                            <label className="small">Expiry Time (Optional)</label>
-                                                            <input
-                                                                type="date"
-                                                                value={endDate}
-                                                                onChange={(e) => setEndDate(e.target.value)}
-                                                                className="form-control"
-                                                                min={startDate || today} // 🔒 end date should be >= start date
-                                                                required
-                                                            />
-                                                        </div>
+                                                    {/* Expiry Date */}
+                                                    <div className="form-group mb-3">
+                                                        <label className="small">Expiry Time (Optional)</label>
+                                                        <input
+                                                            type="date"
+                                                            value={endDate}
+                                                            onChange={(e) => setEndDate(e.target.value)}
+                                                            className="form-control"
+                                                            min={startDate || today}
+                                                        />
                                                     </div>
 
                                                     {/* Optional Link */}
@@ -281,8 +281,11 @@ const BannerManagement = () => {
                                                         />
                                                     </div>
 
+                                                    {/* Display On */}
                                                     <div className="form-group mb-3">
-                                                        <label className="small mb-1">Display On <span className="text-danger">*</span></label>
+                                                        <label className="small mb-1">
+                                                            Display On <span className="text-danger">*</span>
+                                                        </label>
                                                         <select
                                                             className="form-control"
                                                             value={displayOn}
@@ -298,7 +301,6 @@ const BannerManagement = () => {
                                                         <div className="mb-4">
                                                             <label className="small mb-2 d-block">Preview:</label>
                                                             <div className="d-flex gap-4 flex-wrap">
-                                                                {/* Desktop View */}
                                                                 <div>
                                                                     <p className="small mb-1 fw-semibold">📱 Desktop View (Web)</p>
                                                                     <div
@@ -318,7 +320,6 @@ const BannerManagement = () => {
                                                                     </div>
                                                                 </div>
 
-                                                                {/* Mobile View */}
                                                                 <div>
                                                                     <p className="small mb-1 fw-semibold">📲 Mobile View (Phone)</p>
                                                                     <div
@@ -340,17 +341,17 @@ const BannerManagement = () => {
                                                         </div>
                                                     )}
 
-                                                    {/* Submit */}
+                                                    {/* Submit Button */}
                                                     <button
                                                         className="btn btn-primary w-100 mt-2"
-                                                        onClick={() => {
-                                                            handleAnnouncementBanner(bannerImage, startDate, endDate, bannerLink);
-                                                        }}>
+                                                        onClick={() => handleAnnouncementBanner(bannerImage, startDate, endDate, bannerLink)}
+                                                    >
                                                         Send Banner
                                                     </button>
                                                 </div>
                                             </div>
                                         )}
+
                                         {activeTab === "AnnouncementBannerManagement" && (
                                             <div className="card mb-4 bg-white border shadow-sm">
                                                 <div className="card-body d-flex flex-column p-4">
@@ -358,12 +359,11 @@ const BannerManagement = () => {
                                                     <DataTableBase columns={columns} data={suggestions} pagination />
                                                 </div>
                                             </div>
-
                                         )}
                                     </div>
                                 </div>
                             </div>
-                        </main >
+                        </main>
                     </div>
                 </div>
             </div>

@@ -20,17 +20,31 @@ function WithdrawalRequest() {
         try {
             LoaderHelper.loaderStatus(true);
             const result = await AuthService.pendingWithdrawalRequest();
+
             if (result?.success) {
-                setWithdrawalRequestData(result?.data?.reverse());
+                const data = result?.data || [];
+
+                if (data.length === 0) {
+                    // ✅ No pending withdrawals, clear the list
+                    setWithdrawalRequestData([]);
+                } else {
+                    // Reverse to show latest first
+                    setWithdrawalRequestData(data.reverse());
+                }
             } else {
+                // Optional: clear list on error
+                setWithdrawalRequestData([]);
                 // alertErrorMessage(result?.message);
             }
+
         } catch (error) {
             alertErrorMessage(error?.message);
+            setWithdrawalRequestData([]); // clear list on catch
         } finally {
             LoaderHelper.loaderStatus(false);
         }
     };
+
 
 
 
@@ -137,7 +151,7 @@ function WithdrawalRequest() {
     ];
 
     const rejectedWithdrawalList = [
- { name: "SR No", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
+        { name: "SR No", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
         { name: "Full Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
         { name: "Email", selector: (row) => row?.emailId, sortable: true, wrap: true },
         {
@@ -202,19 +216,19 @@ function WithdrawalRequest() {
 
                         <div className="p-4">
                             {activeTab === "PENDING" && (
-                                    <DataTableBase columns={withdrawalRequest} data={withdrawalRequestData || []} pagination />
+                                <DataTableBase columns={withdrawalRequest} data={withdrawalRequestData || []} pagination />
 
-                               
+
                             )}
 
                             {activeTab === "APPROVED" && (
-                                    <DataTableBase columns={approvedWithdrawalList} data={withdrawalApprovedList || []} pagination />
-                              
+                                <DataTableBase columns={approvedWithdrawalList} data={withdrawalApprovedList || []} pagination />
+
                             )}
 
                             {activeTab === "REJECTED" && (
-                                    <DataTableBase columns={rejectedWithdrawalList} data={withdrawalRejectedList || []} pagination />
-                             
+                                <DataTableBase columns={rejectedWithdrawalList} data={withdrawalRejectedList || []} pagination />
+
                             )}
                         </div>
                     </div>
