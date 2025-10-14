@@ -183,6 +183,32 @@ const BannerManagement = () => {
     };
 
     const today = new Date().toISOString().split("T")[0];
+    const [imageError, setImageError] = useState("");
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+
+        img.onload = () => {
+            const width = img.width;
+            const height = img.height;
+
+            if (width > 420 || height > 210) {
+                setImageError("Image size should not exceed 420px x 210px");
+                setBannerImage(null);
+                setPreviewImage(null);
+            } else {
+                setImageError(""); // clear error
+                setBannerImage(file);
+                setPreviewImage(URL.createObjectURL(file));
+            }
+        };
+    };
+
+
 
     return (
         <>
@@ -240,21 +266,16 @@ const BannerManagement = () => {
                                                     {/* Banner Upload */}
                                                     <div className="form-group mb-3">
                                                         <label className="small mb-1">
-                                                            Banner Image <span className="text-danger">*</span>
+                                                            Banner Image * <span className="text-danger">(Image size must be 420px x 210px)</span>
                                                         </label>
                                                         <input
                                                             type="file"
                                                             accept="image/*"
-                                                            onChange={(e) => {
-                                                                const file = e.target.files[0];
-                                                                if (file) {
-                                                                    setBannerImage(file);
-                                                                    setPreviewImage(URL.createObjectURL(file));
-                                                                }
-                                                            }}
+                                                            onChange={handleImageChange}
                                                             className="form-control"
                                                             required
                                                         />
+                                                        {imageError && <small className="text-danger">{imageError}</small>}
                                                     </div>
 
                                                     {/* Expiry Date */}
