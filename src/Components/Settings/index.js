@@ -24,14 +24,16 @@ function Settings() {
     };
 
     return (
-        <div style={{ maxWidth: '600px', margin: '20px auto', padding: '20px' }}>
+        <div className='dashboard_right'>
+               <div className='setting_form'>
             <h2>Admin Settings</h2>
+         
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 {/* Row 1 */}
                 <div style={{ display: 'flex', gap: '20px' }}>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <label>Minimum Deposit</label>
-                        <input
+                        <input className='form-control'
                             type="number"
                             name="minimumDeposit"
                             placeholder="Minimum Deposit"
@@ -41,7 +43,7 @@ function Settings() {
                     </div>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <label>Maximum Deposit</label>
-                        <input
+                        <input className='form-control'
                             type="number"
                             name="maximumDeposit"
                             placeholder="Maximum Deposit"
@@ -55,7 +57,7 @@ function Settings() {
                 <div style={{ display: 'flex', gap: '20px' }}>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <label>Minimum Withdrawal</label>
-                        <input
+                        <input className='form-control'
                             type="number"
                             name="minimumWithdrawal"
                             placeholder="Minimum Withdrawal"
@@ -65,7 +67,7 @@ function Settings() {
                     </div>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <label>Maximum Withdrawal</label>
-                        <input
+                        <input className='form-control'
                             type="number"
                             name="maximumWithdrawal"
                             placeholder="Maximum Withdrawal"
@@ -79,7 +81,7 @@ function Settings() {
                 <div style={{ display: 'flex', gap: '20px' }}>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <label>Admin Commission (%)</label>
-                        <input
+                        <input className='form-control'
                             type="number"
                             name="adminCommission"
                             placeholder="Admin Commission"
@@ -89,7 +91,7 @@ function Settings() {
                     </div>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <label>Referral Bonus Amount</label>
-                        <input
+                        <input className='form-control'
                             type="number"
                             name="referralBonusAmount"
                             placeholder="Referral Bonus"
@@ -103,7 +105,7 @@ function Settings() {
                 <div style={{ display: 'flex', gap: '20px' }}>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <label>User Commission Bonus Amount</label>
-                        <input
+                        <input className='form-control'
                             type="number"
                             name="userCommissionBonusAmount"
                             placeholder="User Commission Bonus"
@@ -113,7 +115,7 @@ function Settings() {
                     </div>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <label>Referral Bonus SignUp Amount</label>
-                        <input
+                        <input className='form-control'
                             type="number"
                             name="referralBonusSignUpAmount"
                             placeholder="Referral SignUp Bonus"
@@ -137,6 +139,7 @@ function Settings() {
                     Save Settings
                 </button>
             </form>
+            </div>
         </div>
     );
 }

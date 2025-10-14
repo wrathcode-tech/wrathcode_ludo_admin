@@ -821,6 +821,14 @@ textarea.input_inb {
     text-transform: capitalize;
 }
 
+.setting_form {
+    background-color: #fff;
+    border-radius: 14px;
+    box-shadow: 6px 6px 54px #00000010;
+    padding: 32px;
+    margin-top: 30px;
+}
+
 .support_form input {
     border: 1px solid #b1b1b1;
     border-radius: 50px;
@@ -828,6 +836,15 @@ textarea.input_inb {
     width: 100%;
     font-size: 14px;
     color: #999999;
+}
+
+.setting_form form {
+    margin-top: 20px;
+}
+
+.setting_form label {
+    font-size: 15px;
+    margin-bottom: 3px;
 }
 
 .control_input textarea {
@@ -1340,6 +1357,11 @@ button.closed_btn {
     .width-70 {
         width: 100%;
     }
+
+    .setting_form {
+    padding: 20px;
+    margin-top: 10px;
+}
 
 .ytCgx div:first-child {
     overflow: initial !important;
