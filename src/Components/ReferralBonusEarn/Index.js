@@ -4,6 +4,8 @@ import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import { alertErrorMessage } from '../../Utils/CustomAlertMessage';
 import AuthService from '../../Api/Api_Services/AuthService';
 import DataTableBase from '../../Utils/DataTable';
+import moment from "moment";
+
 
 function OverAllReferralEarnList() {
     const [userList, setUserList] = useState([]);
@@ -56,12 +58,17 @@ function OverAllReferralEarnList() {
             sortable: true,
             wrap: true
         },
-        { name: 'User Id', selector: row => row?.userId || '—', sortable: true, wrap: true },
+        {
+            name: "Date & Time",
+            selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"),
+            sortable: true,
+        },
+        { name: 'User Id', selector: row => row?.uuid || '—', sortable: true, wrap: true },
         { name: 'Full Name', selector: row => row?.fullName || '—', sortable: true, wrap: true },
         { name: 'Email', selector: row => row?.email || '—', sortable: true, wrap: true, width: '200px' },
-        { name: 'Total Credits', selector: row => row?.totalCredit || '—', sortable: true, wrap: true },
-        { name: 'Total Dabits', selector: row => row?.totalDebit || '—', sortable: true, wrap: true },
-        { name: 'Net Balance', selector: row => row?.netBalance || '—', sortable: true, wrap: true },
+        { name: 'Total Credits', selector: row => `₹ ${row?.totalCredit}` || '—', sortable: true, wrap: true },
+        { name: 'Total Debits', selector: row => `₹ ${row?.totalDebit}` || '—', sortable: true, wrap: true },
+        { name: 'Net Balance', selector: row => `₹ ${row?.netBalance}` || '—', sortable: true, wrap: true },
     ];
 
     const handlePageChange = (page) => setCurrentPage(page);
@@ -87,8 +94,8 @@ function OverAllReferralEarnList() {
                             />
                         </div>
                     </div>
-                        <DataTableBase columns={Columns} data={userList} pagination />
-                  
+                    <DataTableBase columns={Columns} data={userList} pagination />
+
                 </div>
             </div>
         </div>

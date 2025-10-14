@@ -157,16 +157,18 @@ function SupportChat() {
   }, [selectedTicket]);
 
   const columns = [
-    { name: "User ID", selector: (row) => row?.userId?._id || "—", sortable: true },
+    { name: "Sr No.", selector: (row, index) => index + 1, wrap: true, width: "80px" },
+    {
+      name: "Date & Time",
+      selector: (row) =>moment(row.createdAt).format("DD-MM-YYYY LT"),
+      sortable: true,
+    },
+    { name: "User ID", selector: (row) => row?.userId?.uuid || "—", sortable: true },
     { name: "User Name", selector: (row) => row?.userId?.fullName || "—", sortable: true },
     { name: "Email", selector: (row) => row?.userId?.emailId || "—", sortable: true },
     { name: "Last Message", selector: (row) => row?.lastMessage || "—", sortable: true },
-    { name: "Status", selector: (row) => row?.status || "—", sortable: true },
-    {
-      name: "Created At",
-      selector: (row) => new Date(row?.createdAt).toLocaleString(),
-      sortable: true,
-    },
+    { name: "Status", selector: (row) => row?.status.toUpperCase() || "—", sortable: true },
+    
     {
       name: "Action",
       cell: (row) => (

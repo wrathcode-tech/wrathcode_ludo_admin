@@ -85,12 +85,12 @@ const BannerManagement = () => {
     };
 
     const columns = [
-        { name: "Sr no.", selector: (row, index) => index + 1, wrap: true, width: "80px" },
+        { name: "Sr No.", selector: (row, index) => index + 1, wrap: true, width: "80px" },
         {
             name: "Date",
             shrink: true,
             wrap: true,
-            selector: row => moment(row?.createdAt).format("DD/MM/YYYY LT")
+            selector: row => moment(row.createdAt).format("DD-MM-YYYY LT")
         },
         {
             name: "Banner Image",

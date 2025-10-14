@@ -84,10 +84,11 @@ const Notification = () => {
             </div>
         );
     };
-
+    
     const columns = [
-        { name: "Created At", shrink: true, wrap: true, selector: row => moment(row?.createdAt).format("DD/MM/YYYY LT") },
-        { name: "Notification Title", shrink: true, wrap: true, selector: row => row?.title },
+        { name: "Sr No.", selector: (row, index) => index + 1, wrap: true, width: "80px" },
+        { name: "Date & Time", shrink: true, wrap: true, selector: row => moment(row.createdAt).format("DD-MM-YYYY LT") },
+        { name: "Title", shrink: true, wrap: true, selector: row => row?.title },
         { name: "Message", shrink: true, wrap: true, selector: row => row?.message },
         { name: "Action", wrap: true, selector: linkFollow },
     ];

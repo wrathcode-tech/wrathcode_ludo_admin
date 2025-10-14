@@ -97,13 +97,13 @@ function AllUserList() {
             width: "80px"
         },
         {
-            name: 'Created At',
+            name: 'Date & Time',
             selector: row => moment(row.createdAt).format('DD-MM-YYYY LT'),
             sortable: true,
             wrap: true
         },
         {
-            name: "User ID",
+            name: "User Id",
             wrap: true,
             width: "160px",
             selector: (row) => (
@@ -156,7 +156,10 @@ function AllUserList() {
         },
         {
             name: 'Rank',
-            selector: row => row?.rank || '—',
+            selector: row =>
+                row?.rank
+                    ? row.rank.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())
+                    : '—',
             sortable: true,
             wrap: true
         },

@@ -111,12 +111,20 @@ function WithdrawalRequest() {
 
     // ---------------- Columns ----------------
     const withdrawalRequest = [
-        { name: "SR No", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
+        { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
+        { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
+        { name: "UUID", selector: (row) => row?.userId?.uuid, sortable: true, wrap: true },
         { name: "Full Name", selector: (row) => row?.userId?.fullName, sortable: true, wrap: true },
-        { name: "Created At", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
         { name: "Amount", selector: (row) => row?.amount, sortable: true, wrap: true },
-        { name: "Status", selector: (row) => row?.status, sortable: true, wrap: true },
-        { name: "Description", selector: (row) => row?.description, sortable: true, wrap: true },
+        { name: "Transaction Type", selector: (row) => row?.transactionType, sortable: true, wrap: true },
+        // { name: "Description", selector: (row) => row?.description, sortable: true, wrap: true },
+        {
+            name: "Status", selector: (row) => row?.status, cell: (row) => (
+                <span style={{ color: "orange", fontWeight: "500" }}>
+                    {row?.status || "—"}
+                </span>
+            ), sortable: true, wrap: true
+        },
         {
             name: "Actions", width: "200px",
             cell: (row) => (
@@ -140,43 +148,59 @@ function WithdrawalRequest() {
             button: true,
         },
     ];
-
     const approvedWithdrawalList = [
-        { name: "SR No", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
-        { name: "Created At", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
+        { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
+        { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
+        { name: "UUID", selector: (row) => row?.userId?.uuid, sortable: true, wrap: true },
+        { name: "Full Name", selector: (row) => row?.userId?.fullName, sortable: true, wrap: true },
+        { name: "Amount", selector: (row) => `₹ ${(row?.amount) || 0}`, sortable: true, wrap: true },
         { name: "Transaction Type", selector: (row) => row?.transactionType, sortable: true, wrap: true },
-        { name: "Amount", selector: (row) => row?.amount, sortable: true, wrap: true },
         { name: "Description", selector: (row) => row?.description || "------", sortable: true, wrap: true },
-        { name: "Status", selector: (row) => row?.status, sortable: true, wrap: true },
+        {
+            name: "Status", selector: (row) => row?.status, cell: (row) => (
+                <span style={{ color: "green", fontWeight: "500" }}>
+                    {row?.status || "—"}
+                </span>
+            ), sortable: true, wrap: true
+        },
     ];
 
     const rejectedWithdrawalList = [
-        { name: "SR No", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
-        { name: "Full Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
-        { name: "Email", selector: (row) => row?.emailId, sortable: true, wrap: true },
+        { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
+        { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
+        { name: "UUID", selector: (row) => row?.userId?.uuid, sortable: true, wrap: true },
+        { name: "Full Name", selector: (row) => row?.userId?.fullName, sortable: true, wrap: true },
+        { name: "Amount", selector: (row) => `₹ ${(row?.amount) || 0}`, sortable: true, wrap: true },
+        { name: "Transaction Type", selector: (row) => row?.transactionType, sortable: true, wrap: true },
+        { name: "Description", selector: (row) => row?.description || "------", sortable: true, wrap: true },
         {
-            name: "Mobile",
-            selector: (row) => row?.countryCode && row?.mobileNumber
-                ? `${row.countryCode} ${row.mobileNumber}`
-                : "N/A",
-            sortable: true, wrap: true
-        },
-        { name: "UUID", selector: (row) => row?.uuid, sortable: true, wrap: true },
-        {
-            name: "KYC Status",
-            cell: (row) => (
-                <span style={{
-                    color: "red",
-                    fontWeight: "600",
-                }}>
-                    {row?.kycVerified}
+            name: "Status", selector: (row) => row?.status, cell: (row) => (
+                <span style={{ color: "red", fontWeight: "500" }}>
+                    {row?.status || "—"}
                 </span>
-            ),
-            sortable: true, wrap: true,
+            ), sortable: true, wrap: true
         },
-        { name: "Status", selector: (row) => row?.status, sortable: true, wrap: true },
-        { name: "Created At", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-        { name: "Updated At", selector: (row) => moment(row.updatedAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
+
+
+        // {
+        //     name: "Mobile",
+        //     selector: (row) => row?.countryCode && row?.mobileNumber
+        //         ? `${row.countryCode} ${row.mobileNumber}`
+        //         : "N/A",
+        //     sortable: true, wrap: true
+        // },
+        // {
+        //     name: "KYC Status",
+        //     cell: (row) => (
+        //         <span style={{
+        //             color: "red",
+        //             fontWeight: "600",
+        //         }}>
+        //             {row?.kycVerified}
+        //         </span>
+        //     ),
+        //     sortable: true, wrap: true,
+        // },
     ];
 
     return (

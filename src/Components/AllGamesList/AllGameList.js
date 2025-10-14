@@ -13,21 +13,31 @@ function AllGameList() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('ALL');
 
-    const getUserName = (row) => row?.userId?.fullName || row?.joinedBy || row?.createdBy || '—';
+    const getUserName = (row) => {
+        // if (row?.userId?.fullName) return row.userId.fullName;
+        if (row?.joinedBy?.fullName) return row.joinedBy.fullName;
+        if (row?.createdBy?.fullName) return row.createdBy.fullName;
+        if (typeof row?.joinedBy === "string") return row.joinedBy;
+        if (typeof row?.createdBy === "string") return row.createdBy;
+        return '—';
+    };
 
     const commonColumns = [
-        { name: 'Created At', selector: row => moment(row.createdAt).format('DD-MM-YYYY LT'), sortable: true, wrap: true },
-        { name: 'User Name', selector: getUserName, sortable: true, wrap: true },
-        { name: 'Amount', selector: row => `₹ ${row?.amount || 0}`, sortable: true, wrap: true },
-        { name: 'UTR Number', selector: row => row?.utrNumber || '—', sortable: true, wrap: true },
-        {
-            name: 'Payment Proof',
-            cell: row => row?.paymentProof ? (
-                <a href={imageUrl + row.paymentProof} target="_blank" rel="noopener noreferrer">
-                    <img src={imageUrl + row.paymentProof} alt="proof" style={{ width: 50, height: 50 }} />
-                </a>
-            ) : '—',
-        },
+        { name: 'Date & Time', selector: row => moment(row.createdAt).format('DD-MM-YYYY LT'), sortable: true, wrap: true },
+        { name: 'Creator Name', selector: row => row?.createdBy?.fullName || row?.createdBy || '—', sortable: true, wrap: true },
+        { name: 'Joiner Name', selector: row => row?.joinedBy?.fullName || row?.joinedBy || '—', sortable: true, wrap: true },
+        
+
+        { name: 'Total Bet', selector: row => `₹ ${(row?.amount) || 0}/per user`, sortable: true, wrap: true },
+        { name: 'Wallet Tye', selector: row => row?.walletType || '—', sortable: true, wrap: true },
+        // {
+        //     name: 'Payment Proof',
+        //     cell: row => row?.paymentProof ? (
+        //         <a href={imageUrl + row.paymentProof} target="_blank" rel="noopener noreferrer">
+        //             <img src={imageUrl + row.paymentProof} alt="proof" style={{ width: 50, height: 50 }} />
+        //         </a>
+        //     ) : '—',
+        // },
         {
             name: 'Status',
             selector: row => row?.status || '—',
@@ -96,7 +106,7 @@ function AllGameList() {
             if (result?.success) {
                 setAllData(result.data);
             } else {
-                alertErrorMessage(result?.message);
+                // alertErrorMessage(result?.message);
             }
         } catch (error) {
             alertErrorMessage(error?.message);

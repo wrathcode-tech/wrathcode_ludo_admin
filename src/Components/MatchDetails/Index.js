@@ -33,8 +33,9 @@ function MatchDetails() {
     }, []);
 
     const columns = [
-        { name: "Created At", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-        { name: "Event Id", selector: (row) => row?.eventId, sortable: true, wrap: true },
+        
+        { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
+        { name: "Event ID", selector: (row) => row?.eventId, sortable: true, wrap: true },
         { name: "Match Amount", selector: (row) => `₹ ${row?.matchAmount}`, sortable: true, wrap: true },
         { name: "Status", selector: (row) => row.status, cell: (row) => (<span style={{ color: "#1eb5c0" }}>{row?.status}</span>), sortable: true, wrap: true },
     ];
@@ -93,9 +94,9 @@ function MatchDetails() {
 
                             </div>
                         </div>
-                            <div className="p-2 mobilep">
-                                <DataTableBase columns={columns} data={responseData} pagination />
-                            </div>
+                        <div className="p-2 mobilep">
+                            <DataTableBase columns={columns} data={responseData} pagination />
+                        </div>
                     </div>
                 </div>
             </div >

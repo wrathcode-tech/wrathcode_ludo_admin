@@ -69,12 +69,12 @@ function DepostiWithdraSummary() {
             selector: (row, index) => (currentPage - 1) * itemsPerPage + (index + 1),
             width: "80px"
         },
-        { name: 'User Id', selector: row => row?.userId || '—', sortable: true, wrap: true },
+        { name: 'User Id', selector: row => row?.uuid || '—', sortable: true, wrap: true },
         { name: 'Full Name', selector: row => row?.fullName || '—', sortable: true, wrap: true },
         { name: 'Email', selector: row => row?.email || '—', sortable: true, wrap: true, width: '200px' },
-        { name: 'Total Deposit', selector: row => row?.totalDeposit || '—', sortable: true, wrap: true },
-        { name: 'Total Withdrawal', selector: row => row?.totalWithdrawal || '—', sortable: true, wrap: true },
-        { name: 'Net', selector: row => row?.net || '—', sortable: true, wrap: true },
+        { name: 'Total Deposit', selector: row => `₹ ${row?.totalDeposit}` || '—', sortable: true, wrap: true },
+        { name: 'Total Withdrawal', selector: row => `₹ ${row?.totalWithdrawal}` || '—', sortable: true, wrap: true },
+        { name: 'Net Amount', selector: row => `₹ ${row?.net}` || '—', sortable: true, wrap: true },
     ];
 
     return (

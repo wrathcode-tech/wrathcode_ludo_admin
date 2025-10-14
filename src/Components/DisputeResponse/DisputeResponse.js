@@ -79,10 +79,10 @@ function DisputeResponse() {
     };
 
 
-
     const commonColumns = [
+        { name: "Sr No.", selector: (row, index) => index + 1, wrap: true, width: "80px" },
         {
-            name: 'Created At',
+            name: 'Date & Time',
             selector: row => moment(row.createdAt).format('DD-MM-YYYY LT'),
             sortable: true,
             wrap: true

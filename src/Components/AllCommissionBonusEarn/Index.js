@@ -4,6 +4,8 @@ import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import { alertErrorMessage } from '../../Utils/CustomAlertMessage';
 import AuthService from '../../Api/Api_Services/AuthService';
 import DataTableBase from '../../Utils/DataTable';
+import moment from "moment";
+
 
 function OverAllCommissionEarnList() {
     const [userList, setUserList] = useState([]);
@@ -56,6 +58,12 @@ function OverAllCommissionEarnList() {
             sortable: true,
             wrap: true
         },
+        {
+            name: "Date & Time",
+            selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"),
+            sortable: true,
+        },
+
         { name: 'User Id', selector: row => row?.userId || '—', sortable: true, wrap: true },
         { name: 'Full Name', selector: row => row?.fullName || '—', sortable: true, wrap: true },
         { name: 'Email', selector: row => row?.email || '—', sortable: true, wrap: true, width: '200px' },

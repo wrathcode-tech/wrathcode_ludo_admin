@@ -110,10 +110,11 @@ function UserKyc() {
 
     // ---------------- Columns ----------------
     const PendingKycList = [
-        { name: "SR No", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
+        { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
+        { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
+        { name: "UUID", selector: (row) => row?.uuid, sortable: true, wrap: true },
         { name: "Full Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
         { name: "Email", selector: (row) => row?.emailId, sortable: true, wrap: true },
-        { name: "UUID", selector: (row) => row?.uuid, sortable: true, wrap: true },
         {
             name: "KYC Status",
             cell: (row) => (
@@ -130,7 +131,6 @@ function UserKyc() {
             ),
             sortable: true, wrap: true,
         },
-        { name: "Created At", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
 
         // ✅ Action Buttons
         {
@@ -167,8 +167,8 @@ function UserKyc() {
     };
 
     const ApprovedKycList = [
-        { name: "SR No", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
-        { name: "Created At", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
+        { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
+        { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
         { name: "UUID", selector: (row) => row?.uuid, sortable: true, wrap: true },
         { name: "Full Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
         { name: "Email", selector: (row) => row?.emailId, sortable: true, wrap: true },
@@ -187,10 +187,12 @@ function UserKyc() {
     ];
 
     const RejectedKycList = [
-        { name: "SR No", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
+        { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
+        { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
+        { name: "Updated At", selector: (row) => moment(row.updatedAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
+        { name: "UUID", selector: (row) => row?.uuid, sortable: true, wrap: true },
         { name: "Full Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
         { name: "Email", selector: (row) => row?.emailId, sortable: true, wrap: true },
-        { name: "UUID", selector: (row) => row?.uuid, sortable: true, wrap: true },
         {
             name: "KYC Status",
             cell: (row) => (
@@ -203,8 +205,6 @@ function UserKyc() {
             ),
             sortable: true, wrap: true,
         },
-        { name: "Created At", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-        { name: "Updated At", selector: (row) => moment(row.updatedAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
     ];
 
     return (
@@ -216,10 +216,9 @@ function UserKyc() {
                     <div className="user_list_top">
                         <div className="user_list_l">
                             <h4 className="text-xl font-semibold mb-4">
-                                Users List{" "}
-                                {activeTab === "PENDING" && <span style={{ color: "orange" }}>(Pending)</span>}
-                                {activeTab === "APPROVED" && <span style={{ color: "green" }}>(Approved)</span>}
-                                {activeTab === "REJECTED" && <span style={{ color: "red" }}>(Rejected)</span>}
+                                {activeTab === "PENDING" && <span>Pending Kyc List</span>}
+                                {activeTab === "APPROVED" && <span >Approved Kyc List</span>}
+                                {activeTab === "REJECTED" && <span >Rejected Kyc List</span>}
                             </h4>
                         </div>
                     </div>
