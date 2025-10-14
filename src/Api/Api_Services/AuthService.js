@@ -63,6 +63,28 @@ const AuthService = {
     };
     return ApiCallPost(url, params, headers);
   },
+  updateAdminSettings: async (adminCommission, referralBonusAmount, userCommissionBonusAmount,
+    referralBonusSignUpAmount, minimumDeposit, maximumDeposit, minimumWithdrawal, maximumWithdrawal) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, updateAdminSettings } = ApiConfig;
+    const url = baseUrl + updateAdminSettings;
+    const params = {
+      adminCommission,
+      referralBonusAmount,
+      userCommissionBonusAmount,
+      referralBonusSignUpAmount,
+      minimumDeposit,
+      minimumWithdrawal,
+      maximumDeposit,
+      maximumWithdrawal,
+
+    };
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token
+    };
+    return ApiCallPost(url, params, headers);
+  },
 
 
   addNotification: async (title, message) => {
