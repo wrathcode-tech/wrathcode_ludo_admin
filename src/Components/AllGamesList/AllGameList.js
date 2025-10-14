@@ -133,22 +133,28 @@ function AllGameList() {
                 <div className="dashboard_detail_s user_list_table user_summary_t">
                     <div className="user_list_top d-flex justify-content-between align-items-center">
                         <h4>All Ludo Games</h4>
-                        <div className="user_search d-flex gap-2">
-                            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
-                                <option value="ALL">All</option>
-                                <option value="COMPLETED">Completed</option>
-                                <option value="CANCELLED">Cancelled</option>
-                                <option value="RUNNING">Running</option>
-                                <option value="EXPIRED">Expired</option>
-                                <option value="WAITING">Waiting</option>
-                                <option value="DISPUTE">Dispute</option>
-                            </select>
-                            <input
-                                type="text"
-                                placeholder="Search by user, UTR, amount..."
-                                value={searchTerm}
-                                onChange={e => setSearchTerm(e.target.value)}
-                            />
+
+                        <div className='d-flex gap-2 align-center'>
+                            <div className='select_option'>
+                                <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
+                                    <option value="ALL">All</option>
+                                    <option value="COMPLETED">Completed</option>
+                                    <option value="CANCELLED">Cancelled</option>
+                                    <option value="RUNNING">Running</option>
+                                    <option value="EXPIRED">Expired</option>
+                                    <option value="WAITING">Waiting</option>
+                                    <option value="DISPUTE">Dispute</option>
+                                </select>
+                            </div>
+
+                            <div className="user_search">
+                                <input
+                                    type="text"
+                                    placeholder="Search by user, UTR, amount..."
+                                    value={searchTerm}
+                                    onChange={e => setSearchTerm(e.target.value)}
+                                />
+                            </div>
                         </div>
                     </div>
 

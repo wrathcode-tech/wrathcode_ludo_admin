@@ -1102,6 +1102,21 @@ button.closed_btn {
     margin: 18px auto;
 }
 
+.select_option select {
+    border: none;
+}
+
+.select_option {
+    border: 1px solid #d3d7dd;
+    padding: 7px;
+    border-radius: 7px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.select_option select:focus-visible{ outline: none;}
+
 
 @media screen and (max-width:1367px) {
 
@@ -1325,6 +1340,10 @@ button.closed_btn {
     .width-70 {
         width: 100%;
     }
+
+.ytCgx div:first-child {
+    overflow: initial !important;
+}    
 
     .userlisttable .rdt_TableRow .rdt_TableCell {
         padding: 5px 16px;
@@ -1602,7 +1621,7 @@ button.closed_btn {
     }
 
     .dashboard_detail_s {
-        padding: 24px;
+        padding:20px;
     }
 
     .dashboard {
@@ -1754,9 +1773,17 @@ button.closed_btn {
         padding: 6px 12px;
     }
 
-    .dashboard_right .tabs_top li .nav-link {
+.select_option {
+    padding: 5px;
+    font-size: 12px; }    
+
+.dashboard_right .tabs_top li .nav-link {
         padding: 5px 15px;
     }
+
+.user_list_top.d-flex.justify-content-between.align-items-center {
+    margin-bottom: 10px;
+}    
 
     body .h1,
     h1 {
