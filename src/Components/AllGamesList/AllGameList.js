@@ -3,18 +3,22 @@ import UserHeader from '../../Layout/UserHeader';
 import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import AuthService from '../../Api/Api_Services/AuthService';
 import { alertErrorMessage } from '../../Utils/CustomAlertMessage';
-import { imageUrl } from '../../Api/Api_Config/ApiEndpoints';
 import moment from 'moment';
 import DataTableBase from '../../Utils/DataTable';
 
 function AllGameList() {
-    const [allData, setAllData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('ALL');
 
+    // Individual states to store data
+    const [completeLudoData, setcompleteLudoData] = useState([]);
+    const [runningGameData, setRunningGameData] = useState([]);
+    const [expiredGameData, setExpiredGameData] = useState([]);
+    const [openBattleData, setOpenBattleData] = useState([]);
+    const [disputeGameData, setDisputeGameData] = useState([]);
+
     const getUserName = (row) => {
-        // if (row?.userId?.fullName) return row.userId.fullName;
         if (row?.joinedBy?.fullName) return row.joinedBy.fullName;
         if (row?.createdBy?.fullName) return row.createdBy.fullName;
         if (typeof row?.joinedBy === "string") return row.joinedBy;
@@ -26,18 +30,8 @@ function AllGameList() {
         { name: 'Date & Time', selector: row => moment(row.createdAt).format('DD-MM-YYYY LT'), sortable: true, wrap: true },
         { name: 'Creator Name', selector: row => row?.createdBy?.fullName || row?.createdBy || '—', sortable: true, wrap: true },
         { name: 'Joiner Name', selector: row => row?.joinedBy?.fullName || row?.joinedBy || '—', sortable: true, wrap: true },
-        
-
         { name: 'Total Bet', selector: row => `₹ ${(row?.amount) || 0}/per user`, sortable: true, wrap: true },
-        { name: 'Wallet Tye', selector: row => row?.walletType || '—', sortable: true, wrap: true },
-        // {
-        //     name: 'Payment Proof',
-        //     cell: row => row?.paymentProof ? (
-        //         <a href={imageUrl + row.paymentProof} target="_blank" rel="noopener noreferrer">
-        //             <img src={imageUrl + row.paymentProof} alt="proof" style={{ width: 50, height: 50 }} />
-        //         </a>
-        //     ) : '—',
-        // },
+        { name: 'Wallet Type', selector: row => row?.walletType || '—', sortable: true, wrap: true },
         {
             name: 'Status',
             selector: row => row?.status || '—',
@@ -47,93 +41,90 @@ function AllGameList() {
         },
     ];
 
-    // Function to fetch API based on status
-    const fetchByStatus = async (status) => {
-        try {
-            LoaderHelper.loaderStatus(true);
-            let result;
-            switch (status) {
-                case 'COMPLETED':
-                    result = await AuthService?.allCompletedLudoGameList();
-                    break;
-                case 'CANCELLED':
-                    result = await AuthService?.allCancelLudoGameList();
-                    break;
-                case 'RUNNING':
-                    result = await AuthService?.allRunningLudoGameList();
-                    break;
-                case 'EXPIRED':
-                    result = await AuthService?.allExpiredLudoGameList();
-                    break;
-                case 'WAITING':
-                    result = await AuthService?.allWaitingLudoGameList();
-                    break;
-                case 'DISPUTE':
-                    result = await AuthService?.allDisputeLudoGameList();
-                    break;
-                case 'ALL':
-                    // If ALL, combine all lists
-                    const [
-                        completed,
-                        cancelled,
-                        running,
-                        expired,
-                        waiting,
-                        dispute
-                    ] = await Promise.all([
-                        AuthService.allCompletedLudoGameList(),
-                        AuthService.allCancelLudoGameList(),
-                        AuthService.allRunningLudoGameList(),
-                        AuthService.allExpiredLudoGameList(),
-                        AuthService.allWaitingLudoGameList(),
-                        AuthService.allDisputeLudoGameList()
-                    ]);
-                    result = {
-                        success: true, data: [
-                            ...completed.data,
-                            ...cancelled.data,
-                            ...running.data,
-                            ...expired.data,
-                            ...waiting.data,
-                            ...dispute.data
-                        ]
-                    };
-                    break;
-                default:
-                    result = { success: true, data: [] };
-            }
-
-            if (result?.success) {
-                setAllData(result.data);
-            } else {
-                // alertErrorMessage(result?.message);
-            }
-        } catch (error) {
-            alertErrorMessage(error?.message);
-        } finally {
-            LoaderHelper.loaderStatus(false);
-        }
-    };
-
-    // Call API whenever filterStatus changes
+    // Fetch all APIs once on component mount
     useEffect(() => {
-        fetchByStatus(filterStatus);
-    }, [filterStatus]);
+        const fetchAllData = async () => {
+            try {
+                LoaderHelper.loaderStatus(true);
 
-    // Filter & Search
+                const [completed, running, expired, waiting, dispute] = await Promise.all([
+                    AuthService.allCompletedLudoGameList(),
+                    AuthService.allRunningLudoGameList(),
+                    AuthService.allExpiredLudoGameList(),
+                    AuthService.allWaitingLudoGameList(),
+                    AuthService.allDisputeLudoGameList()
+                ]);
+
+                if (completed?.success) setcompleteLudoData(completed.data);
+                if (running?.success) setRunningGameData(running.data);
+                if (expired?.success) setExpiredGameData(expired.data);
+                if (waiting?.success) setOpenBattleData(waiting.data);
+                if (dispute?.success) setDisputeGameData(dispute.data);
+
+                // Initially show ALL data
+                setFilteredData([
+                    ...(completed?.data || []),
+                    ...(running?.data || []),
+                    ...(expired?.data || []),
+                    ...(waiting?.data || []),
+                    ...(dispute?.data || [])
+                ]);
+
+            } catch (error) {
+                alertErrorMessage(error?.message);
+            } finally {
+                LoaderHelper.loaderStatus(false);
+            }
+        };
+
+        fetchAllData();
+    }, []);
+
+    // Update table when filterStatus or searchTerm changes
     useEffect(() => {
-        if (!searchTerm) {
-            setFilteredData(allData);
-            return;
+        let currentData = [];
+
+        switch (filterStatus) {
+            case 'COMPLETED':
+                currentData = completeLudoData;
+                break;
+            case 'RUNNING':
+                currentData = runningGameData;
+                break;
+            case 'EXPIRED':
+                currentData = expiredGameData;
+                break;
+            case 'WAITING':
+                currentData = openBattleData;
+                break;
+            case 'DISPUTE':
+                currentData = disputeGameData;
+                break;
+            case 'CANCELLED':
+                currentData = []; // implement if needed
+                break;
+            case 'ALL':
+            default:
+                currentData = [
+                    ...completeLudoData,
+                    ...runningGameData,
+                    ...expiredGameData,
+                    ...openBattleData,
+                    ...disputeGameData
+                ];
         }
-        const tempData = allData.filter(item =>
-            getUserName(item).toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (item?.utrNumber || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (item?.roomCode || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (item?.amount?.toString() || '').includes(searchTerm)
-        );
-        setFilteredData(tempData);
-    }, [searchTerm, allData]);
+
+        if (searchTerm) {
+            currentData = currentData.filter(item =>
+                getUserName(item).toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (item?.utrNumber || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (item?.roomCode || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (item?.amount?.toString() || '').includes(searchTerm)
+            );
+        }
+
+        setFilteredData(currentData);
+    }, [filterStatus, searchTerm, completeLudoData, runningGameData, expiredGameData, openBattleData, disputeGameData]);
 
     return (
         <div className="dashboard_right">
@@ -171,7 +162,6 @@ function AllGameList() {
                     <div className="p-2 mobilep">
                         <DataTableBase columns={commonColumns} data={filteredData} pagination />
                     </div>
-
                 </div>
             </div>
         </div>

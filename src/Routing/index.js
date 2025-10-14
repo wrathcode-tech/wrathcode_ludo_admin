@@ -24,6 +24,7 @@ import CommissionBonusList from "../Components/AllCommissionBonusList/Commission
 import AddBankDetails from "../Components/AdminBankDetails/AddBankDetails";
 import DepositRequest from "../Components/DepositsList/DepositRequest";
 import AllGameList from "../Components/AllGamesList/AllGameList";
+import Settings from "../Components/Settings";
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -58,6 +59,7 @@ const Routing = () => {
         <Route path="disputeResponse" element={<ProtectedRoute> <DisputeResponse /></ProtectedRoute>} />
         <Route path="commissionBonusList" element={<ProtectedRoute> <CommissionBonusList /></ProtectedRoute>} />
         <Route path="addBank" element={<ProtectedRoute> <AddBankDetails /></ProtectedRoute>} />
+        <Route path="settings" element={<ProtectedRoute> <Settings /></ProtectedRoute>} />
 
 
 
