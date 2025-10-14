@@ -7,7 +7,7 @@ import { imageUrl } from '../../Api/Api_Config/ApiEndpoints';
 import moment from 'moment';
 import DataTableBase from '../../Utils/DataTable';
 
-function AllLudoList() {
+function AllGameList() {
     const [allData, setAllData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -44,22 +44,22 @@ function AllLudoList() {
             let result;
             switch (status) {
                 case 'COMPLETED':
-                    result = await AuthService.allCompletedLudoGameList();
+                    result = await AuthService?.allCompletedLudoGameList();
                     break;
                 case 'CANCELLED':
-                    result = await AuthService.allCancelLudoGameList();
+                    result = await AuthService?.allCancelLudoGameList();
                     break;
                 case 'RUNNING':
-                    result = await AuthService.allRunningLudoGameList();
+                    result = await AuthService?.allRunningLudoGameList();
                     break;
                 case 'EXPIRED':
-                    result = await AuthService.allExpiredLudoGameList();
+                    result = await AuthService?.allExpiredLudoGameList();
                     break;
                 case 'WAITING':
-                    result = await AuthService.allWaitingLudoGameList();
+                    result = await AuthService?.allWaitingLudoGameList();
                     break;
                 case 'DISPUTE':
-                    result = await AuthService.allDisputeLudoGameList();
+                    result = await AuthService?.allDisputeLudoGameList();
                     break;
                 case 'ALL':
                     // If ALL, combine all lists
@@ -152,14 +152,14 @@ function AllLudoList() {
                         </div>
                     </div>
 
-                        <div className="p-2 mobilep">
-                            <DataTableBase columns={commonColumns} data={filteredData} pagination />
-                        </div>
-                  
+                    <div className="p-2 mobilep">
+                        <DataTableBase columns={commonColumns} data={filteredData} pagination />
+                    </div>
+
                 </div>
             </div>
         </div>
     );
 }
 
-export default AllLudoList;
+export default AllGameList;

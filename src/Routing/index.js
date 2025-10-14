@@ -12,7 +12,6 @@ import BlogPage from "../Components/BlogPage";
 import ContactusList from "../Components/ContactusList";
 import UserKyc from "../Components/UserKyc";
 import MatchDetails from "../Components/MatchDetails/Index";
-import AllLudoList from "../Components/LudoList/AllLudoList";
 import OverAllReferralEarnList from "../Components/ReferralBonusEarn/Index";
 import OverAllCommissionEarnList from "../Components/AllCommissionBonusEarn/Index";
 import DepostiWithdraSummary from "../Components/DepositsList/DepostiWithdraSummary";
@@ -24,6 +23,7 @@ import DisputeResponse from "../Components/DisputeResponse/DisputeResponse";
 import CommissionBonusList from "../Components/AllCommissionBonusList/CommissionBonusList";
 import AddBankDetails from "../Components/AdminBankDetails/AddBankDetails";
 import DepositRequest from "../Components/DepositsList/DepositRequest";
+import AllGameList from "../Components/AllGamesList/AllGameList";
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -62,7 +62,7 @@ const Routing = () => {
 
 
         {/* <Route path="chat/:id" element={<ProtectedRoute> <Chatpage /></ProtectedRoute>} /> */}
-        <Route path="AllGamesList" element={<ProtectedRoute> <AllLudoList /></ProtectedRoute>} />
+        <Route path="AllGamesList" element={<ProtectedRoute> <AllGameList /></ProtectedRoute>} />
       </Route>
       <Route path="*" element={token ? <Navigate to="/dashboard/home" replace /> : <Navigate to="/" replace />} />
     </Routes>
