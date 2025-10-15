@@ -57,11 +57,11 @@ function Settings() {
             <div className='setting_form'>
                 <h2>Admin Settings</h2>
 
-                <form onSubmit={handleUpdateSettings} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <form onSubmit={handleUpdateSettings} >
 
                     {/* Row 1 - Deposit INR */}
-                    <div style={{ display: 'flex', gap: '20px' }}>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <div className='admin_setting_form'>
+                        <div className='form_setting_in'>
                             <label>Minimum Deposit (INR)</label>
                             <input
                                 className='form-control'
@@ -72,7 +72,7 @@ function Settings() {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <div className='form_setting_in'>
                             <label>Maximum Deposit (INR)</label>
                             <input
                                 className='form-control'
@@ -86,8 +86,8 @@ function Settings() {
                     </div>
 
                     {/* Row 2 - Withdrawal INR */}
-                    <div style={{ display: 'flex', gap: '20px' }}>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <div className='admin_setting_form'>
+                        <div className='form_setting_in'>
                             <label>Minimum Withdrawal (INR)</label>
                             <input
                                 className='form-control'
@@ -98,7 +98,7 @@ function Settings() {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <div className='form_setting_in'>
                             <label>Maximum Withdrawal (INR)</label>
                             <input
                                 className='form-control'
@@ -112,8 +112,8 @@ function Settings() {
                     </div>
 
                     {/* Row 3 - USDT Deposit/Withdrawal */}
-                    <div style={{ display: 'flex', gap: '20px' }}>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <div className='admin_setting_form'>
+                        <div className='form_setting_in'>
                             <label>Minimum Deposit (USDT)</label>
                             <input
                                 className='form-control'
@@ -124,7 +124,7 @@ function Settings() {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <div className='form_setting_in'>
                             <label>Maximum Deposit (USDT)</label>
                             <input
                                 className='form-control'
@@ -138,8 +138,8 @@ function Settings() {
                     </div>
 
                     {/* Row 4 - USDT Withdrawals */}
-                    <div style={{ display: 'flex', gap: '20px' }}>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <div className='admin_setting_form'>
+                        <div className='form_setting_in'>
                             <label>Minimum Withdrawal (USDT)</label>
                             <input
                                 className='form-control'
@@ -150,7 +150,7 @@ function Settings() {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <div className='form_setting_in'>
                             <label>Maximum Withdrawal (USDT)</label>
                             <input
                                 className='form-control'
@@ -164,8 +164,8 @@ function Settings() {
                     </div>
 
                     {/* Row 5 - Commissions & Bonuses */}
-                    <div style={{ display: 'flex', gap: '20px' }}>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <div className='admin_setting_form'>
+                        <div className='form_setting_in'>
                             <label>Admin Commission (%)</label>
                             <input
                                 className='form-control'
@@ -176,7 +176,7 @@ function Settings() {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <div className='form_setting_in'>
                             <label>User Commission Bonus Amount</label>
                             <input
                                 className='form-control'
@@ -190,8 +190,8 @@ function Settings() {
                     </div>
 
                     {/* Row 6 - Referral Bonuses */}
-                    <div style={{ display: 'flex', gap: '20px' }}>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <div className='admin_setting_form'>
+                        <div className='form_setting_in'>
                             <label>Referral Bonus (After Deposit)</label>
                             <input
                                 className='form-control'
@@ -202,7 +202,7 @@ function Settings() {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <div className='form_setting_in'>
                             <label>Referral Bonus (SignUp)</label>
                             <input
                                 className='form-control'
@@ -216,8 +216,8 @@ function Settings() {
                     </div>
 
                     {/* Row 7 - Game Limits */}
-                    <div style={{ display: 'flex', gap: '20px' }}>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <div className='admin_setting_form'>
+                        <div className='form_setting_in'>
                             <label>Minimum Game Amount</label>
                             <input
                                 className='form-control'
@@ -228,7 +228,7 @@ function Settings() {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <div className='form_setting_in'>
                             <label>Maximum Game Amount</label>
                             <input
                                 className='form-control'
@@ -242,8 +242,8 @@ function Settings() {
                     </div>
 
                     {/* Row 8 - Bonus Usage */}
-                    <div style={{ display: 'flex', gap: '20px' }}>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <div className='admin_setting_form'>
+                        <div className='form_setting_in'>
                             <label>Bonus Amount Use (₹)</label>
                             <input
                                 className='form-control'
@@ -254,7 +254,7 @@ function Settings() {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <div className='form_setting_in'>
                             <label>Bonus Used Percent (%)</label>
                             <input
                                 className='form-control'

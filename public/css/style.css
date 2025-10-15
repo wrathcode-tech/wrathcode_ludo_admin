@@ -715,7 +715,8 @@ body .user_list_table button.chat {
 
 .setting_form .form-control {
     padding: 12px 15px;
-    font-size: 13px; }
+    font-size: 13px;
+}
 
 .form_notification form {
     margin: 18px 0px 24px;
@@ -844,6 +845,9 @@ textarea.input_inb {
 
 .setting_form form {
     margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
 .setting_form label {
@@ -1136,31 +1140,41 @@ button.closed_btn {
     align-items: center;
 }
 
-.select_option select:focus-visible{ outline: none;}
+.select_option select:focus-visible {
+    outline: none;
+}
 
 ::placeholder {
-  color: #d8d8d8; 
+    color: #d8d8d8;
 }
 
 ::-webkit-input-placeholder {
-  color: #d8d8d8;
+    color: #d8d8d8;
 }
+
 :-ms-input-placeholder {
-  color: #d8d8d8;
+    color: #d8d8d8;
 }
+
 ::-ms-input-placeholder {
-  color: #d8d8d8;
+    color: #d8d8d8;
 }
 
 input.form-control::placeholder {
-  color: #cfcfcf ;
-  opacity: 1 !important;
+    color: #cfcfcf;
+    opacity: 1 !important;
 }
 
 
 input.form-control {
-  color: #ffffff !important;  
-  background-color: transparent;
+    color: #ffffff !important;
+    background-color: transparent;
+}
+
+.admin_setting_form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
 }
 
 
@@ -1387,14 +1401,31 @@ input.form-control {
         width: 100%;
     }
 
-    .setting_form {
-    padding: 20px;
-    margin-top: 10px;
-}
+    .setting_form form {
+        margin-top: 15px;
+        gap: 15px;
+    }
 
-.ytCgx div:first-child {
-    overflow: initial !important;
-}    
+    .admin_setting_form {
+        gap: 15px;
+    }
+
+    .setting_form {
+        padding: 20px;
+        margin-top: 10px;
+    }
+
+    .setting_form .form-control {
+        padding: 8px 10px;
+    }
+
+    .setting_form label {
+        font-size: 13px;
+    }
+
+    .ytCgx div:first-child {
+        overflow: initial !important;
+    }
 
     .userlisttable .rdt_TableRow .rdt_TableCell {
         padding: 5px 16px;
@@ -1672,7 +1703,7 @@ input.form-control {
     }
 
     .dashboard_detail_s {
-        padding:20px;
+        padding: 20px;
     }
 
     .dashboard {
@@ -1824,17 +1855,18 @@ input.form-control {
         padding: 6px 12px;
     }
 
-.select_option {
-    padding: 5px;
-    font-size: 12px; }    
+    .select_option {
+        padding: 5px;
+        font-size: 12px;
+    }
 
-.dashboard_right .tabs_top li .nav-link {
+    .dashboard_right .tabs_top li .nav-link {
         padding: 5px 15px;
     }
 
-.user_list_top.d-flex.justify-content-between.align-items-center {
-    margin-bottom: 10px;
-}    
+    .user_list_top.d-flex.justify-content-between.align-items-center {
+        margin-bottom: 10px;
+    }
 
     body .h1,
     h1 {
