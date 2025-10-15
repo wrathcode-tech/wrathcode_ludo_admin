@@ -713,6 +713,10 @@ body .user_list_table button.chat {
     display: none;
 }
 
+.setting_form .form-control {
+    padding: 12px 15px;
+    font-size: 13px; }
+
 .form_notification form {
     margin: 18px 0px 24px;
     display: flex;
@@ -1133,6 +1137,31 @@ button.closed_btn {
 }
 
 .select_option select:focus-visible{ outline: none;}
+
+::placeholder {
+  color: #d8d8d8; 
+}
+
+::-webkit-input-placeholder {
+  color: #d8d8d8;
+}
+:-ms-input-placeholder {
+  color: #d8d8d8;
+}
+::-ms-input-placeholder {
+  color: #d8d8d8;
+}
+
+input.form-control::placeholder {
+  color: #cfcfcf ;
+  opacity: 1 !important;
+}
+
+
+input.form-control {
+  color: #ffffff !important;  
+  background-color: transparent;
+}
 
 
 @media screen and (max-width:1367px) {
