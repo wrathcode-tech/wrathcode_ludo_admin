@@ -1,86 +1,83 @@
 import axios from "axios";
-import { alertErrorMessage } from "../../Utils/CustomAlertMessage/index";
-import LoaderHelper from "../../Utils/Loading/LoaderHelper";
-import { ApiConfig } from "./ApiEndpoints";
+import { alertErrorMessage } from "../../Utils/CustomAlertMessage";
 
 export const ApiCallPost = async (url, parameters, headers) => {
   try {
     const response = await axios.post(url, parameters, { headers: headers });
-    LoaderHelper.loaderStatus(false);
     return response?.data;
   } catch (error) {
-    LoaderHelper.loaderStatus(false);
-    if (error?.response?.data?.message === "Token is expired with message: res is not defined") {
+    if (error?.response?.data?.message === "Token is expired") {
       tokenExpire();
       return;
-    } else {
-      if (url === `${ApiConfig?.baseUrl}v1/user/login` || url === `${ApiConfig?.baseUrl}v1/user/register`) {
-        // alertErrorMessage(error?.response?.data?.message)
-        return error?.response?.data
-      }
-      return error?.response?.data
-      // alertErrorMessage(error?.response?.data?.message)
-
     }
+    return error?.response?.data;
   }
 };
 
 export const ApiCallGet = async (url, headers) => {
   try {
     const response = await axios.get(url, { headers: headers });
-    LoaderHelper.loaderStatus(false);
     return response?.data;
   } catch (error) {
-    LoaderHelper.loaderStatus(false);
-    if (error?.response?.data?.message === "Token is expired with message: res is not defined") {
+    if (error?.response?.data?.message === "Token is expired") {
       tokenExpire();
       return;
-    } else {
-      return error?.response?.data
-      // alertErrorMessage(error?.response?.data?.message)
-      return
     }
+    return error?.response?.data;
   }
 };
 
-export const ApiCallDelete = async (url, headers) => {
+export const ApiCallGetVerifyRegistration = async (url, headers) => {
   try {
-    const response = await axios.delete(url, { headers: headers });
-    LoaderHelper.loaderStatus(false);
+    const response = await axios.get(url, { headers: headers });
     return response?.data;
   } catch (error) {
-    LoaderHelper.loaderStatus(false);
-    if (error?.response?.data?.message === "Token is expired with message: res is not defined") {
-      tokenExpire();
-      return;
-    } else {
-      return error?.response?.data
-      // alertErrorMessage(error?.response?.data?.message)
-      return
-    }
+    return error?.response?.data;
   }
 };
 
 export const ApiCallPut = async (url, parameters, headers) => {
   try {
     const response = await axios.put(url, parameters, { headers: headers });
-    LoaderHelper.loaderStatus(false);
     return response?.data;
   } catch (error) {
-    LoaderHelper.loaderStatus(false);
-    if (error?.response?.data?.message === "Token is expired with message: res is not defined") {
+    if (error?.response?.data?.message === "Token is expired") {
       tokenExpire();
       return;
-    } else {
-      return error?.response?.data
-      // alertErrorMessage(error?.response?.data?.message)
-      return
     }
+    return error?.response?.data;
+  }
+};
+
+export const ApiCallPatch = async (url, parameters, headers) => {
+  try {
+    const response = await axios.patch(url, parameters, { headers: headers });
+    return response?.data;
+  } catch (error) {
+    if (error?.response?.data?.message === "Token is expired") {
+      tokenExpire();
+      return;
+    }
+    return error?.response?.data;
+  }
+};
+
+// ✅ Added Delete API
+export const ApiCallDelete = async (url, headers) => {
+  try {
+    const response = await axios.delete(url, { headers: headers });
+    return response?.data;
+  } catch (error) {
+    if (error?.response?.data?.message === "Token is expired") {
+      tokenExpire();
+      return;
+    }
+    return error?.response?.data;
   }
 };
 
 const tokenExpire = () => {
-  alertErrorMessage('Token is Expired');
+  alertErrorMessage('Token is Expired. Please login again.');
   sessionStorage.clear();
   window.location.reload();
-}
+};

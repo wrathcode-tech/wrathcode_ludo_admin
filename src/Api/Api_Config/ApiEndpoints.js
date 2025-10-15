@@ -87,6 +87,8 @@ export const ApiConfig = {
   getAdminBankDetails: "adminBankDetailsList",
   updateStatusAdminBank: "updateStatusAdminBank",
   updateAdminSettings: "updateAdminSettings",
+  updatePartnerStatus: "updatePartnerStatus",
+  getAllPartners: "partnerList",
 
 
 

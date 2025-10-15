@@ -161,12 +161,37 @@ const AuthService = {
     };
     return ApiCallPost(url, params, headers);
   },
+  updatePartnerStatus: async (userId, status,) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, updatePartnerStatus } = ApiConfig;
+    const url = baseUrl + updatePartnerStatus;
+    const params = {
+      id: userId,
+      status,
+
+    };
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token
+    };
+    return ApiCallPost(url, params, headers);
+  },
 
 
   getProfile: async () => {
     const token = sessionStorage.getItem("token");
     const { baseUrl, getProfile } = ApiConfig;
     const url = baseUrl + getProfile;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  getAllPartners: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, getAllPartners } = ApiConfig;
+    const url = baseUrl + getAllPartners;
     const headers = {
       'Content-Type': 'application/json',
       Authorization: token

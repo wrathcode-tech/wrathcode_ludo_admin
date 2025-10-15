@@ -116,6 +116,11 @@ const Sidebar = () => {
                                         <img src="/images/notification_icon.png" alt="Notifications" />Send Notifications
                                     </Link>
                                 </li>
+                                <li className={actived === "partners" ? "active" : ""}>
+                                    <Link to="/dashboard/partners" onClick={() => setActived("partners")}>
+                                        <img src="/images/notification_icon.png" alt="Notifications" />Partners
+                                    </Link>
+                                </li>
 
                                 <li className={actived === "BannerManagement" ? "active" : ""}>
                                     <Link to="/dashboard/BannerManagement" onClick={() => setActived("BannerManagement")}>

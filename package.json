@@ -10,6 +10,7 @@
     "axios": "^1.8.4",
     "copy-to-clipboard": "^3.3.3",
     "install": "^0.13.0",
+    "jwt-decode": "^4.0.0",
     "moment": "^2.30.1",
     "npm": "^11.6.0",
     "react": "^19.1.0",
