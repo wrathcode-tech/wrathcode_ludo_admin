@@ -80,7 +80,7 @@ function WithdrawalRequest() {
         }
     };
 
-    const handleStatus = async (userId, status, transactionId) => {
+    const handleStatus = async (userId, status, transactionId, reason) => {
         try {
             LoaderHelper.loaderStatus(true);
             const reason = status === "REJECTED" ? "Rejected by Admin" : "";

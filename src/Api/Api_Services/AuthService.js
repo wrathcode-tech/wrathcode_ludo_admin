@@ -78,7 +78,7 @@ const AuthService = {
   },
   updateAdminSettings: async (adminCommission, referralBonusAmount, userCommissionBonusAmount, referralBonusSignUpAmount,
     minimumDeposit, maximumDeposit, minimumWithdrawal, maximumWithdrawal, bonusAmountUse, minimumGameAmount, maximumGameAmount,
-    bonusUsedPercent, minimumDepositUsdt, minimumWithdrawalUsdt, maximumDepositUsdt, maximumWithdrawalUsdt) => {
+    bonusUsedPercent, minimumDepositUsdt, minimumWithdrawalUsdt, maximumDepositUsdt, maximumWithdrawalUsdt, minimumGameAmountUsdt, maximumGameAmountUsdt) => {
     const token = sessionStorage.getItem("token");
     const { baseUrl, updateAdminSettings } = ApiConfig;
     const url = baseUrl + updateAdminSettings;
@@ -98,7 +98,9 @@ const AuthService = {
       minimumDepositUsdt,
       minimumWithdrawalUsdt,
       maximumDepositUsdt,
-      maximumWithdrawalUsdt
+      maximumWithdrawalUsdt,
+      minimumGameAmountUsdt,
+      maximumGameAmountUsdt
 
     };
     const headers = {
@@ -787,7 +789,7 @@ const AuthService = {
     };
     return ApiCallPost(url, params, headers);
   },
-  updateWithdrawalStatus: async (userId, status, transactionId) => {
+  updateWithdrawalStatus: async (userId, status, transactionId, reason) => {
     const token = sessionStorage.getItem("token");
     const { baseUrl, updateWithdrawalStatus } = ApiConfig;
     const url = baseUrl + updateWithdrawalStatus;
@@ -795,6 +797,7 @@ const AuthService = {
       userId: userId,
       status: status,
       transactionId: transactionId,
+      reason
 
     };
     const headers = {

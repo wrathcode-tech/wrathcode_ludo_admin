@@ -31,13 +31,13 @@ function Settings() {
 
     const handleUpdateSettings = async (adminCommission, referralBonusAmount, userCommissionBonusAmount, referralBonusSignUpAmount,
         minimumDeposit, maximumDeposit, minimumWithdrawal, maximumWithdrawal, bonusAmountUse, minimumGameAmount, maximumGameAmount,
-        bonusUsedPercent, minimumDepositUsdt, minimumWithdrawalUsdt, maximumDepositUsdt, maximumWithdrawalUsdt) => {
+        bonusUsedPercent, minimumDepositUsdt, minimumWithdrawalUsdt, maximumDepositUsdt, maximumWithdrawalUsdt, minimumGameAmountUsdt, maximumGameAmountUsdt) => {
 
         try {
             LoaderHelper.loaderStatus(true);
             const result = await AuthService.updateAdminSettings(adminCommission, referralBonusAmount, userCommissionBonusAmount, referralBonusSignUpAmount,
                 minimumDeposit, maximumDeposit, minimumWithdrawal, maximumWithdrawal, bonusAmountUse, minimumGameAmount, maximumGameAmount,
-                bonusUsedPercent, minimumDepositUsdt, minimumWithdrawalUsdt, maximumDepositUsdt, maximumWithdrawalUsdt);
+                bonusUsedPercent, minimumDepositUsdt, minimumWithdrawalUsdt, maximumDepositUsdt, maximumWithdrawalUsdt, minimumGameAmountUsdt, maximumGameAmountUsdt);
             if (result?.success) {
                 alertSuccessMessage(result?.message || "Settings updated successfully!");
                 handleSettingData();
@@ -75,7 +75,6 @@ function Settings() {
         <div className='dashboard_right'>
             <div className="setting_form">
                 <h2>Admin Settings</h2>
-
                 <form onSubmit={handleUpdateSettings}>
                     {/* Row 1 - Deposit INR */}
                     <div className="admin_setting_form">
@@ -173,13 +172,20 @@ function Settings() {
                         </div>
                     </div>
 
-                    {/* Row 9 - Match Cancel Timer */}
-                    {/* <div className="admin_setting_form">
+                    {/* Row 9 - Minimum Game Amount USDT*/}
+                    <div className="admin_setting_form">
                         <div className="form_setting_in">
-                            <label>Match Cancel Timer (sec)</label>
-                            <input type="number" name="matchCancelTimerInSec" className="form-control" value={settingsData.matchCancelTimerInSec} onChange={handleChange} />
+                            <label>Minimum Game Amount USDT</label>
+                            <input type="number" name="minimumGameAmountUsdt" className="form-control" value={settingsData?.minimumGameAmountUsdt} onChange={handleChange} />
                         </div>
-                    </div> */}
+                    </div>
+                    {/* Row 10 - Maximum Game Amount USDT*/}
+                    <div className="admin_setting_form">
+                        <div className="form_setting_in">
+                            <label>Maximum Game Amount USDT</label>
+                            <input type="number" name="maximumGameAmountUsdt" className="form-control" value={settingsData?.maximumGameAmountUsdt} onChange={handleChange} />
+                        </div>
+                    </div>
 
                     <button
                         type="submit"
