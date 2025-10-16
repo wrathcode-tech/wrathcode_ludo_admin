@@ -63,6 +63,19 @@ const AuthService = {
     };
     return ApiCallPost(url, params, headers);
   },
+  updateAllUserStatus: async (userId, status) => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, updateAllUserStatus } = ApiConfig;
+    const url = baseUrl + updateAllUserStatus;
+    const params = {
+      userId, status
+    };
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token
+    };
+    return ApiCallPost(url, params, headers);
+  },
   updateAdminSettings: async (adminCommission, referralBonusAmount, userCommissionBonusAmount, referralBonusSignUpAmount,
     minimumDeposit, maximumDeposit, minimumWithdrawal, maximumWithdrawal, bonusAmountUse, minimumGameAmount, maximumGameAmount,
     bonusUsedPercent, minimumDepositUsdt, minimumWithdrawalUsdt, maximumDepositUsdt, maximumWithdrawalUsdt) => {
@@ -182,6 +195,16 @@ const AuthService = {
     const token = sessionStorage.getItem("token");
     const { baseUrl, getProfile } = ApiConfig;
     const url = baseUrl + getProfile;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  adminSettingData: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, adminSettingData } = ApiConfig;
+    const url = baseUrl + adminSettingData;
     const headers = {
       'Content-Type': 'application/json',
       Authorization: token

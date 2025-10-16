@@ -18,8 +18,8 @@ export const ApiConfig = {
   getUserCommissionDetails: "userCommissionBonusDetails",
   addUserWinningAmount: "addCashToUserWinningAmount",
   addDepositAmount: "addCashToUser",
-
-
+  updateAllUserStatus: "updateUserStatus",
+  adminSettingData: "adminSettingData",
 
 
 

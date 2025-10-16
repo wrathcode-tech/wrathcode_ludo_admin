@@ -54,23 +54,22 @@ function AllUserList() {
     };
 
     const handleStatusUpdate = async (id, status) => {
-
         try {
             LoaderHelper.loaderStatus(true);
-            const result = await AuthService.usersStatusUpdate(id, status);
+            const result = await AuthService.updateAllUserStatus(id, status); // Only user status now
             if (result?.success) {
-                handleUsersList()
-
+                alertSuccessMessage(result?.message || "Status updated successfully!");
+                handleUsersList(); // refresh list
             } else {
-                alertErrorMessage(result?.message);
+                alertErrorMessage(result?.message || "Failed to update status");
             }
-
         } catch (error) {
-            alertErrorMessage(error?.message);
+            alertErrorMessage(error?.message || "Something went wrong");
         } finally {
             LoaderHelper.loaderStatus(false);
         }
     };
+
 
     useEffect(() => {
         if (search) {
@@ -170,16 +169,37 @@ function AllUserList() {
             wrap: true
         },
         {
-            name: 'Status',
-            selector: row => row?.status || '—',
-            cell: row => (
-                <span style={{ color: row?.status === 'ACTIVE' ? 'green' : 'red' }}>
-                    {row?.status || '—'}
-                </span>
-            ),
-            sortable: true,
-            wrap: true
-        },
+            name: "Action",
+            width: "200px",
+            cell: (row) => {
+                const status = row?.status || "INACTIVE"; // default if not found
+
+                return (
+                    <div className="d-flex gap-2">
+                        {status === "ACTIVE" ? (
+                            <button
+                                className="btn btn-sm btn-danger"
+                                onClick={() => handleStatusUpdate(row?._id, "INACTIVE")}
+                            >
+                                Inactive
+                            </button>
+                        ) : (
+                            <button
+                                className="btn btn-sm btn-success"
+                                onClick={() => handleStatusUpdate(row?._id, "ACTIVE")}
+                            >
+                                Active
+                            </button>
+                        )}
+                    </div>
+                );
+            },
+            ignoreRowClick: true,
+            allowOverflow: true,
+            button: true,
+        }
+
+
     ];
 
     return (

@@ -1,289 +1,201 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import AuthService from '../../Api/Api_Services/AuthService';
 import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertMessage';
 
 function Settings() {
-    const [settings, setSettings] = useState({
-        minimumDeposit: '',
-        maximumDeposit: '',
-        minimumWithdrawal: '',
-        maximumWithdrawal: '',
-        adminCommission: '',
-        referralBonusAmount: '',
-        userCommissionBonusAmount: '',
-        referralBonusSignUpAmount: ''
+    const [settingsData, setSettingsData] = useState({
+        minimumDeposit: "",
+        maximumDeposit: "",
+        minimumWithdrawal: "",
+        maximumWithdrawal: "",
+        minimumDepositUsdt: "",
+        maximumDepositUsdt: "",
+        minimumWithdrawalUsdt: "",
+        maximumWithdrawalUsdt: "",
+        adminCommission: "",
+        userCommissionBonusAmount: "",
+        refferalBonusAmount: "",
+        refferalBonusAmountSignUp: "",
+        minimumGameAmount: "",
+        maximumGameAmount: "",
+        bonusAmountUse: "",
+        bonusUsedPercent: "",
+        matchCancelTimerInSec: "",
     });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setSettings(prev => ({ ...prev, [name]: value }));
+        setSettingsData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleUpdateSettings = async (e) => {
-        e.preventDefault(); // stops page reload
-
-        const {
-            adminCommission, referralBonusAmount, userCommissionBonusAmount, referralBonusSignUpAmount,
-            minimumDeposit, maximumDeposit, minimumWithdrawal, maximumWithdrawal, bonusAmountUse, minimumGameAmount, maximumGameAmount,
-            bonusUsedPercent, minimumDepositUsdt, minimumWithdrawalUsdt, maximumDepositUsdt, maximumWithdrawalUsdt
-        } = settings;
+    const handleUpdateSettings = async (adminCommission, referralBonusAmount, userCommissionBonusAmount, referralBonusSignUpAmount,
+        minimumDeposit, maximumDeposit, minimumWithdrawal, maximumWithdrawal, bonusAmountUse, minimumGameAmount, maximumGameAmount,
+        bonusUsedPercent, minimumDepositUsdt, minimumWithdrawalUsdt, maximumDepositUsdt, maximumWithdrawalUsdt) => {
 
         try {
             LoaderHelper.loaderStatus(true);
-            const result = await AuthService.updateAdminSettings(
-                adminCommission, referralBonusAmount, userCommissionBonusAmount, referralBonusSignUpAmount,
+            const result = await AuthService.updateAdminSettings(adminCommission, referralBonusAmount, userCommissionBonusAmount, referralBonusSignUpAmount,
                 minimumDeposit, maximumDeposit, minimumWithdrawal, maximumWithdrawal, bonusAmountUse, minimumGameAmount, maximumGameAmount,
-                bonusUsedPercent, minimumDepositUsdt, minimumWithdrawalUsdt, maximumDepositUsdt, maximumWithdrawalUsdt
-            );
-
+                bonusUsedPercent, minimumDepositUsdt, minimumWithdrawalUsdt, maximumDepositUsdt, maximumWithdrawalUsdt);
             if (result?.success) {
-                alertSuccessMessage(result.message);
+                alertSuccessMessage(result?.message || "Settings updated successfully!");
+                handleSettingData();
             } else {
-                alertErrorMessage(result?.message || "Something went wrong");
+                alertErrorMessage(result?.message || "Failed to update settings");
             }
         } catch (error) {
-            alertErrorMessage(error?.message || "Error occurred");
+            alertErrorMessage(error?.message || "Error updating settings");
         } finally {
             LoaderHelper.loaderStatus(false);
         }
     };
 
+    const handleSettingData = async () => {
+        try {
+            LoaderHelper.loaderStatus(true);
+            const result = await AuthService.adminSettingData();
+            if (result?.success) {
+                setSettingsData(result?.data || {});
+            } else {
+                alertErrorMessage(result?.message);
+            }
+        } catch (error) {
+            alertErrorMessage(error?.message);
+        } finally {
+            LoaderHelper.loaderStatus(false);
+        }
+    };
 
-
+    useEffect(() => {
+        handleSettingData();
+    }, []);
 
     return (
         <div className='dashboard_right'>
-            <div className='setting_form'>
+            <div className="setting_form">
                 <h2>Admin Settings</h2>
 
-                <form onSubmit={handleUpdateSettings} >
-
+                <form onSubmit={handleUpdateSettings}>
                     {/* Row 1 - Deposit INR */}
-                    <div className='admin_setting_form'>
-                        <div className='form_setting_in'>
+                    <div className="admin_setting_form">
+                        <div className="form_setting_in">
                             <label>Minimum Deposit (INR)</label>
-                            <input
-                                className='form-control'
-                                type="number"
-                                name="minimumDeposit"
-                                placeholder="Minimum Deposit (INR)"
-                                value={settings.minimumDeposit}
-                                onChange={handleChange}
-                            />
+                            <input type="number" name="minimumDeposit" className="form-control" value={settingsData.minimumDeposit} onChange={handleChange} />
                         </div>
-                        <div className='form_setting_in'>
+                        <div className="form_setting_in">
                             <label>Maximum Deposit (INR)</label>
-                            <input
-                                className='form-control'
-                                type="number"
-                                name="maximumDeposit"
-                                placeholder="Maximum Deposit (INR)"
-                                value={settings.maximumDeposit}
-                                onChange={handleChange}
-                            />
+                            <input type="number" name="maximumDeposit" className="form-control" value={settingsData.maximumDeposit} onChange={handleChange} />
                         </div>
                     </div>
 
                     {/* Row 2 - Withdrawal INR */}
-                    <div className='admin_setting_form'>
-                        <div className='form_setting_in'>
+                    <div className="admin_setting_form">
+                        <div className="form_setting_in">
                             <label>Minimum Withdrawal (INR)</label>
-                            <input
-                                className='form-control'
-                                type="number"
-                                name="minimumWithdrawal"
-                                placeholder="Minimum Withdrawal (INR)"
-                                value={settings.minimumWithdrawal}
-                                onChange={handleChange}
-                            />
+                            <input type="number" name="minimumWithdrawal" className="form-control" value={settingsData.minimumWithdrawal} onChange={handleChange} />
                         </div>
-                        <div className='form_setting_in'>
+                        <div className="form_setting_in">
                             <label>Maximum Withdrawal (INR)</label>
-                            <input
-                                className='form-control'
-                                type="number"
-                                name="maximumWithdrawal"
-                                placeholder="Maximum Withdrawal (INR)"
-                                value={settings.maximumWithdrawal}
-                                onChange={handleChange}
-                            />
+                            <input type="number" name="maximumWithdrawal" className="form-control" value={settingsData.maximumWithdrawal} onChange={handleChange} />
                         </div>
                     </div>
 
-                    {/* Row 3 - USDT Deposit/Withdrawal */}
-                    <div className='admin_setting_form'>
-                        <div className='form_setting_in'>
+                    {/* Row 3 - Deposit USDT */}
+                    <div className="admin_setting_form">
+                        <div className="form_setting_in">
                             <label>Minimum Deposit (USDT)</label>
-                            <input
-                                className='form-control'
-                                type="number"
-                                name="minimumDepositUsdt"
-                                placeholder="Minimum Deposit (USDT)"
-                                value={settings.minimumDepositUsdt}
-                                onChange={handleChange}
-                            />
+                            <input type="number" name="minimumDepositUsdt" className="form-control" value={settingsData.minimumDepositUsdt} onChange={handleChange} />
                         </div>
-                        <div className='form_setting_in'>
+                        <div className="form_setting_in">
                             <label>Maximum Deposit (USDT)</label>
-                            <input
-                                className='form-control'
-                                type="number"
-                                name="maximumDepositUsdt"
-                                placeholder="Maximum Deposit (USDT)"
-                                value={settings.maximumDepositUsdt}
-                                onChange={handleChange}
-                            />
+                            <input type="number" name="maximumDepositUsdt" className="form-control" value={settingsData.maximumDepositUsdt} onChange={handleChange} />
                         </div>
                     </div>
 
-                    {/* Row 4 - USDT Withdrawals */}
-                    <div className='admin_setting_form'>
-                        <div className='form_setting_in'>
+                    {/* Row 4 - Withdrawal USDT */}
+                    <div className="admin_setting_form">
+                        <div className="form_setting_in">
                             <label>Minimum Withdrawal (USDT)</label>
-                            <input
-                                className='form-control'
-                                type="number"
-                                name="minimumWithdrawalUsdt"
-                                placeholder="Minimum Withdrawal (USDT)"
-                                value={settings.minimumWithdrawalUsdt}
-                                onChange={handleChange}
-                            />
+                            <input type="number" name="minimumWithdrawalUsdt" className="form-control" value={settingsData.minimumWithdrawalUsdt} onChange={handleChange} />
                         </div>
-                        <div className='form_setting_in'>
+                        <div className="form_setting_in">
                             <label>Maximum Withdrawal (USDT)</label>
-                            <input
-                                className='form-control'
-                                type="number"
-                                name="maximumWithdrawalUsdt"
-                                placeholder="Maximum Withdrawal (USDT)"
-                                value={settings.maximumWithdrawalUsdt}
-                                onChange={handleChange}
-                            />
+                            <input type="number" name="maximumWithdrawalUsdt" className="form-control" value={settingsData.maximumWithdrawalUsdt} onChange={handleChange} />
                         </div>
                     </div>
 
-                    {/* Row 5 - Commissions & Bonuses */}
-                    <div className='admin_setting_form'>
-                        <div className='form_setting_in'>
+                    {/* Row 5 - Commissions */}
+                    <div className="admin_setting_form">
+                        <div className="form_setting_in">
                             <label>Admin Commission (%)</label>
-                            <input
-                                className='form-control'
-                                type="number"
-                                name="adminCommission"
-                                placeholder="Admin Commission (%)"
-                                value={settings.adminCommission}
-                                onChange={handleChange}
-                            />
+                            <input type="number" name="adminCommission" className="form-control" value={settingsData.adminCommission} onChange={handleChange} />
                         </div>
-                        <div className='form_setting_in'>
+                        <div className="form_setting_in">
                             <label>User Commission Bonus Amount</label>
-                            <input
-                                className='form-control'
-                                type="number"
-                                name="userCommissionBonusAmount"
-                                placeholder="User Commission Bonus"
-                                value={settings.userCommissionBonusAmount}
-                                onChange={handleChange}
-                            />
+                            <input type="number" name="userCommissionBonusAmount" className="form-control" value={settingsData.userCommissionBonusAmount} onChange={handleChange} />
                         </div>
                     </div>
 
                     {/* Row 6 - Referral Bonuses */}
-                    <div className='admin_setting_form'>
-                        <div className='form_setting_in'>
+                    <div className="admin_setting_form">
+                        <div className="form_setting_in">
                             <label>Referral Bonus (After Deposit)</label>
-                            <input
-                                className='form-control'
-                                type="number"
-                                name="referralBonusAmount"
-                                placeholder="Referral Bonus After Deposit"
-                                value={settings.referralBonusAmount}
-                                onChange={handleChange}
-                            />
+                            <input type="number" name="refferalBonusAmount" className="form-control" value={settingsData.refferalBonusAmount} onChange={handleChange} />
                         </div>
-                        <div className='form_setting_in'>
+                        <div className="form_setting_in">
                             <label>Referral Bonus (SignUp)</label>
-                            <input
-                                className='form-control'
-                                type="number"
-                                name="referralBonusSignUpAmount"
-                                placeholder="Referral Bonus on SignUp"
-                                value={settings.referralBonusSignUpAmount}
-                                onChange={handleChange}
-                            />
+                            <input type="number" name="refferalBonusAmountSignUp" className="form-control" value={settingsData.refferalBonusAmountSignUp} onChange={handleChange} />
                         </div>
                     </div>
 
-                    {/* Row 7 - Game Limits */}
-                    <div className='admin_setting_form'>
-                        <div className='form_setting_in'>
+                    {/* Row 7 - Game Amounts */}
+                    <div className="admin_setting_form">
+                        <div className="form_setting_in">
                             <label>Minimum Game Amount</label>
-                            <input
-                                className='form-control'
-                                type="number"
-                                name="minimumGameAmount"
-                                placeholder="Minimum Game Amount"
-                                value={settings.minimumGameAmount}
-                                onChange={handleChange}
-                            />
+                            <input type="number" name="minimumGameAmount" className="form-control" value={settingsData.minimumGameAmount} onChange={handleChange} />
                         </div>
-                        <div className='form_setting_in'>
+                        <div className="form_setting_in">
                             <label>Maximum Game Amount</label>
-                            <input
-                                className='form-control'
-                                type="number"
-                                name="maximumGameAmount"
-                                placeholder="Maximum Game Amount"
-                                value={settings.maximumGameAmount}
-                                onChange={handleChange}
-                            />
+                            <input type="number" name="maximumGameAmount" className="form-control" value={settingsData.maximumGameAmount} onChange={handleChange} />
                         </div>
                     </div>
 
                     {/* Row 8 - Bonus Usage */}
-                    <div className='admin_setting_form'>
-                        <div className='form_setting_in'>
+                    <div className="admin_setting_form">
+                        <div className="form_setting_in">
                             <label>Bonus Amount Use (₹)</label>
-                            <input
-                                className='form-control'
-                                type="number"
-                                name="bonusAmountUse"
-                                placeholder="Bonus Amount Use"
-                                value={settings.bonusAmountUse}
-                                onChange={handleChange}
-                            />
+                            <input type="number" name="bonusAmountUse" className="form-control" value={settingsData.bonusAmountUse} onChange={handleChange} />
                         </div>
-                        <div className='form_setting_in'>
+                        <div className="form_setting_in">
                             <label>Bonus Used Percent (%)</label>
-                            <input
-                                className='form-control'
-                                type="number"
-                                name="bonusUsedPercent"
-                                placeholder="Bonus Used Percent"
-                                value={settings.bonusUsedPercent}
-                                onChange={handleChange}
-                            />
+                            <input type="number" name="bonusUsedPercent" className="form-control" value={settingsData.bonusUsedPercent} onChange={handleChange} />
                         </div>
                     </div>
 
-                    {/* Submit Button */}
+                    {/* Row 9 - Match Cancel Timer */}
+                    {/* <div className="admin_setting_form">
+                        <div className="form_setting_in">
+                            <label>Match Cancel Timer (sec)</label>
+                            <input type="number" name="matchCancelTimerInSec" className="form-control" value={settingsData.matchCancelTimerInSec} onChange={handleChange} />
+                        </div>
+                    </div> */}
+
                     <button
                         type="submit"
                         style={{
-                            padding: '10px',
-                            backgroundColor: '#03c2c7',
-                            color: '#fff',
-                            border: 'none',
-                            borderRadius: '5px',
-                            marginTop: '10px'
+                            padding: "10px",
+                            backgroundColor: "#03c2c7",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "5px",
+                            marginTop: "10px",
                         }}
                     >
                         Save Settings
                     </button>
                 </form>
             </div>
-
         </div>
     );
 }
