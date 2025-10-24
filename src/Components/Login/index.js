@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertMessage';
 import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import AuthService from '../../Api/Api_Services/AuthService';
@@ -10,6 +10,8 @@ function LoginPage() {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [otp, setOtp] = useState("");
+    const [timer, setTimer] = useState(0); // countdown in seconds
+    const [isOtpSent, setIsOtpSent] = useState(false);
 
     const handleLogin = async (emailId, password, otp) => {
         if (!emailId || !password) {
@@ -43,6 +45,7 @@ function LoginPage() {
             const result = await AuthService.getOtp(emailId);
             if (result?.success) {
                 alertSuccessMessage("OTP sent successfully to your email!");
+                setTimer(30);
             } else {
                 alertErrorMessage(result?.message);
             }
@@ -53,6 +56,15 @@ function LoginPage() {
             LoaderHelper.loaderStatus(false);
         }
     };
+
+    useEffect(() => {
+        if (timer === 0) return; // stop when timer is 0
+        const interval = setInterval(() => {
+            setTimer((prev) => prev - 1);
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [timer]);
 
     return (
         <div className="login_section">
@@ -83,8 +95,9 @@ function LoginPage() {
                                 type="button"
                                 className="getotp"
                                 onClick={handleGetCode}
+                                disabled={timer > 0}
                             >
-                                Get OTP
+                                {timer > 0 ? `Resend OTP in ${timer}s` : isOtpSent ? "Resend OTP" : "Get OTP"}
                             </button>
                         </div>
 

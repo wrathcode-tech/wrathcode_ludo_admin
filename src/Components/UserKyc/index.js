@@ -113,8 +113,8 @@ function UserKyc() {
         { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
         { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
         { name: "UUID", selector: (row) => row?.uuid, sortable: true, wrap: true },
-        { name: "Full Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
-        { name: "Email", selector: (row) => row?.emailId, sortable: true, wrap: true },
+        { name: "User Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
+        { name: "Mobile Number", selector: (row) => row?.mobileNumber, sortable: true, wrap: true },
         {
             name: "KYC Status",
             cell: (row) => (
@@ -170,8 +170,8 @@ function UserKyc() {
         { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
         { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
         { name: "UUID", selector: (row) => row?.uuid, sortable: true, wrap: true },
-        { name: "Full Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
-        { name: "Email", selector: (row) => row?.emailId, sortable: true, wrap: true },
+        { name: "User Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
+        { name: "Mobile Number", selector: (row) => row?.mobileNumber, sortable: true, wrap: true },
         {
             name: "KYC Status",
             cell: (row) => (
@@ -191,8 +191,8 @@ function UserKyc() {
         { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
         { name: "Updated At", selector: (row) => moment(row.updatedAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
         { name: "UUID", selector: (row) => row?.uuid, sortable: true, wrap: true },
-        { name: "Full Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
-        { name: "Email", selector: (row) => row?.emailId, sortable: true, wrap: true },
+        { name: "User Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
+        { name: "Mobile Number", selector: (row) => row?.mobileNumber, sortable: true, wrap: true },
         {
             name: "KYC Status",
             cell: (row) => (

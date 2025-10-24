@@ -299,64 +299,77 @@ function UserDetails() {
   const UserGameDetails = [
     {
       name: "Sr. No.",
-      selector: (row) => row.index,
+      selector: (row) => {
+        console.log("🚀 ~ UserDetails ~ row:", row)
+        return row?.index !== undefined ? row.index : "---";
+      },
       width: "80px",
     },
     {
       name: "Event ID",
-      selector: (row) => row?.eventId?.substring(0, 8)?.toUpperCase(),
+      selector: (row) =>
+        row?.eventId ? row.eventId.substring(0, 8).toUpperCase() : "---",
       wrap: true,
     },
     {
       name: "Bet Amount",
-      selector: (row) => row?.betAmount,
+      selector: (row) =>
+        row?.betAmount !== undefined ? row.betAmount : "---",
       sortable: true,
     },
     {
       name: "Total Bet Pool",
-      selector: (row) => row?.totalBetPool,
+      selector: (row) =>
+        row?.totalBetPool !== undefined ? row.totalBetPool : "---",
       sortable: true,
     },
     {
       name: "Admin Commission",
-      selector: (row) => row?.adminCommission,
+      selector: (row) =>
+        row?.adminCommission !== undefined ? row.adminCommission : "---",
       sortable: true,
     },
     {
       name: "Result Amount",
-      selector: (row) => row?.resultAmount,
+      selector: (row) =>
+        row?.resultAmount !== undefined ? row.resultAmount : "---",
       sortable: true,
     },
     {
       name: "Wallet Type",
-      selector: (row) => row?.walletType,
+      selector: (row) => row?.walletType || "---",
     },
     {
       name: "Role",
-      selector: (row) => row?.role,
+      selector: (row) => row?.role || "---",
     },
     {
       name: "Status",
-      selector: (row) => row?.status,
+      selector: (row) => row?.status || "---",
     },
-    // These totals will be same for all rows (optional to show)
     {
       name: "Total Games Played",
-      selector: (row) => row?.totalGames,
+      selector: (row) =>
+        row?.totalGames !== undefined ? row.totalGames : "---",
     },
     {
       name: "Total Lost Game",
-      selector: (row) => row?.totalLoss,
+      selector: (row) =>
+        row?.totalLoss !== undefined ? row.totalLoss : "---",
     },
     {
       name: "Total Game Profit",
-      selector: (row) => row?.totalProfit,
+      selector: (row) =>
+        row?.totalProfit !== undefined ? row.totalProfit : "---",
     },
     {
       name: "Total Game Win",
-      selector: (row) => row?.totalWin,
+      selector: (row) =>
+        row?.totalWin !== undefined ? row.totalWin : "---",
     },
   ];
+
+
   const UserKycDetails = [
     {
       name: "Sr. No.",
@@ -368,7 +381,7 @@ function UserDetails() {
       name: "Full Name",
       sortable: true,
       wrap: true,
-      selector: (row) => row?.userId?.fullName || row?.userId?.fullName || "------",
+      selector: (row) => row?.userId?.fullName || "------",
     },
     {
       name: "Document Number",
@@ -381,32 +394,38 @@ function UserDetails() {
       center: true,
       sortable: true,
       wrap: true,
-      cell: (row) => (
-        <img
-          className="table-img w-100 cursor-pointer"
-          src={row?.documentFrontImage ? `${imageUrl}/${row.documentFrontImage}` : "/no-image.png"}
-          data-bs-toggle="modal"
-          data-bs-target="#ImageModal"
-          onClick={() => handleImageDetail(`${imageUrl}/${row.documentFrontImage}`)}
-          alt="DocumentFrontImage"
-        />
-      ),
+      cell: (row) =>
+        row?.documentFrontImage ? (
+          <img
+            className="table-img w-100 cursor-pointer"
+            src={`${imageUrl}/${row.documentFrontImage}`}
+            data-bs-toggle="modal"
+            data-bs-target="#ImageModal"
+            onClick={() => handleImageDetail(`${imageUrl}/${row.documentFrontImage}`)}
+            alt="DocumentFrontImage"
+          />
+        ) : (
+          "---"
+        ),
     },
     {
       name: "Document Back Image",
       center: true,
       sortable: true,
       wrap: true,
-      cell: (row) => (
-        <img
-          className="table-img w-100 cursor-pointer"
-          src={row?.documentBackImage ? `${imageUrl}/${row.documentBackImage}` : "/no-image.png"}
-          data-bs-toggle="modal"
-          data-bs-target="#ImageModal"
-          onClick={() => handleImageDetail(`${imageUrl}/${row.documentBackImage}`)}
-          alt="DocumentBackImage"
-        />
-      ),
+      cell: (row) =>
+        row?.documentBackImage ? (
+          <img
+            className="table-img w-100 cursor-pointer"
+            src={`${imageUrl}/${row.documentBackImage}`}
+            data-bs-toggle="modal"
+            data-bs-target="#ImageModal"
+            onClick={() => handleImageDetail(`${imageUrl}/${row.documentBackImage}`)}
+            alt="DocumentBackImage"
+          />
+        ) : (
+          "---"
+        ),
     },
     {
       name: "Status",
@@ -418,13 +437,17 @@ function UserDetails() {
       name: "Action",
       width: "180px",
       wrap: true,
-      cell: (row) => (
-        <button className="btn btn-danger" onClick={() => deleteAdhar(row)}>
-          Delete
-        </button>
-      ),
+      cell: (row) =>
+        row && (row._id || row.userId) ? (
+          <button className="btn btn-danger" onClick={() => deleteAdhar(row)}>
+            Delete
+          </button>
+        ) : (
+          "---"
+        ),
     },
   ];
+
 
   const BankDetailscolumns = [
     { name: "Sr. No.", selector: (row, index) => index + 1, },
@@ -631,12 +654,12 @@ function UserDetails() {
                           </div>
 
 
-                          <div className="row mb-3">
+                          {/* <div className="row mb-3">
                             <label className="col-lg-5 fw-bold text-muted">Email Id:</label>
                             <div className="col-lg-7">
                               <span className="fw-bolder fs-6 text-dark">{userDetails?.emailId || "N/A"}</span>
                             </div>
-                          </div>
+                          </div> */}
 
                           <div className="row mb-3">
                             <label className="col-lg-5 fw-bold text-muted">UUID:</label>
@@ -678,7 +701,7 @@ function UserDetails() {
                           <h5 className="fw-bold mb-3">Wallet Details</h5>
 
                           <div className="row align-items-center mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">Available Balance:</label>
+                            <label className="col-lg-5 fw-bold text-muted">Available Balance INR:</label>
                             <div className="col-lg-4">
                               <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.availableBalance || 0}</span>
                             </div>
@@ -689,6 +712,15 @@ function UserDetails() {
                               </button>
                             </div>
                           </div>
+
+                          <div className="row mb-3">
+                            <label className="col-lg-5 fw-bold text-muted">Available Balance USDT:</label>
+                            <div className="col-lg-4">
+                              <span className="fw-bolder fs-6 text-dark">$ {userDetails?.availableUsdtBalance || 0}</span>
+                            </div>
+                          </div>
+
+
 
                           <div className="row align-items-center mb-3">
                             <label className="col-lg-5 fw-bold text-muted">Winning Balance:</label>
@@ -729,9 +761,15 @@ function UserDetails() {
                           <h5 className="fw-bold mb-3">Transaction Summary</h5>
 
                           <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">Total Deposits:</label>
+                            <label className="col-lg-5 fw-bold text-muted">Total Deposits INR:</label>
                             <div className="col-lg-7">
                               <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.totalDepositByUser || 0}</span>
+                            </div>
+                          </div>
+                          <div className="row mb-3" style={{ marginTop: "5px" }}>
+                            <label className="col-lg-5 fw-bold text-muted">Total Deposits USDT:</label>
+                            <div className="col-lg-7">
+                              <span className="fw-bolder fs-6 text-dark">$ {userDetails?.totalDepositByUserUSDT || 0}</span>
                             </div>
                           </div>
 
@@ -739,6 +777,13 @@ function UserDetails() {
                             <label className="col-lg-5 fw-bold text-muted">Total Withdrawals:</label>
                             <div className="col-lg-7">
                               <span className="fw-bolder fs-6 text-dark">₹ {userDetails?.totalWithdrawalByUser || 0}</span>
+                            </div>
+                          </div>
+
+                          <div className="row mb-3">
+                            <label className="col-lg-5 fw-bold text-muted">Total Withdrawals USDT:</label>
+                            <div className="col-lg-7">
+                              <span className="fw-bolder fs-6 text-dark">$ {userDetails?.totalWithdrawalByUserUSDT || 0}</span>
                             </div>
                           </div>
 

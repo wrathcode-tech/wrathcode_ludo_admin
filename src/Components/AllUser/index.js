@@ -137,8 +137,8 @@ function AllUserList() {
             wrap: true
         },
         {
-            name: 'Email', width: '200px',
-            selector: row => row?.emailId || '—',
+            name: 'Mobile Number', width: '200px',
+            selector: row => row?.mobileNumber || '—',
             sortable: true,
             wrap: true
         },

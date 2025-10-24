@@ -133,7 +133,7 @@ function DashboardPage() {
                                     <div class="user_cnt_top" onClick={() => navigate("/dashboard/earn_referralBonus")}
                                         style={{ cursor: "pointer" }}>
                                         <div class="cnt_lft">
-                                            <span>All Time Referrals</span>
+                                            <span>Total Referrals Bonus</span>
                                             <h3>{dashboardData?.overalAllReferBonus}</h3>
                                         </div>
                                         <div class="dashboard_icon">
@@ -146,7 +146,7 @@ function DashboardPage() {
                                     <div class="user_cnt_top" onClick={() => navigate("/dashboard/earn_commissionBonus")}
                                         style={{ cursor: "pointer" }}>
                                         <div class="cnt_lft">
-                                            <span>All Time Commission Bonus</span>
+                                            <span>Total Commission Bonus</span>
                                             <h3>{dashboardData?.overalAllCommission}</h3>
                                         </div>
                                         <div class="dashboard_icon">
