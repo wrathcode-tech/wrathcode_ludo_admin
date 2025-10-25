@@ -45,9 +45,6 @@ function WithdrawalRequest() {
         }
     };
 
-
-
-
     const handleApprovedList = async () => {
         try {
             LoaderHelper.loaderStatus(true);
@@ -109,6 +106,7 @@ function WithdrawalRequest() {
         }
     }, [activeTab]);
 
+
     // ---------------- Columns ----------------
     const withdrawalRequest = [
         { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
@@ -126,12 +124,20 @@ function WithdrawalRequest() {
             ), sortable: true, wrap: true
         },
         {
-            name: "Actions", width: "200px",
+            name: "Actions",
+            width: "250px",
             cell: (row) => (
                 <div style={{ display: "flex", gap: "8px" }}>
                     <button
+                        className="btn btn-primary btn-sm"
+                        onClick={() => handleView(row)}
+                    >
+                        View
+                    </button>
+
+                    <button
                         className="btn btn-success btn-sm"
-                        onClick={() => handleStatus(row?.userId?._id, "APPROVED", row?._id)}
+                        onClick={() => handleStatus(row.userId?._id, "APPROVED", row?._id)}
                     >
                         Approve
                     </button>
@@ -141,12 +147,14 @@ function WithdrawalRequest() {
                     >
                         Reject
                     </button>
-                </div >
+                </div>
             ),
             ignoreRowClick: true,
             allowOverflow: true,
             button: true,
-        },
+        }
+
+
     ];
     const approvedWithdrawalList = [
         { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
@@ -203,6 +211,21 @@ function WithdrawalRequest() {
         // },
     ];
 
+    const [showModal, setShowModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+
+
+    const handleView = (row) => {
+        setSelectedUser(row); // store the full withdrawal object
+        setShowModal(true);
+    };
+
+    const handleClose = () => {
+        setShowModal(false);
+        setSelectedUser(null);
+    };
+
+
     return (
         <div className="dashboard_right">
             <UserHeader />
@@ -254,6 +277,77 @@ function WithdrawalRequest() {
                                 <DataTableBase columns={rejectedWithdrawalList} data={withdrawalRejectedList || []} pagination />
 
                             )}
+                        </div>
+                    </div>
+                    {/* Bootstrap 5 Modal */}
+                    <div
+                        className={`modal fade ${showModal ? "show d-block" : ""}`}
+                        id="viewUserModal"
+                        tabIndex="-1"
+                        aria-labelledby="viewUserModalLabel"
+                        aria-hidden={!showModal}
+                    >
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="viewUserModalLabel">User Details</h5>
+                                    <button
+                                        type="button"
+                                        className="btn-close"
+                                        onClick={handleClose}
+                                        aria-label="Close"
+                                    ></button>
+                                </div>
+                                <div className="modal-body">
+                                    {selectedUser ? (
+                                        <div>
+                                            <p><strong>Name:</strong> {selectedUser.userId?.fullName}</p>
+                                            <p><strong>UUID:</strong> {selectedUser.userId?.uuid}</p>
+                                            <p><strong>Email:</strong> {selectedUser.userId?.email || "N/A"}</p>
+                                            <p><strong>Phone:</strong> {selectedUser.userId?.phone || "N/A"}</p>
+                                            <hr />
+                                            <h6>Withdrawal Details:</h6>
+                                            <p><strong>Amount:</strong> ₹ {selectedUser.amount}</p>
+                                            <p><strong>Transaction Type:</strong> {selectedUser.transactionType}</p>
+                                            <p><strong>Status:</strong> {selectedUser.status}</p>
+                                            <p><strong>Withdrawal Method:</strong> {selectedUser.withdrawalMethod || "—"}</p>
+                                            {selectedUser.bankAndUpi && (
+                                                <>
+                                                    <hr />
+                                                    <h6>Bank / UPI Details:</h6>
+                                                    {selectedUser.bankAndUpi.upiId && (
+                                                        <p><strong>UPI ID:</strong> {selectedUser.bankAndUpi.upiId}</p>
+                                                    )}
+                                                    {selectedUser.bankAndUpi.upiName && (
+                                                        <p><strong>UPI Name:</strong> {selectedUser.bankAndUpi.upiName}</p>
+                                                    )}
+                                                    {selectedUser.bankAndUpi.accountNumber && (
+                                                        <p><strong>Account Number:</strong> {selectedUser.bankAndUpi.accountNumber}</p>
+                                                    )}
+                                                    {selectedUser.bankAndUpi.bankName && (
+                                                        <p><strong>Bank Name:</strong> {selectedUser.bankAndUpi.bankName}</p>
+                                                    )}
+                                                    {selectedUser.bankAndUpi.ifscCode && (
+                                                        <p><strong>IFSC Code:</strong> {selectedUser.bankAndUpi.ifscCode}</p>
+                                                    )}
+                                                </>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <p>Loading...</p>
+                                    )}
+                                </div>
+
+                                <div className="modal-footer">
+                                    <button
+                                        type="button"
+                                        className="btn btn-secondary"
+                                        onClick={handleClose}
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
