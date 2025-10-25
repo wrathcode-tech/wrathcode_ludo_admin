@@ -65,17 +65,17 @@ const BannerManagement = () => {
                     Delete
                 </button>
 
-                {row?.status === "ACTIVE" ? (
+                {row?.status === "INACTIVE" ? (
                     <button
                         className="btn btn-success btn-sm me-2"
-                        onClick={() => handleStatus(row?._id, "INACTIVE")}
+                        onClick={() => handleStatus(row?._id, "ACTIVE")}
                     >
                         Active
                     </button>
                 ) : (
                     <button
                         className="btn btn-secondary btn-sm me-2"
-                        onClick={() => handleStatus(row?._id, "ACTIVE")}
+                        onClick={() => handleStatus(row?._id, "INACTIVE")}
                     >
                         Inactive
                     </button>

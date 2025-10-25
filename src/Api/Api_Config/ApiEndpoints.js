@@ -1,8 +1,5 @@
-// const appUrl = "https://backend.playfista.com/v1";
-const appUrl = "http://192.168.1.9:3002/v1";
-
-// export const imageUrl = "https://backend.playfista.com/";
-export const imageUrl = "http://192.168.1.9:3002/";
+const appUrl = "https://backend.plyfista.com/v1";
+export const imageUrl = "https://backend.plyfista.com/";
 export const deployedUrl = `${window.origin}/`
 
 export const ApiConfig = {
@@ -111,6 +108,6 @@ export const ApiConfig = {
 
 
   // ============webSocketUrl================ //
-  webSocketUrl: "https://backend.playfista.com/",
+  webSocketUrl: "https://backend.plyfista.com/",
 
 };

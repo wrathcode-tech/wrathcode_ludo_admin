@@ -37,7 +37,9 @@ function DepositRequest() {
 
     const columns = [
         { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
+        { name: "User Id", selector: (row) => row?.userId?.uuid, sortable: true, wrap: true },
         { name: "Name", selector: (row) => row?.userId?.fullName, sortable: true, wrap: true },
+        { name: "Mobile Number", selector: (row) => row?.userId?.mobileNumber, sortable: true, wrap: true },
         { name: "Deposit Amount", selector: (row) => `₹ ${row?.amount}`, sortable: true, wrap: true },
         { name: "UTR Number", selector: (row) => row?.utrNumber, sortable: true, wrap: true },
         {
