@@ -1,5 +1,5 @@
-const appUrl = "https://backend.plyfista.com/v1";
-export const imageUrl = "https://backend.plyfista.com/";
+const appUrl = "https://backend.playfista.com/v1";
+export const imageUrl = "https://backend.playfista.com/";
 export const deployedUrl = `${window.origin}/`
 
 export const ApiConfig = {
@@ -108,6 +108,6 @@ export const ApiConfig = {
 
 
   // ============webSocketUrl================ //
-  webSocketUrl: "https://backend.plyfista.com/",
+  webSocketUrl: "https://backend.playfista.com/",
 
 };
