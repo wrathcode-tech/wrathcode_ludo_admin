@@ -574,6 +574,133 @@ body .user_list_table button.chat {
     color: #fff;
 }
 
+.file-upload {
+    position: relative;
+    display: inline-block;
+}
+
+.file-upload input[type="file"] {
+    display: none;
+    /* Hide default input */
+}
+
+.upload-label {
+    background: #4dd0e1;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-label:hover {
+    background: #26c6da;
+}
+
+.upload-label i {
+    font-size: 20px;
+}
+
+.messages_file_in {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.priview_images {
+    margin: 0px;
+}
+
+.chatbox_div_massages {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    gap: 32px;
+}
+
+
+.input-with-preview {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+}
+
+.input-with-preview input.form-control {
+  flex: 1;
+  border-radius: 8px;
+  padding-right: 45px; /* space for icon */
+}
+
+.upload-icon {
+  position: absolute;
+  right: 90px;
+  color: #777;
+  cursor: pointer;
+  font-size: 18px;
+  transition: color 0.3s ease;
+}
+
+.upload-icon:hover {
+  color: #03C2C7;
+}
+
+.send-btn {
+  background-color: #03C2C7 !important;
+  color: #fff !important;
+  padding: 8px 16px !important;
+  border-radius: 6px;
+  border: none;
+  transition: background 0.3s;
+}
+
+.send-btn:hover {
+  background-color: #02a4a8 !important;
+}
+
+/* Preview box (above input) */
+.preview-inside {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 6px;
+  margin-bottom: 6px;
+  gap: 6px;
+}
+
+.preview-inside img {
+  max-height: 70px;
+  border-radius: 6px;
+}
+
+.preview-inside .remove-btn {
+  background: #ff4d4d;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.preview-inside .remove-btn:hover {
+  background: #e63939;
+}
+
+
+
 .login_section {
     width: 100%;
     display: flex;
@@ -1406,6 +1533,13 @@ input.form-control {
         gap: 15px;
     }
 
+    .chatbox_div_massages {
+    gap: 15px;
+}
+
+p {
+    font-size: 14px; }
+
     .admin_setting_form {
         gap: 15px;
     }
@@ -1758,11 +1892,13 @@ input.form-control {
         flex-direction: column;
         min-height: 100%;
         border-radius: 0px 0px 35px 35px;
+        background-image: url(../images/login_bg_lf.png);
+        background-color: #1eb5c0;
     }
 
     .logo_vector {
-        width: 180px;
-        height: 180px;
+        width: 200px;
+        height: 200px;
     }
 
     .left_side_cnt {
@@ -1770,11 +1906,18 @@ input.form-control {
         text-align: center;
         gap: 15px;
         padding: 32px 20px;
+        background-color: transparent;
+        background-image: none;
     }
 
     .login_form_r {
         width: 100%;
-        padding: 24px;
+        padding: 34px 24px 48px;
+        border-radius: 35px 35px 0px 0px;
+    }
+
+    .login_form_r form {
+        padding-top: 12px;
     }
 
     .pagination_list a.page-link {
@@ -1853,6 +1996,11 @@ input.form-control {
 
     .dashboard_summary ul.nav-tabs li button {
         padding: 6px 12px;
+    }
+
+    .login_section .left_side_cnt h1 {
+        font-size: 26px !important;
+        padding-bottom: 18px;
     }
 
     .select_option {
@@ -1934,11 +2082,6 @@ input.form-control {
 
     .left_side_cnt h1 {
         font-size: 22px;
-    }
-
-    .logo_vector {
-        width: 100px;
-        height: 100px;
     }
 
     ul.list_dashboard_cate {
