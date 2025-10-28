@@ -26,11 +26,6 @@ function UserKyc() {
             const result = await AuthService.getpendingKycList();
             if (result?.success) {
                 setKycPendingList(result?.data?.reverse());
-                // Reload page only once
-                if (!sessionStorage.getItem("kycReloaded")) {
-                    sessionStorage.setItem("kycReloaded", "true");
-                    window.location.reload();
-                }
             }
         } catch (error) {
             alertErrorMessage(error?.message);
@@ -38,19 +33,22 @@ function UserKyc() {
             LoaderHelper.loaderStatus(false);
         }
     };
+
     useEffect(() => {
         handlePendingList();
     }, []);
 
-
-    const handleApprovedList = async () => {
+    const handleApprovedList = async (userId) => {
         try {
             LoaderHelper.loaderStatus(true);
-            const result = await AuthService.getapprovedKycList();
+            const result = await AuthService.approveKyc(userId);
             if (result?.success) {
-                setKycApprovedList(result?.data?.reverse());
+                alertSuccessMessage("KYC Approved Successfully");
+
+                // Remove the approved user from the pending list
+                setKycPendingList(prev => prev.filter(user => user._id !== userId));
             } else {
-                // alertErrorMessage(result?.message);
+                alertErrorMessage(result?.message);
             }
         } catch (error) {
             alertErrorMessage(error?.message);
@@ -59,14 +57,18 @@ function UserKyc() {
         }
     };
 
-    const handleRejectedList = async () => {
+
+    const handleRejectedList = async (userId) => {
         try {
             LoaderHelper.loaderStatus(true);
-            const result = await AuthService.getrejectedKycList();
+            const result = await AuthService.rejectKyc(userId);
             if (result?.success) {
-                setKycRejectedList(result?.data?.reverse());
+                alertSuccessMessage("KYC Rejected Successfully");
+
+                // Remove the rejected user from the pending list
+                setKycPendingList(prev => prev.filter(user => user._id !== userId));
             } else {
-                // alertErrorMessage(result?.message);
+                alertErrorMessage(result?.message);
             }
         } catch (error) {
             alertErrorMessage(error?.message);
@@ -85,6 +87,7 @@ function UserKyc() {
                 handlePendingList();
                 if (status === "APPROVED") handleApprovedList();
                 if (status === "REJECTED") handleRejectedList();
+
             } else {
                 alertErrorMessage(result?.message);
             }
@@ -115,6 +118,8 @@ function UserKyc() {
         { name: "UUID", selector: (row) => row?.uuid, sortable: true, wrap: true },
         { name: "User Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
         { name: "Mobile Number", selector: (row) => row?.mobileNumber, sortable: true, wrap: true },
+        { name: "Document Front Side", selector: (row) => row?.documentFrontside, sortable: true, wrap: true },
+        { name: "Document Back Side", selector: (row) => row?.documentBackside, sortable: true, wrap: true },
         {
             name: "KYC Status",
             cell: (row) => (
