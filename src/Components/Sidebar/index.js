@@ -47,6 +47,18 @@ const Sidebar = () => {
                                         <img src="/images/user_kyc_icon.png" alt="User KYC" />User KYC Verification
                                     </Link>
                                 </li>
+                                {/* 🧾 Support & Disputes */}
+                                <li className={actived === "support" ? "active" : ""}>
+                                    <Link to="/dashboard/support" onClick={() => setActived("support")}>
+                                        <img src="/images/support_icon.png" alt="Support" />User Support
+                                    </Link>
+                                </li>
+
+                                <li className={actived === "disputeResponse" ? "active" : ""}>
+                                    <Link to="/dashboard/disputeResponse" onClick={() => setActived("disputeResponse")}>
+                                        <img src="/images/support_icon.svg" alt="Dispute Response" />Dispute Management
+                                    </Link>
+                                </li>
                                 <li className={actived === "DespositRequest" ? "active" : ""}>
                                     <Link to="/dashboard/DespositRequest" onClick={() => setActived("DespositRequest")}>
                                         <img src="/images/deposit_icon.png" alt="Deposit Requests" />Deposit Requests
@@ -97,18 +109,7 @@ const Sidebar = () => {
                                     </Link>
                                 </li>
 
-                                {/* 🧾 Support & Disputes */}
-                                <li className={actived === "support" ? "active" : ""}>
-                                    <Link to="/dashboard/support" onClick={() => setActived("support")}>
-                                        <img src="/images/support_icon.png" alt="Support" />User Support
-                                    </Link>
-                                </li>
 
-                                <li className={actived === "disputeResponse" ? "active" : ""}>
-                                    <Link to="/dashboard/disputeResponse" onClick={() => setActived("disputeResponse")}>
-                                        <img src="/images/support_icon.svg" alt="Dispute Response" />Dispute Management
-                                    </Link>
-                                </li>
 
                                 {/* ⚙️ System Management */}
                                 <li className={actived === "notification" ? "active" : ""}>
