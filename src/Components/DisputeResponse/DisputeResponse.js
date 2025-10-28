@@ -198,7 +198,9 @@ function DisputeResponse() {
                                     </p>
 
                                     <p><strong>Joined By:</strong> {selectedWinningData.joinedBy || "—"}</p>
-                                    <p><strong>Total Amount:</strong> ₹{selectedWinningData.amount || 0}</p>
+                                    <p>
+                                        <strong>Total Amount:</strong> ₹{(selectedWinningData?.amount ?? 0) * 2}
+                                    </p>
 
                                 </div>
                             </div>

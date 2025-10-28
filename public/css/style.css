@@ -388,6 +388,14 @@ body .btn-primary:hover {
     margin-bottom: 5px;
 }
 
+.event_details p strong {
+    font-weight: 600;
+}
+
+.event_details p {
+    font-weight: 400;
+}
+
 .list_profile {
     display: flex;
     justify-content: space-between;
@@ -625,78 +633,79 @@ body .user_list_table button.chat {
 
 
 .input-with-preview {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 10px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
 }
 
 .input-with-preview input.form-control {
-  flex: 1;
-  border-radius: 8px;
-  padding-right: 45px; /* space for icon */
+    flex: 1;
+    border-radius: 8px;
+    padding-right: 45px;
+    /* space for icon */
 }
 
 .upload-icon {
-  position: absolute;
-  right: 90px;
-  color: #777;
-  cursor: pointer;
-  font-size: 18px;
-  transition: color 0.3s ease;
+    position: absolute;
+    right: 90px;
+    color: #777;
+    cursor: pointer;
+    font-size: 18px;
+    transition: color 0.3s ease;
 }
 
 .upload-icon:hover {
-  color: #03C2C7;
+    color: #03C2C7;
 }
 
 .send-btn {
-  background-color: #03C2C7 !important;
-  color: #fff !important;
-  padding: 8px 16px !important;
-  border-radius: 6px;
-  border: none;
-  transition: background 0.3s;
+    background-color: #03C2C7 !important;
+    color: #fff !important;
+    padding: 8px 16px !important;
+    border-radius: 6px;
+    border: none;
+    transition: background 0.3s;
 }
 
 .send-btn:hover {
-  background-color: #02a4a8 !important;
+    background-color: #02a4a8 !important;
 }
 
 /* Preview box (above input) */
 .preview-inside {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  background: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 6px;
-  margin-bottom: 6px;
-  gap: 6px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 6px;
+    margin-bottom: 6px;
+    gap: 6px;
 }
 
 .preview-inside img {
-  max-height: 70px;
-  border-radius: 6px;
+    max-height: 70px;
+    border-radius: 6px;
 }
 
 .preview-inside .remove-btn {
-  background: #ff4d4d;
-  border: none;
-  color: #fff;
-  font-size: 14px;
-  border-radius: 50%;
-  width: 22px;
-  height: 22px;
-  line-height: 20px;
-  cursor: pointer;
-  transition: background 0.3s;
+    background: #ff4d4d;
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
 .preview-inside .remove-btn:hover {
-  background: #e63939;
+    background: #e63939;
 }
 
 
@@ -1534,11 +1543,12 @@ input.form-control {
     }
 
     .chatbox_div_massages {
-    gap: 15px;
-}
+        gap: 15px;
+    }
 
-p {
-    font-size: 14px; }
+    p {
+        font-size: 14px;
+    }
 
     .admin_setting_form {
         gap: 15px;
@@ -1959,7 +1969,20 @@ p {
     }
 
     .winning_details table tr th {
-        font-size: 13px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    .modal .modal-footer {
+        flex-wrap: nowrap;
+    }
+
+    .modal .modal-footer button.btn {
+        padding: 6px 15px !important;
+    }
+
+    .depositform .row>* {
+        margin-top: 12px;
     }
 
     .winning_details table tr td button.btn {
@@ -1990,6 +2013,30 @@ p {
         margin-bottom: 8px !important;
     }
 
+.addbankform .btn {
+    margin-top: 8px;
+}  
+
+.user_search {
+    padding: 7px 10px;
+    font-size: 13px;
+}
+
+button.btn.btn-primary.w-100.mt-2 {
+    margin: 0px !important;
+}
+
+.setting_form button {
+    font-size: 14px;
+    padding: 6px 10px !important;
+    margin-top: 5px !important;
+}
+
+body h2 {
+    font-size: 20px;
+}
+
+
 }
 
 @media screen and (max-width:580px) {
@@ -2014,6 +2061,10 @@ p {
 
     .user_list_top.d-flex.justify-content-between.align-items-center {
         margin-bottom: 10px;
+    }
+
+    label {
+        font-size: 13px;
     }
 
     body .h1,
