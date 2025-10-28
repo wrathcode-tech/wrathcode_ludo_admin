@@ -116,7 +116,7 @@ function AddBankDetails() {
                             </ul>
 
                             {activeTab === "add" && (
-                                <form onSubmit={handleSubmit}>
+                                <form className="addbankform" onSubmit={handleSubmit}>
                                     {inputs.map(({ label, name, type, required }) => (
                                         <div className="mb-3" key={name}>
                                             <label>{label}</label>
