@@ -34,10 +34,17 @@ function DisputeResponse() {
     const handleEventRefund = async (eventId) => {
         try {
             LoaderHelper.loaderStatus(true);
-            const result = await AuthService.refundEventFund(eventId); // API to get winning data
+            const result = await AuthService.refundEventFund(eventId);
             if (result?.success) {
-                setSelectedWinningData(result.data);
-                setShowModal(true);
+                alertSuccessMessage("Refund processed successfully");
+
+                // Remove dispute from list
+                setAllData(prev => prev.filter(d => d.eventId !== eventId));
+                setFilteredData(prev => prev.filter(d => d.eventId !== eventId));
+
+                // Close modal
+                setShowModal(false);
+                setSelectedWinningData(null);
             } else {
                 alertErrorMessage(result?.message);
             }
@@ -48,26 +55,23 @@ function DisputeResponse() {
         }
     };
 
+
     // Handle Winner/Loser selection
     const handleSelectResult = async (eventId, winnerId) => {
         if (!selectedWinningData) return;
         try {
             LoaderHelper.loaderStatus(true);
-
-            // Pass payload directly, not wrapped
             const result = await AuthService.chooseWinner(eventId, winnerId);
             if (result?.success) {
                 alertSuccessMessage('Winner selected successfully');
 
-                // Update modal table locally
-                setSelectedWinningData(prev => ({
-                    ...prev,
-                    allUserResponse: prev.allUserResponse.map(u =>
-                        u.userId._id === winnerId
-                            ? { ...u, status: 'WINNER' }
-                            : { ...u, status: 'LOSER' }
-                    )
-                }));
+                // Remove dispute from list
+                setAllData(prev => prev.filter(d => d.eventId !== eventId));
+                setFilteredData(prev => prev.filter(d => d.eventId !== eventId));
+
+                // Close modal
+                setShowModal(false);
+                setSelectedWinningData(null);
             } else {
                 alertErrorMessage(result?.message || 'Something went wrong');
             }
@@ -77,6 +81,7 @@ function DisputeResponse() {
             LoaderHelper.loaderStatus(false);
         }
     };
+
 
 
     const commonColumns = [
