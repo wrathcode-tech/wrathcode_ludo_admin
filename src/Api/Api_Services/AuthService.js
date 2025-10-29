@@ -42,7 +42,7 @@ const AuthService = {
     const params = {
       email_or_phone: emailId,
       resent: true,
-      type: "register",
+      type: "registration",
     };
     const headers = {
       "Content-Type": "application/json",

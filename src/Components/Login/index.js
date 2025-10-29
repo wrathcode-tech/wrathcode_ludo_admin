@@ -44,7 +44,7 @@ function LoginPage() {
             LoaderHelper.loaderStatus(true);
             const result = await AuthService.getOtp(emailId);
             if (result?.success) {
-                alertSuccessMessage("OTP sent successfully to your email!");
+                alertSuccessMessage("OTP sent successfully to your Mobile Number!");
                 setTimer(30);
             } else {
                 alertErrorMessage(result?.message);
