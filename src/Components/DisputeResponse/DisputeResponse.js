@@ -300,12 +300,16 @@ function DisputeResponse() {
                                                     <button
                                                         className="btn btn-info btn-sm"
                                                         onClick={() => {
-                                                            const userId = u?.userId?._id || u?._id; // fallback if missing
-                                                            navigate(`/dashboard/support?userId=${userId}`);
-                                                        }}
-                                                    >
+                                                            const userId = u?.userId?._id || u.userId._id;
+                                                            navigate("/dashboard/support", {
+                                                                state: { openChat: true, userId },
+                                                            });
+                                                        }}>
                                                         Contact User
                                                     </button>
+
+
+
                                                 </td>
 
                                             </tr>

@@ -82,7 +82,35 @@ function DashboardPage() {
                                         </div>
                                     </div>
                                 </li>
+                                <li>
+                                    <div className="user_cnt_top"
+                                        onClick={() => navigate("/dashboard/disputeResponse")}
+                                        style={{ cursor: "pointer" }} // pointer dikhane ke liye
+                                    >
+                                        <div className="cnt_lft">
+                                            <span>Total Disputes</span>
+                                            <h3>{dashboardData?.totalDispute}</h3>
+                                        </div>
+                                        <div className="dashboard_icon">
+                                            <img src="/images/user2.svg" alt="user" />
+                                        </div>
+                                    </div>
+                                </li>
 
+                                <li class="nth_three">
+                                    <div class="user_cnt_top"
+                                        onClick={() => navigate("/dashboard/depositRequest")}
+                                        style={{ cursor: "pointer" }}>
+                                        <div class="cnt_lft">
+                                            <span>Total Deposit (INR)</span>
+                                            <h3>{dashboardData?.totalDepositInr}</h3>
+                                        </div>
+                                        <div class="dashboard_icon">
+                                            <img src="/images/dashboad_list_icon3.svg" alt="dashboard" />
+                                        </div>
+                                    </div>
+                                    {/* <p><span><img src="/images/markert_range_icon.svg" alt="market" />8.5%</span>Up from yesterday</p> */}
+                                </li>
                                 <li class="nth_two">
                                     <div class="user_cnt_top"
                                         onClick={() => navigate("/dashboard/withdrawalRequest")}
@@ -97,20 +125,6 @@ function DashboardPage() {
                                     </div>
                                     {/* <p class="low_market"><span><img src="/images/markert_range_low.svg" alt="market" />4.3%</span>Down from
                                         yesterday</p> */}
-                                </li>
-                                <li class="nth_three">
-                                    <div class="user_cnt_top"
-                                        onClick={() => navigate("/dashboard/depositRequest")}
-                                        style={{ cursor: "pointer" }}>
-                                        <div class="cnt_lft">
-                                            <span>Total Deposit (INR)</span>
-                                            <h3>{dashboardData?.totalDepositInr}</h3>
-                                        </div>
-                                        <div class="dashboard_icon">
-                                            <img src="/images/dashboad_list_icon3.svg" alt="dashboard" />
-                                        </div>
-                                    </div>
-                                    {/* <p><span><img src="/images/markert_range_icon.svg" alt="market" />8.5%</span>Up from yesterday</p> */}
                                 </li>
                                 <li class="nth_six">
                                     <div class="user_cnt_top" onClick={() => navigate("/dashboard/AllGamesList")}
@@ -135,20 +149,6 @@ function DashboardPage() {
                                         </div>
                                         <div class="dashboard_icon">
                                             <img src="/images/dashboad_list_icon7.svg" alt="dashboard" />
-                                        </div>
-                                    </div>
-                                    {/* <p><span><img src="/images/markert_range_icon.svg" alt="market" />8.5%</span>Up from yesterday</p> */}
-                                </li>
-                                <li class="nth_one">
-                                    <div class="user_cnt_top"
-                                        onClick={() => navigate("/dashboard/userList")}
-                                        style={{ cursor: "pointer" }}>
-                                        <div class="cnt_lft">
-                                            <span>Verified User</span>
-                                            <h3>{dashboardData?.verifyedUser}</h3>
-                                        </div>
-                                        <div class="dashboard_icon">
-                                            <img src="/images/dashboad_list_icon.svg" alt="dashboard" />
                                         </div>
                                     </div>
                                     {/* <p><span><img src="/images/markert_range_icon.svg" alt="market" />8.5%</span>Up from yesterday</p> */}

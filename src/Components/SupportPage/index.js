@@ -5,6 +5,7 @@ import LoaderHelper from "../../Utils/Loading/LoaderHelper";
 import AuthService from "../../Api/Api_Services/AuthService";
 import DataTableBase from "../../Utils/DataTable";
 import { imageUrl } from "../../Api/Api_Config/ApiEndpoints";
+import { useLocation } from "react-router-dom";
 
 function SupportChat() {
   const adminId = "68a4b42c776734c76dfc7248";
@@ -148,13 +149,13 @@ function SupportChat() {
   }, []);
 
   /** 🔹 Poll chat messages every 3 seconds when a ticket is selected */
-  useEffect(() => {
-    if (!selectedTicket) return;
-    const intervalId = setInterval(() => {
-      handleGetMsg(selectedTicket, { showLoader: false });
-    }, 3000);
-    return () => clearInterval(intervalId);
-  }, [selectedTicket]);
+  // useEffect(() => {
+  //   if (!selectedTicket) return;
+  //   const intervalId = setInterval(() => {
+  //     handleGetMsg(selectedTicket, { showLoader: false });
+  //   }, 3000);
+  //   return () => clearInterval(intervalId);
+  // }, [selectedTicket]);
 
   const columns = [
     { name: "Sr No.", selector: (row, index) => index + 1, wrap: true, width: "80px" },
@@ -184,6 +185,20 @@ function SupportChat() {
       ),
     },
   ];
+  const location = useLocation();
+
+  useEffect(() => {
+    const userId = location?.state?.userId;
+
+    console.log("🚀 ~ useEffect Triggered ~ userId:", userId);
+
+    if (location?.state?.openChat && userId) {
+      handleGetMsg(userId);
+    }
+  }, [location?.state]);
+
+
+
 
   return (
     <div className="dashboard_right">
@@ -193,8 +208,16 @@ function SupportChat() {
         <h4 className="mt-0">Chat Window</h4>
         {/* Show chat only if a ticket is selected */}
         {selectedTicket && (
-
           <div className="chatbox_div_massages">
+            {/* 🔁 Refresh Button */}
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "10px" }}>
+              <button
+                className="btn btn-secondary btn-sm"
+                onClick={() => handleGetMsg(selectedTicket, { showLoader: true })}
+              >
+                <i className="fa fa-refresh" style={{ marginRight: "5px" }}></i> Refresh
+              </button>
+            </div>
 
             <div
               className="chat_messages_block"
@@ -214,8 +237,7 @@ function SupportChat() {
                     key={i}
                     style={{
                       display: "flex",
-                      justifyContent:
-                        chat.sender === "admin" ? "flex-end" : "flex-start",
+                      justifyContent: chat.sender === "admin" ? "flex-end" : "flex-start",
                       marginBottom: "12px",
                     }}
                   >
@@ -253,10 +275,9 @@ function SupportChat() {
               <div ref={chatEndRef}></div>
             </div>
 
-            {/* Input Box */}
+            {/* 👇 Input Box & rest of your existing code */}
             {!isClosed ? (
               <>
-
                 {filePreview && (
                   <div className="preview-inside">
                     <img src={filePreview} alt="preview" />
@@ -289,7 +310,6 @@ function SupportChat() {
                         onKeyDown={(e) => e.key === "Enter" && handleMsgSend()}
                       />
 
-                      {/* File Upload Icon */}
                       <label htmlFor="fileInput" className="upload-icon">
                         <i className="fa fa-paperclip"></i>
                       </label>
@@ -308,7 +328,6 @@ function SupportChat() {
                         }}
                       />
 
-                      {/* Send Button */}
                       <button
                         className="btn send-btn"
                         onClick={handleMsgSend}
@@ -319,8 +338,6 @@ function SupportChat() {
                     </div>
                   </div>
                 </div>
-
-
               </>
             ) : (
               <div style={{ textAlign: "center", marginTop: "20px", color: "green" }}>
@@ -329,6 +346,7 @@ function SupportChat() {
             )}
           </div>
         )}
+
       </div>
     </div>
   );
