@@ -34,7 +34,7 @@ function WithdrawalRequest() {
             } else {
                 // Optional: clear list on error
                 setWithdrawalRequestData([]);
-                // alertErrorMessage(result?.message);
+                alertErrorMessage(result?.message);
             }
 
         } catch (error) {
@@ -216,7 +216,7 @@ function WithdrawalRequest() {
 
 
     const handleView = (row) => {
-        setSelectedUser(row); // store the full withdrawal object
+        setSelectedUser(row);
         setShowModal(true);
     };
 
@@ -300,36 +300,53 @@ function WithdrawalRequest() {
                                 </div>
                                 <div className="modal-body">
                                     {selectedUser ? (
-                                        <div>
-                                            <p><strong>Name:</strong> {selectedUser.userId?.fullName}</p>
-                                            <p><strong>UUID:</strong> {selectedUser.userId?.uuid}</p>
-                                            <p><strong>Email:</strong> {selectedUser.userId?.email || "N/A"}</p>
-                                            <p><strong>Phone:</strong> {selectedUser.userId?.phone || "N/A"}</p>
+                                        <div className='userdetails_list'>
+                                            <p><strong>Name:</strong> <span>{selectedUser?.userId?.fullName} </span></p>
+                                            <p><strong>UUID:</strong> <span>{selectedUser?.userId?.uuid}</span></p>
+                                            {/* <p><strong>Email:</strong> {selectedUser?.userId?.email || "N/A"}</p>
+                                            <p><strong>Phone:</strong> {selectedUser?.userId?.phone || "N/A"}</p> */}
                                             <hr />
-                                            <h6>Withdrawal Details:</h6>
-                                            <p><strong>Amount:</strong> ₹ {selectedUser.amount}</p>
-                                            <p><strong>Transaction Type:</strong> {selectedUser.transactionType}</p>
-                                            <p><strong>Status:</strong> {selectedUser.status}</p>
-                                            <p><strong>Withdrawal Method:</strong> {selectedUser.withdrawalMethod || "—"}</p>
-                                            {selectedUser.bankAndUpi && (
+                                            <h6 style={{ textAlign: "center" }}>Withdrawal Details:</h6>
+                                            <p><strong>Amount:</strong> <span>₹ {selectedUser?.amount}</span></p>
+                                            <p><strong>Transaction Type:</strong> <span>{selectedUser?.transactionType}</span></p>
+                                            <p><strong>Status:</strong> <span>{selectedUser?.status}</span></p>
+                                            <p><strong>Withdrawal Method:</strong> <span>{selectedUser?.withdrawalMethod || "—"}</span></p>
+
+                                            {selectedUser?.bankAndUpi && (
                                                 <>
                                                     <hr />
-                                                    <h6>Bank / UPI Details:</h6>
-                                                    {selectedUser.bankAndUpi.upiId && (
-                                                        <p><strong>UPI ID:</strong> {selectedUser.bankAndUpi.upiId}</p>
-                                                    )}
-                                                    {selectedUser.bankAndUpi.upiName && (
-                                                        <p><strong>UPI Name:</strong> {selectedUser.bankAndUpi.upiName}</p>
-                                                    )}
-                                                    {selectedUser.bankAndUpi.accountNumber && (
-                                                        <p><strong>Account Number:</strong> {selectedUser.bankAndUpi.accountNumber}</p>
-                                                    )}
-                                                    {selectedUser.bankAndUpi.bankName && (
-                                                        <p><strong>Bank Name:</strong> {selectedUser.bankAndUpi.bankName}</p>
-                                                    )}
-                                                    {selectedUser.bankAndUpi.ifscCode && (
-                                                        <p><strong>IFSC Code:</strong> {selectedUser.bankAndUpi.ifscCode}</p>
-                                                    )}
+                                                    <h6 style={{ textAlign: "center", marginBottom: "20px" }}>Bank / UPI Details:</h6>
+
+                                                    {/* ✅ Copy Function */}
+                                                    {[
+                                                        { label: "UPI ID", value: selectedUser?.bankAndUpi?.upiId },
+                                                        { label: "UPI Name", value: selectedUser?.bankAndUpi?.upiName },
+
+                                                        { label: "Account Number", value: selectedUser?.bankAndUpi?.accountNumber },
+                                                        { label: "Bank Name", value: selectedUser?.bankAndUpi?.bankName },
+                                                        { label: "IFSC Code", value: selectedUser?.bankAndUpi?.ifscCode },
+                                                    ]
+                                                        .filter(item => item.value)
+                                                        .map((item, index) => (
+                                                            <p key={index} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                                                                <span>
+                                                                    <strong>{item?.label}:</strong> <span>{item?.value}</span>
+                                                                </span>
+                                                                <i
+                                                                    className="fa fa-copy"
+                                                                    style={{
+                                                                        cursor: "pointer",
+                                                                        color: "#007bff",
+                                                                        marginLeft: "10px",
+                                                                        fontSize: "16px"
+                                                                    }}
+                                                                    onClick={() => {
+                                                                        navigator.clipboard.writeText(item?.value);
+                                                                        alertSuccessMessage(`${item?.label} copied to clipboard!`);
+                                                                    }}
+                                                                ></i>
+                                                            </p>
+                                                        ))}
                                                 </>
                                             )}
                                         </div>
@@ -337,6 +354,7 @@ function WithdrawalRequest() {
                                         <p>Loading...</p>
                                     )}
                                 </div>
+
 
                                 <div className="modal-footer">
                                     <button

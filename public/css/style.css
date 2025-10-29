@@ -1206,6 +1206,11 @@ button.closed_btn {
     transform: rotate(180deg);
 }
 
+.userdetails_list p{ display: flex; justify-content: space-between;}
+.userdetails_list p strong {
+    font-weight: 600;
+}
+
 .tab-content .ticket_support_team p {
     font-size: 15px;
     margin: 0px;

@@ -34,7 +34,7 @@ function SupportChat() {
       const result = await AuthService.msgSend(formData);
 
       if (result?.success) {
-        alertSuccessMessage(result?.message);
+        // alertSuccessMessage(result?.message);
         setMessage("");
         // clear attachment (preview + file)
         try { if (filePreview) URL.revokeObjectURL(filePreview); } catch (_) { }
@@ -165,7 +165,7 @@ function SupportChat() {
     },
     { name: "User ID", selector: (row) => row?.userId?.uuid || "—", sortable: true },
     { name: "User Name", selector: (row) => row?.userId?.fullName || "—", sortable: true },
-    { name: "Email", selector: (row) => row?.userId?.emailId || "—", sortable: true },
+    { name: "Mobile Number", selector: (row) => row?.userId?.mobileNumber || "—", sortable: true },
     { name: "Last Message", selector: (row) => row?.lastMessage || "—", sortable: true },
     { name: "Status", selector: (row) => row?.status.toUpperCase() || "—", sortable: true },
 
@@ -190,12 +190,12 @@ function SupportChat() {
       <div className="dashboard_outer_s">
         <h2>Support Chat</h2>
         <DataTableBase columns={columns} data={allMsgData} pagination />
- <h4 className="mt-0">Chat Window</h4>
+        <h4 className="mt-0">Chat Window</h4>
         {/* Show chat only if a ticket is selected */}
         {selectedTicket && (
-                                   
+
           <div className="chatbox_div_massages">
-           
+
             <div
               className="chat_messages_block"
               style={{
@@ -257,70 +257,70 @@ function SupportChat() {
             {!isClosed ? (
               <>
 
-   {filePreview && (
-  <div className="preview-inside">
-    <img src={filePreview} alt="preview" />
-    <button
-      type="button"
-      className="remove-btn"
-      onClick={() => {
-        try {
-          if (filePreview) URL.revokeObjectURL(filePreview);
-        } catch (_) {}
-        setFile(null);
-        setFilePreview("");
-        if (fileInputRef.current) fileInputRef.current.value = "";
-      }}
-    >
-      ✕
-    </button>
-  </div>
-)}
+                {filePreview && (
+                  <div className="preview-inside">
+                    <img src={filePreview} alt="preview" />
+                    <button
+                      type="button"
+                      className="remove-btn"
+                      onClick={() => {
+                        try {
+                          if (filePreview) URL.revokeObjectURL(filePreview);
+                        } catch (_) { }
+                        setFile(null);
+                        setFilePreview("");
+                        if (fileInputRef.current) fileInputRef.current.value = "";
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
 
-<div className="chatbox_bottom">
-  <div className="messages_file_in">
-    <div className="input-with-preview">
-      <input
-        type="text"
-        className="form-control"
-        placeholder="Type your message..."
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && handleMsgSend()}
-      />
+                <div className="chatbox_bottom">
+                  <div className="messages_file_in">
+                    <div className="input-with-preview">
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Type your message..."
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleMsgSend()}
+                      />
 
-      {/* File Upload Icon */}
-      <label htmlFor="fileInput" className="upload-icon">
-        <i className="fa fa-paperclip"></i>
-      </label>
-      <input
-        type="file"
-        id="fileInput"
-        accept="image/*"
-        ref={fileInputRef}
-        style={{ display: "none" }}
-        onChange={(e) => {
-          const file = e.target.files[0];
-          if (file) {
-            setFile(file);
-            setFilePreview(URL.createObjectURL(file));
-          }
-        }}
-      />
+                      {/* File Upload Icon */}
+                      <label htmlFor="fileInput" className="upload-icon">
+                        <i className="fa fa-paperclip"></i>
+                      </label>
+                      <input
+                        type="file"
+                        id="fileInput"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        style={{ display: "none" }}
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setFile(file);
+                            setFilePreview(URL.createObjectURL(file));
+                          }
+                        }}
+                      />
 
-      {/* Send Button */}
-      <button
-        className="btn send-btn"
-        onClick={handleMsgSend}
-        disabled={!message.trim() && !file}
-      >
-        Send
-      </button>
-    </div>
-  </div>
-</div>
+                      {/* Send Button */}
+                      <button
+                        className="btn send-btn"
+                        onClick={handleMsgSend}
+                        disabled={!message.trim() && !file}
+                      >
+                        Send
+                      </button>
+                    </div>
+                  </div>
+                </div>
 
-            
+
               </>
             ) : (
               <div style={{ textAlign: "center", marginTop: "20px", color: "green" }}>

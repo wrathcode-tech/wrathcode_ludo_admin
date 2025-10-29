@@ -5,6 +5,7 @@ import AuthService from '../../Api/Api_Services/AuthService';
 import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertMessage';
 import moment from 'moment';
 import DataTableBase from '../../Utils/DataTable';
+import { imageUrl } from '../../Api/Api_Config/ApiEndpoints';
 
 function UserKyc() {
     const [kycPendingList, setKycPendingList] = useState([]);
@@ -41,7 +42,7 @@ function UserKyc() {
     const handleApprovedList = async (userId) => {
         try {
             LoaderHelper.loaderStatus(true);
-            const result = await AuthService.approveKyc(userId);
+            const result = await AuthService.getapprovedKycList(userId);
             if (result?.success) {
                 alertSuccessMessage("KYC Approved Successfully");
 
@@ -61,7 +62,7 @@ function UserKyc() {
     const handleRejectedList = async (userId) => {
         try {
             LoaderHelper.loaderStatus(true);
-            const result = await AuthService.rejectKyc(userId);
+            const result = await AuthService.getrejectedKycList(userId);
             if (result?.success) {
                 alertSuccessMessage("KYC Rejected Successfully");
 
@@ -82,12 +83,17 @@ function UserKyc() {
             LoaderHelper.loaderStatus(true);
             const finalReason = status === "REJECTED" ? reason : "";
             const result = await AuthService.updateKycStatus(userId, status, finalReason);
+
             if (result?.success) {
                 alertSuccessMessage(`KYC ${status} successfully`);
-                handlePendingList();
-                if (status === "APPROVED") handleApprovedList();
-                if (status === "REJECTED") handleRejectedList();
 
+                // ✅ Clear table immediately (instant update)
+                setKycPendingList([]);
+
+                // ✅ Optionally re-fetch updated list
+                setTimeout(() => {
+                    handlePendingList();
+                }, 500);
             } else {
                 alertErrorMessage(result?.message);
             }
@@ -99,6 +105,7 @@ function UserKyc() {
             setRejectReason("");
         }
     };
+
 
     useEffect(() => {
         if (activeTab === "APPROVED" && kycApprovedList.length === 0) {
@@ -118,8 +125,62 @@ function UserKyc() {
         { name: "UUID", selector: (row) => row?.uuid, sortable: true, wrap: true },
         { name: "User Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
         { name: "Mobile Number", selector: (row) => row?.mobileNumber, sortable: true, wrap: true },
-        { name: "Document Front Side", selector: (row) => row?.documentFrontside, sortable: true, wrap: true },
-        { name: "Document Back Side", selector: (row) => row?.documentBackside, sortable: true, wrap: true },
+        {
+            name: "Document Front Img",
+            cell: (row) =>
+                row?.kycDetails?.documentFrontImage ? (
+                    <a
+                        href={imageUrl + row?.kycDetails?.documentFrontImage}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <img
+                            src={imageUrl + row?.kycDetails?.documentFrontImage}
+                            alt="Document Front"
+                            style={{
+                                width: "70px",
+                                height: "50px",
+                                objectFit: "cover",
+                                borderRadius: "6px",
+                                cursor: "pointer",
+                            }}
+                        />
+                    </a>
+                ) : (
+                    "N/A"
+                ),
+            sortable: false,
+            wrap: true,
+        },
+        {
+            name: "Document Back Img",
+            cell: (row) =>
+                row?.kycDetails?.documentBackImage ? (
+                    <a
+                        href={imageUrl + row?.kycDetails?.documentBackImage}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <img
+                            src={imageUrl + row?.kycDetails?.documentBackImage}
+                            alt="Document Back"
+                            style={{
+                                width: "70px",
+                                height: "50px",
+                                objectFit: "cover",
+                                borderRadius: "6px",
+                                cursor: "pointer",
+                            }}
+                        />
+                    </a>
+                ) : (
+                    "N/A"
+                ),
+            sortable: false,
+            wrap: true,
+        },
+
+
         {
             name: "KYC Status",
             cell: (row) => (
