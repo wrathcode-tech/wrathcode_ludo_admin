@@ -6,12 +6,15 @@ import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertM
 import { imageUrl } from '../../Api/Api_Config/ApiEndpoints';
 import moment from 'moment';
 import DataTableBase from '../../Utils/DataTable';
+import { useNavigate } from 'react-router-dom';
 
 function DisputeResponse() {
+    const navigate = useNavigate();
     const [allData, setAllData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedWinningData, setSelectedWinningData] = useState(null); // Modal data
+    console.log("🚀 ~ DisputeResponse ~ selectedWinningData:", selectedWinningData)
     const [showModal, setShowModal] = useState(false);
 
     // Fetch winning data on view
@@ -166,6 +169,11 @@ function DisputeResponse() {
         setFilteredData(tempData);
     }, [searchTerm, allData]);
 
+
+    const handleContactSupport = (userId) => {
+        navigate(`/support?userId=${userId}`);
+    };
+
     return (
         <div className="dashboard_right">
             <UserHeader />
@@ -250,47 +258,56 @@ function DisputeResponse() {
                                                         <img
                                                             src={imageUrl + u.proof}
                                                             alt="proof"
-                                                            style={{ width: 50, height: 50, borderRadius: 5 }}
+                                                            style={{ width: 50, height: 50, borderRadius: 5, cursor: "pointer" }}
+                                                            onClick={() => window.open(imageUrl + u.proof, "_blank")}
                                                         />
                                                     ) : (
                                                         "—"
                                                     )}
                                                 </td>
                                                 <td>
-                                                    <td>
-                                                        <button
-                                                            className="btn btn-success btn-sm me-1"
-                                                            onClick={() =>
-                                                                handleSelectResult(
-                                                                    selectedWinningData.eventId,
-                                                                    u.userId._id === selectedWinningData.createdBy
-                                                                        ? selectedWinningData.createdBy
-                                                                        : selectedWinningData.joinedBy,
-                                                                    "WINNER"
-                                                                )
-                                                            }
-                                                        >
-                                                            Winner
-                                                        </button>
+                                                    <button
+                                                        className="btn btn-success btn-sm me-1"
+                                                        onClick={() =>
+                                                            handleSelectResult(
+                                                                selectedWinningData.eventId,
+                                                                u.userId._id === selectedWinningData.createdBy
+                                                                    ? selectedWinningData.createdBy
+                                                                    : selectedWinningData.joinedBy,
+                                                                "WINNER"
+                                                            )
+                                                        }
+                                                    >
+                                                        Winner
+                                                    </button>
 
-                                                        <button
-                                                            className="btn btn-danger btn-sm"
-                                                            onClick={() =>
-                                                                handleSelectResult(
-                                                                    selectedWinningData.eventId,
-                                                                    u.userId._id === selectedWinningData.createdBy
-                                                                        ? selectedWinningData.createdBy
-                                                                        : selectedWinningData.joinedBy,
-                                                                    "LOSER"
-                                                                )
-                                                            }
-                                                        >
-                                                            Loser
-                                                        </button>
+                                                    <button
+                                                        className="btn btn-danger btn-sm me-1"
+                                                        onClick={() =>
+                                                            handleSelectResult(
+                                                                selectedWinningData.eventId,
+                                                                u.userId._id === selectedWinningData.createdBy
+                                                                    ? selectedWinningData.createdBy
+                                                                    : selectedWinningData.joinedBy,
+                                                                "LOSER"
+                                                            )
+                                                        }
+                                                    >
+                                                        Loser
+                                                    </button>
 
-                                                    </td>
-
+                                                    {/* ✅ New Contact Support Button */}
+                                                    <button
+                                                        className="btn btn-info btn-sm"
+                                                        onClick={() => {
+                                                            const userId = u?.userId?._id || u?._id; // fallback if missing
+                                                            navigate(`/dashboard/support?userId=${userId}`);
+                                                        }}
+                                                    >
+                                                        Contact User
+                                                    </button>
                                                 </td>
+
                                             </tr>
                                         ))
                                     ) : (
