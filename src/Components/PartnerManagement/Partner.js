@@ -31,33 +31,97 @@ function Partner() {
     };
 
     const columns = [
-        { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-        { name: "Name", selector: (row) => row?.userId?.fullName, sortable: true, wrap: true },
-        { name: "Deposit Amount", selector: (row) => `₹ ${row?.amount}`, sortable: true, wrap: true },
-        { name: "UTR Number", selector: (row) => row?.utrNumber, sortable: true, wrap: true },
         {
-            name: "Payment Proof", cell: (row) => (<a href={imageUrl + row?.paymentProof} target="_blank" rel="noopener noreferrer" style={{
-                width: "50px", height: "50px"
-            }}>
-                <img src={imageUrl + row?.paymentProof} alt="proof" /></a>),
+            name: "Date & Time",
+            selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"),
+            sortable: true,
+            wrap: true,
         },
         {
-            name: "Actions", width: "200px",
+            name: "Full Name",
+            selector: (row) => row.fullName || "---",
+            sortable: true,
+            wrap: true,
+        },
+        {
+            name: "Email ID",
+            selector: (row) => row.emailId || "---",
+            sortable: true,
+            wrap: true,
+        },
+        {
+            name: "Mobile Number",
+            selector: (row) => row.mobileNumber || "---",
+            sortable: true,
+            wrap: true,
+        },
+        {
+            name: "Users Count",
+            selector: (row) => row.noOfUserHave || "0",
+            sortable: true,
+            wrap: true,
+        },
+        {
+            name: "Description",
+            selector: (row) => row.description || "---",
+            wrap: true,
+        },
+        {
+            name: "Actions",
+            width: "200px",
             cell: (row) => {
-                return (<div style={{ display: "flex", gap: "8px" }}>
-                    <button className="btn btn-success btn-sm" onClick={() => handleStatusUpdate(row._id, "APPROVED")}>
-                        Approve
-                    </button>
+                const isInactiveRejected =
+                    row.status === "INACTIVE" && row.approvalStatus === "REJECTED";
+                const isActiveApproved =
+                    row.status === "ACTIVE" && row.approvalStatus === "APPROVED";
+                const isPendingInactive =
+                    row.status === "INACTIVE" && row.approvalStatus === "PENDING";
 
-                    <button className="btn btn-danger btn-sm" onClick={() => handleStatusUpdate(row._id, "REJECTED")}>
-                        Reject
-                    </button>
-                </div>);
+                return (
+                    <div style={{ display: "flex", gap: "8px" }}>
+                        {/* Case 1: When status is INACTIVE & approvalStatus is PENDING → show both buttons */}
+                        {isPendingInactive ? (
+                            <>
+                                <button
+                                    className="btn btn-success btn-sm"
+                                    onClick={() => handleStatusUpdate(row._id, "APPROVED")}
+                                >
+                                    Approve
+                                </button>
+                                <button
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() => handleStatusUpdate(row._id, "REJECTED")}
+                                >
+                                    Reject
+                                </button>
+                            </>
+                        ) : isInactiveRejected ? (
+                            /* Case 2: Show only Approve button if Rejected */
+                            <button
+                                className="btn btn-success btn-sm"
+                                onClick={() => handleStatusUpdate(row._id, "APPROVED")}
+                            >
+                                Approve
+                            </button>
+                        ) : isActiveApproved ? (
+                            /* Case 3: Show only Reject button if Approved */
+                            <button
+                                className="btn btn-danger btn-sm"
+                                onClick={() => handleStatusUpdate(row._id, "REJECTED")}
+                            >
+                                Reject
+                            </button>
+                        ) : (
+                            <span>--</span>
+                        )}
+                    </div>
+                );
             },
             ignoreRowClick: true,
             allowOverflow: true,
             button: true,
         },
+
     ];
 
     const handleStatusUpdate = async (id, status) => {
@@ -70,7 +134,7 @@ function Partner() {
                     prev.filter(item => item?._id !== id)
                 );
                 setAllData(prev => prev?.filter(item => item?._id !== id));
-
+                handlepartnerData();
             } else {
                 alertErrorMessage(result?.message);
             }
@@ -120,7 +184,7 @@ function Partner() {
                         </div>
                         <div className="card-body">
 
-                            <DataTableBase columns={columns} data={partnerData} pagination />
+                            <DataTableBase columns={columns} data={allData} pagination />
                         </div>
 
                     </div>
