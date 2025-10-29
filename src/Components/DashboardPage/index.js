@@ -40,9 +40,6 @@ function DashboardPage() {
             sortable: true,
             cell: (row) => (
                 <div className="td_first" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    {/* <div className="product">
-                        <img src="/images/product_img_t.png" alt="activity" width={40} height={40} />
-                    </div> */}
                     <div className="title">{row.Activity}</div>
                 </div>
             ),
@@ -72,8 +69,7 @@ function DashboardPage() {
                         <div class="dashboard_info_s">
                             <ul class="list_dashboard_cate">
                                 <li>
-                                    <div
-                                        className="user_cnt_top"
+                                    <div className="user_cnt_top"
                                         onClick={() => navigate("/dashboard/userList")}
                                         style={{ cursor: "pointer" }} // pointer dikhane ke liye
                                     >
@@ -86,20 +82,7 @@ function DashboardPage() {
                                         </div>
                                     </div>
                                 </li>
-                                <li class="nth_one">
-                                    <div class="user_cnt_top"
-                                        onClick={() => navigate("/dashboard/userList")}
-                                        style={{ cursor: "pointer" }}>
-                                        <div class="cnt_lft">
-                                            <span>Verified User</span>
-                                            <h3>{dashboardData?.verifyedUser}</h3>
-                                        </div>
-                                        <div class="dashboard_icon">
-                                            <img src="/images/dashboad_list_icon.svg" alt="dashboard" />
-                                        </div>
-                                    </div>
-                                    {/* <p><span><img src="/images/markert_range_icon.svg" alt="market" />8.5%</span>Up from yesterday</p> */}
-                                </li>
+
                                 <li class="nth_two">
                                     <div class="user_cnt_top"
                                         onClick={() => navigate("/dashboard/withdrawalRequest")}
@@ -125,32 +108,6 @@ function DashboardPage() {
                                         </div>
                                         <div class="dashboard_icon">
                                             <img src="/images/dashboad_list_icon3.svg" alt="dashboard" />
-                                        </div>
-                                    </div>
-                                    {/* <p><span><img src="/images/markert_range_icon.svg" alt="market" />8.5%</span>Up from yesterday</p> */}
-                                </li>
-                                <li class="nth_four">
-                                    <div class="user_cnt_top" onClick={() => navigate("/dashboard/earn_referralBonus")}
-                                        style={{ cursor: "pointer" }}>
-                                        <div class="cnt_lft">
-                                            <span>Total Referrals Bonus</span>
-                                            <h3>{dashboardData?.overalAllReferBonus}</h3>
-                                        </div>
-                                        <div class="dashboard_icon">
-                                            <img src="/images/dashboad_list_icon4.svg" alt="dashboard" />
-                                        </div>
-                                    </div>
-                                    {/* <p><span><img src="/images/markert_range_icon.svg" alt="market" />8.5%</span>Up from yesterday</p> */}
-                                </li>
-                                <li class="nth_five">
-                                    <div class="user_cnt_top" onClick={() => navigate("/dashboard/earn_commissionBonus")}
-                                        style={{ cursor: "pointer" }}>
-                                        <div class="cnt_lft">
-                                            <span>Total Commission Bonus</span>
-                                            <h3>{dashboardData?.overalAllCommission}</h3>
-                                        </div>
-                                        <div class="dashboard_icon">
-                                            <img src="/images/dashboad_list_icon5.svg" alt="dashboard" />
                                         </div>
                                     </div>
                                     {/* <p><span><img src="/images/markert_range_icon.svg" alt="market" />8.5%</span>Up from yesterday</p> */}
@@ -182,6 +139,47 @@ function DashboardPage() {
                                     </div>
                                     {/* <p><span><img src="/images/markert_range_icon.svg" alt="market" />8.5%</span>Up from yesterday</p> */}
                                 </li>
+                                <li class="nth_one">
+                                    <div class="user_cnt_top"
+                                        onClick={() => navigate("/dashboard/userList")}
+                                        style={{ cursor: "pointer" }}>
+                                        <div class="cnt_lft">
+                                            <span>Verified User</span>
+                                            <h3>{dashboardData?.verifyedUser}</h3>
+                                        </div>
+                                        <div class="dashboard_icon">
+                                            <img src="/images/dashboad_list_icon.svg" alt="dashboard" />
+                                        </div>
+                                    </div>
+                                    {/* <p><span><img src="/images/markert_range_icon.svg" alt="market" />8.5%</span>Up from yesterday</p> */}
+                                </li>
+                                <li class="nth_four">
+                                    <div class="user_cnt_top" onClick={() => navigate("/dashboard/earn_referralBonus")}
+                                        style={{ cursor: "pointer" }}>
+                                        <div class="cnt_lft">
+                                            <span>Total Referrals Bonus</span>
+                                            <h3>{dashboardData?.overalAllReferBonus}</h3>
+                                        </div>
+                                        <div class="dashboard_icon">
+                                            <img src="/images/dashboad_list_icon4.svg" alt="dashboard" />
+                                        </div>
+                                    </div>
+                                    {/* <p><span><img src="/images/markert_range_icon.svg" alt="market" />8.5%</span>Up from yesterday</p> */}
+                                </li>
+                                <li class="nth_five">
+                                    <div class="user_cnt_top" onClick={() => navigate("/dashboard/earn_commissionBonus")}
+                                        style={{ cursor: "pointer" }}>
+                                        <div class="cnt_lft">
+                                            <span>Total Commission Bonus</span>
+                                            <h3>{dashboardData?.overalAllCommission}</h3>
+                                        </div>
+                                        <div class="dashboard_icon">
+                                            <img src="/images/dashboad_list_icon5.svg" alt="dashboard" />
+                                        </div>
+                                    </div>
+                                    {/* <p><span><img src="/images/markert_range_icon.svg" alt="market" />8.5%</span>Up from yesterday</p> */}
+                                </li>
+
                             </ul>
                         </div>
                     </div>
