@@ -14,7 +14,6 @@ function DisputeResponse() {
     const [filteredData, setFilteredData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedWinningData, setSelectedWinningData] = useState(null); // Modal data
-    console.log("🚀 ~ DisputeResponse ~ selectedWinningData:", selectedWinningData)
     const [showModal, setShowModal] = useState(false);
 
     // Fetch winning data on view
@@ -57,8 +56,6 @@ function DisputeResponse() {
             LoaderHelper.loaderStatus(false);
         }
     };
-
-
     // Handle Winner/Loser selection
     const handleSelectResult = async (eventId, winnerId) => {
         if (!selectedWinningData) return;
@@ -84,8 +81,6 @@ function DisputeResponse() {
             LoaderHelper.loaderStatus(false);
         }
     };
-
-
 
     const commonColumns = [
         { name: "Sr No.", selector: (row, index) => index + 1, wrap: true, width: "80px" },
@@ -281,7 +276,7 @@ function DisputeResponse() {
                                                         Winner
                                                     </button>
 
-                                                    <button
+                                                    {/* <button
                                                         className="btn btn-danger btn-sm me-1"
                                                         onClick={() =>
                                                             handleSelectResult(
@@ -294,7 +289,7 @@ function DisputeResponse() {
                                                         }
                                                     >
                                                         Loser
-                                                    </button>
+                                                    </button> */}
 
                                                     {/* ✅ New Contact Support Button */}
                                                     <button

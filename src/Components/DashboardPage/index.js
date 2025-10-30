@@ -1,15 +1,17 @@
-import React, { use, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import UserHeader from '../../Layout/UserHeader'
 import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import AuthService from '../../Api/Api_Services/AuthService';
 import { alertErrorMessage } from '../../Utils/CustomAlertMessage';
 import DataTableBase from '../../Utils/DataTable';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import Loading from '../../Utils/Loading';
 
 function DashboardPage() {
     const navigate = useNavigate();
     const [dashboardData, setDashboardData] = useState([]);
     const [dashboardList, setDashboardList] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         handleDashboardData();
@@ -18,6 +20,7 @@ function DashboardPage() {
     const handleDashboardData = async () => {
 
         try {
+            setLoading(true);
             LoaderHelper.loaderStatus(true);
             const result = await AuthService.dashboardData();
             if (result?.success) {
@@ -29,6 +32,7 @@ function DashboardPage() {
         } catch (error) {
             alertErrorMessage(error?.message);
         } finally {
+            setLoading(false);
             LoaderHelper.loaderStatus(false);
         }
     };
@@ -185,7 +189,13 @@ function DashboardPage() {
                     </div>
                     <div className="dashboard_detail_s">
                         <h3>Login Details</h3>
-                        <DataTableBase columns={columns} data={dashboardList} pagination />
+                        {loading ? (
+                          <div style={{ minHeight: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Loading />
+                          </div>
+                        ) : (
+                          <DataTableBase columns={columns} data={dashboardList} pagination />
+                        )}
                     </div>
                 </div>
             </div >
