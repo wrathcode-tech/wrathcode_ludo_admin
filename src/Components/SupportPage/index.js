@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import moment from "moment";
-import { alertErrorMessage, alertSuccessMessage } from "../../Utils/CustomAlertMessage";
+import { alertErrorMessage } from "../../Utils/CustomAlertMessage";
 import LoaderHelper from "../../Utils/Loading/LoaderHelper";
 import AuthService from "../../Api/Api_Services/AuthService";
 import DataTableBase from "../../Utils/DataTable";
@@ -9,104 +9,32 @@ import { useLocation } from "react-router-dom";
 
 function SupportChat() {
   const adminId = "68a4b42c776734c76dfc7248";
-  const [supportData, setSupportData] = useState([]);
-  const [message, setMessage] = useState("");
+
+  const [allMsgData, setAllMsgData] = useState([]); // 🔹 Ticket list
+  const [supportData, setSupportData] = useState([]); // 🔹 Chat messages
+  const [selectedTicket, setSelectedTicket] = useState(null); // 🔹 Selected userId
+
   const [isClosed, setIsClosed] = useState(false);
-  const [allMsgData, setAllMsgData] = useState([]);
-  const [selectedTicket, setSelectedTicket] = useState(null);
-  const chatEndRef = useRef(null);
+  const [message, setMessage] = useState("");
   const [file, setFile] = useState(null);
   const [filePreview, setFilePreview] = useState("");
+  const [search, setSearch] = useState("");
+
+  const chatEndRef = useRef(null);
   const fileInputRef = useRef(null);
+  const location = useLocation();
 
-  /** 🔹 Send message */
-  const handleMsgSend = async () => {
-    const trimmed = message.trim();
-    if (!selectedTicket) return;
-    if (!trimmed && !file) return; // nothing to send
-    const formData = new FormData();
-    formData.append("userId", selectedTicket);
-    formData.append("adminId", adminId);
-    formData.append("sender", "admin");
-    if (trimmed) formData.append("message", trimmed);
-    if (file) formData.append("imageUrl", file);
-    LoaderHelper.loaderStatus(true);
-    try {
-      const result = await AuthService.msgSend(formData);
-
-      if (result?.success) {
-        // alertSuccessMessage(result?.message);
-        setMessage("");
-        // clear attachment (preview + file)
-        try { if (filePreview) URL.revokeObjectURL(filePreview); } catch (_) { }
-        setFile(null);
-        setFilePreview("");
-        if (fileInputRef.current) fileInputRef.current.value = "";
-        // optimistic update for text
-        if (trimmed) {
-          setSupportData((prev = []) => [
-            ...(Array.isArray(prev) ? prev : []),
-            { sender: "admin", message: trimmed, timestamp: new Date().toISOString() },
-          ]);
-        }
-        // immediate fetch to include any processed media
-        await handleGetMsg(selectedTicket, { showLoader: false });
-      } else {
-        alertErrorMessage(result?.message);
-      }
-    } catch (error) {
-      alertErrorMessage(error?.message);
-    } finally {
-      LoaderHelper.loaderStatus(false);
+  // 🔹 Scroll to bottom on chat update
+  useEffect(() => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  };
+  }, [supportData]);
 
-  const handleFileChange = (e) => {
-    const f = e.target.files && e.target.files[0];
-    if (!f) return;
-    setFile(f);
-    try { if (filePreview) URL.revokeObjectURL(filePreview); } catch (_) { }
-    setFilePreview(URL.createObjectURL(f));
-  };
-
-  /** 🔹 Get messages of selected user */
-  const handleGetMsg = async (userId, { showLoader = true } = {}) => {
-    if (!userId) return;
-    if (showLoader) {
-      LoaderHelper.loaderStatus(true);
-    }
-    try {
-      const result = await AuthService.getMsgUser(userId);
-      if (result?.success) {
-        const messages = Array.isArray(result.data) ? result.data : result.data?.messages || [];
-        setSupportData(messages);
-        if (
-          result?.ticketStatus === "closed" ||
-          result.data?.ticketStatus === "closed"
-        ) {
-          setIsClosed(true);
-        } else {
-          setIsClosed(false);
-        }
-      } else {
-        alertErrorMessage(result?.message || "Failed to fetch messages.");
-        setSupportData([]);
-      }
-    } catch (error) {
-      console.error("❌ Failed to fetch messages:", error);
-      alertErrorMessage("Server error while fetching messages.");
-      setSupportData([]);
-    } finally {
-      if (showLoader) {
-        LoaderHelper.loaderStatus(false);
-      }
-    }
-  };
-
-  /** 🔹 Get all tickets */
+  // 🔹 Fetch all tickets (runs only once)
   const handleAllMsg = async () => {
-    LoaderHelper.loaderStatus(true);
     try {
+      LoaderHelper.loaderStatus(true);
       const result = await AuthService.allMsg();
       if (result?.success) {
         setAllMsgData(result.data);
@@ -120,93 +48,165 @@ function SupportChat() {
       LoaderHelper.loaderStatus(false);
     }
   };
-  const handleMsgSeen = async (userId, viewer) => {
-    LoaderHelper.loaderStatus(true);
+
+  useEffect(() => {
+    handleAllMsg(); // ✅ Only once on mount
+  }, []);
+
+  // 🔹 Fetch single user's chat
+  const handleGetMsg = async (userId, { showLoader = true } = {}) => {
+    if (!userId) return;
+    if (showLoader) LoaderHelper.loaderStatus(true);
     try {
-      const result = await AuthService.msgSeen(userId, viewer);
+      const result = await AuthService.getMsgUser(userId);
       if (result?.success) {
-        setAllMsgData(result.data);
+        const messages = Array.isArray(result.data)
+          ? result.data
+          : result.data?.messages || [];
+        setSupportData(messages);
+        setIsClosed(
+          result?.ticketStatus === "closed" ||
+          result?.data?.ticketStatus === "closed"
+        );
+        setSelectedTicket(userId); // ✅ ensure selectedTicket set
       } else {
-        alertErrorMessage(result?.message || "Failed to fetch all messages.");
+        alertErrorMessage(result?.message || "Failed to fetch messages.");
+        setSupportData([]);
       }
     } catch (error) {
-      console.error("❌ Failed to fetch all messages:", error);
+      console.error("❌ Failed to fetch messages:", error);
       alertErrorMessage("Server error while fetching messages.");
+      setSupportData([]);
+    } finally {
+      if (showLoader) LoaderHelper.loaderStatus(false);
+    }
+  };
+
+  // 🔹 Handle send message
+  const handleMsgSend = async () => {
+    const trimmed = message.trim();
+    if (!selectedTicket) return;
+    if (!trimmed && !file) return; // nothing to send
+
+    const formData = new FormData();
+    formData.append("userId", selectedTicket);
+    formData.append("adminId", adminId);
+    formData.append("sender", "admin");
+    if (trimmed) formData.append("message", trimmed);
+    if (file) formData.append("imageUrl", file);
+
+    LoaderHelper.loaderStatus(true);
+    try {
+      const result = await AuthService.msgSend(formData);
+      if (result?.success) {
+        setMessage("");
+        try {
+          if (filePreview) URL.revokeObjectURL(filePreview);
+        } catch (_) { }
+        setFile(null);
+        setFilePreview("");
+        if (fileInputRef.current) fileInputRef.current.value = "";
+
+        // Optimistic message update
+        if (trimmed) {
+          setSupportData((prev) => [
+            ...(Array.isArray(prev) ? prev : []),
+            { sender: "admin", message: trimmed, timestamp: new Date().toISOString() },
+          ]);
+        }
+
+        // 🔹 Fetch latest chat (no loader)
+        await handleGetMsg(selectedTicket, { showLoader: false });
+      } else {
+        alertErrorMessage(result?.message);
+      }
+    } catch (error) {
+      alertErrorMessage(error?.message);
     } finally {
       LoaderHelper.loaderStatus(false);
     }
   };
 
-  /** 🔹 Auto scroll */
+  // 🔹 Auto-open chat from "Contact User"
   useEffect(() => {
-    if (chatEndRef.current) {
-      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+    const userId = location?.state?.userId;
+    if (location?.state?.openChat && userId) {
+      handleGetMsg(userId);
     }
-  }, [supportData]);
+  }, [location?.state]);
 
-  useEffect(() => {
-    handleAllMsg();
-  }, []);
-
-  /** 🔹 Poll chat messages every 3 seconds when a ticket is selected */
-  // useEffect(() => {
-  //   if (!selectedTicket) return;
-  //   const intervalId = setInterval(() => {
-  //     handleGetMsg(selectedTicket, { showLoader: false });
-  //   }, 3000);
-  //   return () => clearInterval(intervalId);
-  // }, [selectedTicket]);
-
+  // 🔹 DataTable columns
   const columns = [
-    { name: "Sr No.", selector: (row, index) => index + 1, wrap: true, width: "80px" },
+    { name: "Sr No.", selector: (row, i) => i + 1, width: "80px" },
     {
       name: "Date & Time",
       selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"),
       sortable: true,
     },
-    { name: "User ID", selector: (row) => row?.userId?.uuid || "—", sortable: true },
-    { name: "User Name", selector: (row) => row?.userId?.fullName || "—", sortable: true },
-    { name: "Mobile Number", selector: (row) => row?.userId?.mobileNumber || "—", sortable: true },
-    { name: "Last Message", selector: (row) => row?.lastMessage || "—", sortable: true },
-    { name: "Status", selector: (row) => row?.status.toUpperCase() || "—", sortable: true },
-
+    { name: "User ID", selector: (row) => row?.userId?.uuid || "—" },
+    { name: "User Name", selector: (row) => row?.userId?.fullName || "—" },
+    { name: "Mobile", selector: (row) => row?.userId?.mobileNumber || "—" },
+    { name: "Last Message", selector: (row) => row?.lastMessage || "—" },
+    { name: "Status", selector: (row) => row?.status?.toUpperCase() || "—" },
     {
       name: "Action",
       cell: (row) => (
         <button
           className="btn btn-sm btn-primary"
-          onClick={() => {
-            setSelectedTicket(row.userId._id);
-            handleGetMsg(row.userId._id);
-          }}
+          onClick={() => handleGetMsg(row.userId._id)}
         >
           View
         </button>
       ),
     },
   ];
-  const location = useLocation();
 
-  useEffect(() => {
-    const userId = location?.state?.userId;
+  const handleSearch = (e) => {
+    const value = e.target.value?.trim()?.toLowerCase() || "";
+    setSearch(value);
+  };
 
-    console.log("🚀 ~ useEffect Triggered ~ userId:", userId);
-
-    if (location?.state?.openChat && userId) {
-      handleGetMsg(userId);
-    }
-  }, [location?.state]);
-
-
+  // Filter list
+  const filteredList = allMsgData.filter((item) => {
+    const text = search.toLowerCase();
+    if (!text) return true;
+    const uuid = item?.userId?.uuid?.toLowerCase() || "";
+    const name = item?.userId?.fullName?.toLowerCase() || "";
+    const mobile = item?.userId?.mobileNumber?.toString() || "";
+    const email = item?.userId?.emailId?.toLowerCase() || "";
+    const lastMsg = item?.lastMessage?.toLowerCase() || "";
+    return (
+      uuid.includes(text) ||
+      name.includes(text) ||
+      mobile.includes(text) ||
+      email.includes(text) ||
+      lastMsg.includes(text)
+    );
+  });
 
 
   return (
     <div className="dashboard_right">
       <div className="dashboard_outer_s">
         <h2>Support Chat</h2>
-        <DataTableBase columns={columns} data={allMsgData} pagination />
+
+        {/* 🔍 Search Box */}
+        <div className="col-3 mb-3">
+          <input
+            className="form-control"
+            type="search"
+            placeholder="Search by name, email, or mobile..."
+            value={search}
+            onChange={handleSearch}
+          />
+        </div>
+
+        {/* 🔹 Ticket List */}
+        <DataTableBase columns={columns} data={filteredList} pagination />
+
         <h4 className="mt-0">Chat Window</h4>
-        {/* Show chat only if a ticket is selected */}
+
+        {/* 🔹 Chat Window */}
         {selectedTicket && (
           <div className="chatbox_div_massages">
             {/* 🔁 Refresh Button */}
@@ -215,10 +215,12 @@ function SupportChat() {
                 className="btn btn-secondary btn-sm"
                 onClick={() => handleGetMsg(selectedTicket, { showLoader: true })}
               >
-                <i className="fa fa-refresh" style={{ marginRight: "5px" }}></i> Refresh
+                <i className="fa fa-refresh" style={{ marginRight: "5px" }}></i>
+                Refresh
               </button>
             </div>
 
+            {/* 🔹 Chat Messages */}
             <div
               className="chat_messages_block"
               style={{
@@ -253,11 +255,16 @@ function SupportChat() {
                       <strong style={{ display: "block", marginBottom: "4px" }}>
                         {chat.sender === "admin" ? "You (Admin)" : "User"}
                       </strong>
+
                       {chat?.image && (
                         <img
                           src={imageUrl + chat.image}
                           alt="chat-media"
-                          style={{ maxWidth: "200px", borderRadius: "8px", marginTop: "5px" }}
+                          style={{
+                            maxWidth: "200px",
+                            borderRadius: "8px",
+                            marginTop: "5px",
+                          }}
                         />
                       )}
                       <p style={{ margin: "4px 0" }}>{chat.message}</p>
@@ -275,7 +282,7 @@ function SupportChat() {
               <div ref={chatEndRef}></div>
             </div>
 
-            {/* 👇 Input Box & rest of your existing code */}
+            {/* 🔹 Message Input */}
             {!isClosed ? (
               <>
                 {filePreview && (
@@ -346,7 +353,6 @@ function SupportChat() {
             )}
           </div>
         )}
-
       </div>
     </div>
   );
