@@ -9,7 +9,7 @@ import DataTableBase from '../../Utils/DataTable';
 function AllGameList() {
     const [filteredData, setFilteredData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [filterStatus, setFilterStatus] = useState('ALL');
+    const [filterStatus, setFilterStatus] = useState('RUNNING');
 
     // Individual states to store data
     const [completeLudoData, setcompleteLudoData] = useState([]);
@@ -46,44 +46,57 @@ function AllGameList() {
         },
     ];
 
-    // Fetch all APIs once on component mount
+    // Lazy fetch per filter to avoid unnecessary API calls
     useEffect(() => {
-        const fetchAllData = async () => {
+        const fetchByStatus = async () => {
             try {
                 LoaderHelper.loaderStatus(true);
-
-                const [completed, running, expired, waiting, dispute] = await Promise.all([
-                    AuthService.allCompletedLudoGameList(),
-                    AuthService.allRunningLudoGameList(),
-                    AuthService.allExpiredLudoGameList(),
-                    AuthService.allWaitingLudoGameList(),
-                    AuthService.allDisputeLudoGameList()
-                ]);
-
-                if (completed?.success) setcompleteLudoData(completed.data);
-                if (running?.success) setRunningGameData(running.data);
-                if (expired?.success) setExpiredGameData(expired.data);
-                if (waiting?.success) setOpenBattleData(waiting.data);
-                if (dispute?.success) setDisputeGameData(dispute.data);
-
-                // Initially show ALL data
-                setFilteredData([
-                    ...(completed?.data || []),
-                    ...(running?.data || []),
-                    ...(expired?.data || []),
-                    ...(waiting?.data || []),
-                    ...(dispute?.data || [])
-                ]);
-
+                if (filterStatus === 'COMPLETED' && completeLudoData.length === 0) {
+                    const res = await AuthService.allCompletedLudoGameList();
+                    if (res?.success) setcompleteLudoData(res.data || []);
+                } else if (filterStatus === 'RUNNING' && runningGameData.length === 0) {
+                    const res = await AuthService.allRunningLudoGameList();
+                    if (res?.success) setRunningGameData(res.data || []);
+                } else if (filterStatus === 'EXPIRED' && expiredGameData.length === 0) {
+                    const res = await AuthService.allExpiredLudoGameList();
+                    if (res?.success) setExpiredGameData(res.data || []);
+                } else if (filterStatus === 'WAITING' && openBattleData.length === 0) {
+                    const res = await AuthService.allWaitingLudoGameList();
+                    if (res?.success) setOpenBattleData(res.data || []);
+                } else if (filterStatus === 'DISPUTE' && disputeGameData.length === 0) {
+                    const res = await AuthService.allDisputeLudoGameList();
+                    if (res?.success) setDisputeGameData(res.data || []);
+                } else if (filterStatus === 'ALL') {
+                    // If user explicitly selects ALL, fetch only missing sets
+                    if (completeLudoData.length === 0) {
+                        const r = await AuthService.allCompletedLudoGameList();
+                        if (r?.success) setcompleteLudoData(r.data || []);
+                    }
+                    if (runningGameData.length === 0) {
+                        const r = await AuthService.allRunningLudoGameList();
+                        if (r?.success) setRunningGameData(r.data || []);
+                    }
+                    if (expiredGameData.length === 0) {
+                        const r = await AuthService.allExpiredLudoGameList();
+                        if (r?.success) setExpiredGameData(r.data || []);
+                    }
+                    if (openBattleData.length === 0) {
+                        const r = await AuthService.allWaitingLudoGameList();
+                        if (r?.success) setOpenBattleData(r.data || []);
+                    }
+                    if (disputeGameData.length === 0) {
+                        const r = await AuthService.allDisputeLudoGameList();
+                        if (r?.success) setDisputeGameData(r.data || []);
+                    }
+                }
             } catch (error) {
                 alertErrorMessage(error?.message);
             } finally {
                 LoaderHelper.loaderStatus(false);
             }
         };
-
-        fetchAllData();
-    }, []);
+        fetchByStatus();
+    }, [filterStatus]);
 
     // Update table when filterStatus or searchTerm changes
     useEffect(() => {

@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import moment from "moment";
-import { $ } from "react-jquery-plugin";
-import ReactPaginate from "react-paginate";
-import Swal from "sweetalert2";
 import LoaderHelper from "../../Utils/Loading/LoaderHelper";
 import AuthService from "../../Api/Api_Services/AuthService";
-import { alertErrorMessage, alertSuccessMessage } from "../../Utils/CustomAlertMessage";
+import { alertErrorMessage } from "../../Utils/CustomAlertMessage";
 import DataTableBase from "../../Utils/DataTable";
-import { ApiConfig, imageUrl } from "../../Api/Api_Config/ApiEndpoints";
+import { imageUrl } from "../../Api/Api_Config/ApiEndpoints";
 
 function UserDetails() {
   const location = useLocation();
@@ -30,11 +27,9 @@ function UserDetails() {
 
 
 
-  const handlePageChange = ({ selected }) => {
-    setCurrentPage(selected + 1);
-  };
+  // pagination control can be wired when needed
 
-  const pageCount = Math.ceil(totalData / itemsPerPage);
+  // pagination UI is not rendered; keep values for backend pagination only
   const skip = (currentPage - 1) * itemsPerPage;
 
   useEffect(() => {
@@ -47,11 +42,6 @@ function UserDetails() {
   // Api functions start header
   useEffect(() => {
     handleUserDetails();
-    // handleUserGameTransaction();
-    // handleUserKycDetails();
-    // handleUserBankDetails();
-    // handleReferAndEarn();
-    // handleUserCommissionDetails()
   }, []);
 
 
@@ -141,31 +131,61 @@ function UserDetails() {
       LoaderHelper.loaderStatus(true);
       const result = await AuthService.getUserReferralDetails(location?.state?.userId);
       LoaderHelper.loaderStatus(false);
-      if (result?.success) {
-        setReferData(result.data);
+
+      if (result?.success && Array.isArray(result?.data)) {
+        const tableData = result.data.map((item, index) => ({
+          index: index + 1,
+          sponsorName: item?.sponserId?.fullName || "-----",
+          sponsorUUID: item?.sponserId?.uuid || "-----",
+          userName: item?.userId?.fullName || "-----",
+          userUUID: item?.userId?.uuid || "-----",
+          sponserCode: item?.sponserCode || "-----",
+          bonusAmount: item?.bonusAmount || 0,
+          walletType: item?.walletType || "-----",
+          status: item?.status || "-----",
+          transactionType: item?.transactionType || "-----",
+          createdAt: item?.createdAt || "",
+        }));
+
+        setReferData(tableData);
       } else {
-        // alertErrorMessage(result.message);
+        alertErrorMessage("No referral data found");
       }
     } catch (error) {
       LoaderHelper.loaderStatus(false);
       alertErrorMessage(error.message);
     }
   };
+
   const handleUserCommissionDetails = async () => {
     try {
       LoaderHelper.loaderStatus(true);
-      const result = await AuthService.getUserCommissionDetails(location?.state?.userId);
+      const result = await AuthService.getUserCommissionDetails(location?.state?.userId); // your API
       LoaderHelper.loaderStatus(false);
-      if (result?.success) {
-        setUserCommissionData(result.data);
+
+      if (result?.success && Array.isArray(result?.data)) {
+        const tableData = result.data.map((item, index) => ({
+          index: index + 1,
+          userName: item?.userId?.fullName || "-----",
+          mobileNumber: item?.userId?.mobile || "-----",
+          uuid: item?.userId?.uuid || "-----",
+          referralBonus: item?.commissionAmount || 0,
+          referrerBonus: item?.totalBetAmmount || 0,
+          createdAt: item?.createdAt || "",
+          description: item?.transactionType || "-----",
+        }));
+
+        setUserCommissionData(tableData);
       } else {
-        // alertErrorMessage(result.message);
+        alertErrorMessage("No commission data found");
       }
-    } catch (error) {
+    } catch (err) {
       LoaderHelper.loaderStatus(false);
-      alertErrorMessage(error.message);
+      alertErrorMessage("Error fetching commission data");
+      console.error(err);
     }
   };
+
   const handleAddWinningAmount = async (winingWalletType, amount,) => {
     try {
       LoaderHelper.loaderStatus(true);
@@ -212,85 +232,8 @@ function UserDetails() {
       alertErrorMessage(error?.message);
     }
   };
-  const flattenObjectForDisplay = (obj, parentKey = '', result = {}) => {
-    for (let key in obj) {
-      if (key === "__v" || key === "_id") continue;
-      // If nested object, add its keys directly without dot notation
-      if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
-        flattenObjectForDisplay(obj[key], key.toUpperCase(), result); // Recursively process nested keys
-      } else {
-        // Uppercase the key and add to result
-        const displayKey = parentKey ? `${parentKey} ${key}`.toUpperCase() : key.toUpperCase();
-        result[displayKey] = obj[key];
-      }
-    }
-    return result;
-  };
-  const createDynamicColumns = (data) => {
-    if (!data.length) return [];
-
-    // Flatten the first object in the data array to get all keys with uppercase headers
-    const flatData = flattenObjectForDisplay(data[0]);
-    const keys = Object.keys(flatData);
-
-    return keys.map((key) => ({
-      name: <> {key}</>, // Already uppercased in flattenObjectForDisplay
-      selector: (row) => {
-        // Flatten row data to access the values by the transformed keys
-        const flatRow = flattenObjectForDisplay(row);
-        if (key === "CREATEDAT" || key === "UPDATEDAT" || key === "PAYMENTTIME") {
-          return moment(flatRow[key]).format("DD MMM YYYY LT") || "------";
-        }
-        return flatRow[key]?.toString() || "------";
-      },
-      sortable: true,
-      wrap: true,
-      width: key === "DESCRIPTION" ? "250px" : "180px", // Adjust width for specific fields
-    }));
-  };
-  const handleUserDelete = async (userId) => {
-    try {
-      const result = await AuthService.deleteUser(userId);
-      if (result.success) {
-        alertSuccessMessage(result.message);
-
-      } else {
-        alertErrorMessage(result.message);
-      }
-    } catch (error) {
-      alertErrorMessage("An error occurred while updating the Avatar status.");
-    }
-  };
-  const deleteAdhar = (row) => {
-    return (
-      <>
-        <button className="btn btn-danger btn-sm" type="button" onClick={() => {
-          Swal.fire({
-            title: "Are you sure you want to delete account?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
-          }).then((result) => {
-            if (result.isConfirmed) {
-              handleUserDelete(row?._id);
-
-              Swal.fire({
-                title: "Deleted!",
-                text: "User has been deleted.",
-                icon: "success"
-              });
-            }
-          });
-        }}>
-          <i className="fas fa-trash-alt"></i>
-        </button>
-      </>
-    );
-  };
-
+  // helper to flatten nested objects for display (removed, unused)
+  // user delete UI/flow removed (no supporting service)
   const handleImageDetail = (img) => {
     setShowImage(img);
   };
@@ -299,77 +242,91 @@ function UserDetails() {
   const UserGameDetails = [
     {
       name: "Sr. No.",
-      selector: (row) => {
-        console.log("🚀 ~ UserDetails ~ row:", row)
-        return row?.index !== undefined ? row.index : "---";
-      },
+      selector: (row) => (row?.index ? row.index : "---"),
       width: "80px",
+      cell: (row) =>
+        row?.isSummaryRow ? <strong>Total</strong> : row?.index || "---",
     },
     {
       name: "Event ID",
       selector: (row) =>
         row?.eventId ? row.eventId.substring(0, 8).toUpperCase() : "---",
-      wrap: true,
+      cell: (row) =>
+        row?.isSummaryRow ? (
+          <strong style={{ color: "#007bff" }}>Summary</strong>
+        ) : (
+          row?.eventId?.substring(0, 8).toUpperCase() || "---"
+        ),
     },
     {
       name: "Bet Amount",
-      selector: (row) =>
-        row?.betAmount !== undefined ? row.betAmount : "---",
+      selector: (row) => row?.betAmount ?? "---",
       sortable: true,
     },
     {
-      name: "Total Bet Pool",
-      selector: (row) =>
-        row?.totalBetPool !== undefined ? row.totalBetPool : "---",
+      name: "Total Bet Pool", width: "150px",
+      selector: (row) => row?.totalBetPool ?? "---",
       sortable: true,
     },
     {
-      name: "Admin Commission",
-      selector: (row) =>
-        row?.adminCommission !== undefined ? row.adminCommission : "---",
+      name: "Admin Commission", width: "170px",
+      selector: (row) => row?.adminCommission ?? "---",
       sortable: true,
     },
     {
-      name: "Result Amount",
-      selector: (row) =>
-        row?.resultAmount !== undefined ? row.resultAmount : "---",
+      name: "Result Amount", width: "150px",
+      selector: (row) => row?.resultAmount ?? "---",
       sortable: true,
     },
     {
-      name: "Wallet Type",
+      name: "Wallet Type", width: "150px",
       selector: (row) => row?.walletType || "---",
     },
     {
-      name: "Role",
+      name: "Role", width: "150px",
       selector: (row) => row?.role || "---",
     },
     {
-      name: "Status",
+      name: "Status", width: "150px",
       selector: (row) => row?.status || "---",
     },
     {
-      name: "Total Games Played",
+      name: "Total Games Played", width: "150px",
       selector: (row) =>
-        row?.totalGames !== undefined ? row.totalGames : "---",
+        row?.isSummaryRow ? (
+          <strong>{row.totalGames}</strong>
+        ) : (
+          row?.totalGames ?? "---"
+        ),
     },
     {
-      name: "Total Lost Game",
+      name: "Total Lost Game", width: "150px",
       selector: (row) =>
-        row?.totalLoss !== undefined ? row.totalLoss : "---",
+        row?.isSummaryRow ? (
+          <strong>{row.totalLoss}</strong>
+        ) : (
+          row?.totalLoss ?? "---"
+        ),
     },
     {
-      name: "Total Game Profit",
+      name: "Total Game Profit", width: "150px",
       selector: (row) =>
-        row?.totalProfit !== undefined ? row.totalProfit : "---",
+        row?.isSummaryRow ? (
+          <strong style={{ color: "green" }}>{row.totalProfit}</strong>
+        ) : (
+          row?.totalProfit ?? "---"
+        ),
     },
     {
-      name: "Total Game Win",
+      name: "Total Game Win", width: "150px",
       selector: (row) =>
-        row?.totalWin !== undefined ? row.totalWin : "---",
+        row?.isSummaryRow ? (
+          <strong style={{ color: "blue" }}>{row.totalWin}</strong>
+        ) : (
+          row?.totalWin ?? "---"
+        ),
     },
   ];
-
-
   const UserKycDetails = [
     {
       name: "Sr. No.",
@@ -438,17 +395,9 @@ function UserDetails() {
       width: "180px",
       wrap: true,
       cell: (row) =>
-        row && (row._id || row.userId) ? (
-          <button className="btn btn-danger" onClick={() => deleteAdhar(row)}>
-            Delete
-          </button>
-        ) : (
-          "---"
-        ),
+        "---",
     },
   ];
-
-
   const BankDetailscolumns = [
     { name: "Sr. No.", selector: (row, index) => index + 1, },
     { name: "Bank Account Name", selector: (row) => row?.accountHolderName ? row?.accountHolderName : "-----", sortable: true },
@@ -458,21 +407,108 @@ function UserDetails() {
     { name: "Bank Status", selector: (row) => row?.status ? row?.status : "-----", sortable: true },
   ];
   const UserReferralDetails = [
-    { name: "Sr. No.", selector: (row, index) => index + 1, width: "80px" },
-    { name: "Game ID", selector: (row) => row?.gameid, sortable: true },
-    { name: "Game Name", selector: (row) => row?.gameName, sortable: true },
-    { name: "Net Credited Amount", selector: (row) => row?.notCredit, sortable: true },
+    {
+      name: "Sr. No.",
+      selector: (row) => row.index,
+      width: "80px",
+    },
+    {
+      name: "Sponsor Name", width: "150px",
+      selector: (row) => row.sponsorName,
+      sortable: true,
+    },
+    {
+      name: "Sponsor UUID", width: "150px",
+      selector: (row) => row.sponsorUUID,
+      sortable: true,
+    },
+    {
+      name: "Referred User Name", width: "180px",
+      selector: (row) => row.userName,
+      sortable: true,
+    },
+    {
+      name: "Referred User UUID", width: "180px",
+      selector: (row) => row.userUUID,
+      sortable: true,
+    },
+    {
+      name: "Sponsor Code", width: "150px",
+      selector: (row) => row.sponserCode,
+      sortable: true,
+    },
+    {
+      name: "Bonus Amount", width: "150px",
+      selector: (row) => row.bonusAmount,
+      sortable: true,
+    },
+    {
+      name: "Wallet Type", width: "150px",
+      selector: (row) => row.walletType,
+      sortable: true,
+    },
+    {
+      name: "Status", width: "150px",
+      selector: (row) => row.status,
+      sortable: true,
+    },
+    {
+      name: "Transaction Type", width: "150px",
+      selector: (row) => row.transactionType,
+      sortable: true,
+    },
+    {
+      name: "Date & Time",
+      width: "180px",
+      selector: (row) =>
+        row?.createdAt ? moment(row.createdAt).format("DD-MM-YYYY LT") : "-----",
+      sortable: true,
+    },
   ];
-  const UserCommissionDetails = [
-    { name: "Sr. No.", selector: (row, index) => index + 1, width: "80px" },
-    { name: "User Name", selector: (row) => row?.userName ? row?.userName : "-----", sortable: true },
-    { name: "Mobile Number", selector: (row) => row?.mobileNumber ? row?.mobileNumber : "-----", sortable: true },
-    { name: "Referred User Id", selector: (row) => row?.uuid ? row?.uuid : "-----", sortable: true },
-    { name: "Referral Bonus", selector: (row) => row?.referralBonus ? row?.referralBonus : "-----", sortable: true },
-    { name: "Referrer Bonus", selector: (row) => row?.referrerBonus ? row?.referrerBonus : "-----", sortable: true },
-    { name: "Date & Time", width: "180px", selector: (row) => moment(row?.createdAt).format("DD-MM-YYYY LT"), sortable: true },
-    { name: "Description", selector: (row) => row?.description ? row?.description : "-----", sortable: true },
 
+  const UserCommissionDetails = [
+    {
+      name: "Sr. No.",
+      selector: (row) => row?.index,
+      width: "80px",
+    },
+    {
+      name: "User Name",
+      selector: (row) => row?.userName || "-----",
+      sortable: true,
+    },
+    {
+      name: "Mobile Number",
+      selector: (row) => row?.mobileNumber || "-----",
+      sortable: true,
+    },
+    {
+      name: "Referred User ID",
+      selector: (row) => row?.uuid || "-----",
+      sortable: true,
+    },
+    {
+      name: "Referral Bonus",
+      selector: (row) => row?.referralBonus ?? "-----",
+      sortable: true,
+    },
+    {
+      name: "Referrer Bonus",
+      selector: (row) => row?.referrerBonus ?? "-----",
+      sortable: true,
+    },
+    {
+      name: "Date & Time",
+      width: "180px",
+      selector: (row) =>
+        row?.createdAt ? moment(row.createdAt).format("DD-MM-YYYY LT") : "-----",
+      sortable: true,
+    },
+    {
+      name: "Description",
+      selector: (row) => row?.description || "-----",
+      sortable: true,
+    },
   ];
 
 
@@ -618,7 +654,7 @@ function UserDetails() {
                               <img
                                 className="img-account-profile rounded-circle mb-2 mb-lg-0"
                                 crossOrigin="anonymous"
-                                src={ApiConfig + userDetails?.avatar}
+                                src={`${imageUrl}${userDetails?.avatar}`}
                                 alt="avatar"
                               />
                             ) : (

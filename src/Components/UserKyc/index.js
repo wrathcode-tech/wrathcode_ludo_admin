@@ -29,7 +29,7 @@ function UserKyc() {
                 setKycPendingList(result?.data?.reverse());
             }
         } catch (error) {
-            alertErrorMessage(error?.message);
+            // alertErrorMessage(error?.message);
         } finally {
             LoaderHelper.loaderStatus(false);
         }
@@ -49,7 +49,7 @@ function UserKyc() {
                 // Remove the approved user from the pending list
                 setKycPendingList(prev => prev.filter(user => user._id !== userId));
             } else {
-                alertErrorMessage(result?.message);
+                // alertErrorMessage(result?.message);
             }
         } catch (error) {
             alertErrorMessage(error?.message);
@@ -69,7 +69,7 @@ function UserKyc() {
                 // Remove the rejected user from the pending list
                 setKycPendingList(prev => prev.filter(user => user._id !== userId));
             } else {
-                alertErrorMessage(result?.message);
+                // alertErrorMessage(result?.message);
             }
         } catch (error) {
             alertErrorMessage(error?.message);

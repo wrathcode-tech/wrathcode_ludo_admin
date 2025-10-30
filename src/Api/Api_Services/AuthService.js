@@ -386,10 +386,12 @@ const AuthService = {
     };
     return ApiCallGet(url, headers);
   },
-  userGameTransations: async (userId) => {
+  userGameTransations: async (userId, skip, limit) => {
     const token = sessionStorage.getItem("token");
     const { baseUrl, getuserGameTransations } = ApiConfig;
-    const url = `${baseUrl}${getuserGameTransations}?userId=${userId}`;
+    const url = `${baseUrl}${getuserGameTransations}?userId=${userId}` +
+      (skip !== undefined ? `&skip=${skip}` : "") +
+      (limit !== undefined ? `&limit=${limit}` : "");
     const headers = {
       'Content-Type': 'application/json',
       Authorization: token

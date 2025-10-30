@@ -21,7 +21,7 @@ function AllUserList() {
 
 
 
-    const pageCount = Math.ceil(totalData / itemsPerPage);
+    // const pageCount = Math.ceil(totalData / itemsPerPage);
 
     useEffect(() => {
         handleUsersList(currentPage, itemsPerPage);
@@ -35,6 +35,7 @@ function AllUserList() {
             const result = await AuthService.usersList(page, pageSize);
             if (result?.success) {
                 setUserList(result?.data || []);
+                setAllData(result?.data || []);
                 setTotalData(result?.pagination?.totalUsers || 0);
                 setCurrentPage(result?.pagination?.currentPage || page);
                 setItemsPerPage(result?.pagination?.pageSize || pageSize);
@@ -59,7 +60,7 @@ function AllUserList() {
             const result = await AuthService.updateAllUserStatus(id, status); // Only user status now
             if (result?.success) {
                 alertSuccessMessage(result?.message || "Status updated successfully!");
-                handleUsersList(); // refresh list
+                handleUsersList(currentPage, itemsPerPage); // refresh list with current pagination
             } else {
                 alertErrorMessage(result?.message || "Failed to update status");
             }
@@ -73,16 +74,14 @@ function AllUserList() {
 
     useEffect(() => {
         if (search) {
-            let filterdData = userList?.filter((item) => item?.emailId?.toLowerCase()?.includes(search?.toLowerCase()) || item?.uId?.includes(search));
+            const filterdData = allData?.filter((item) => item?.emailId?.toLowerCase()?.includes(search?.toLowerCase()) || item?.uId?.includes(search));
             setUserList(filterdData)
         } else {
             setUserList(allData)
         }
-    }, [search]);
+    }, [search, allData]);
 
-    useEffect(() => {
-        handleUsersList()
-    }, []);
+    
 
     const navigate = useNavigate();
 
