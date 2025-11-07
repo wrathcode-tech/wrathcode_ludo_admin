@@ -24,6 +24,9 @@ function SupportChat() {
   const fileInputRef = useRef(null);
   const location = useLocation();
 
+  const [currentPage, setCurrentPage] = useState(1);
+
+
   // 🔹 Scroll to bottom on chat update
   useEffect(() => {
     if (chatEndRef.current) {
@@ -136,8 +139,14 @@ function SupportChat() {
   }, [location?.state]);
 
   // 🔹 DataTable columns
+
+  const itemsPerPage = 10;
   const columns = [
-    { name: "Sr No.", selector: (row, i) => i + 1, width: "80px" },
+    {
+      name: "Sr No.",
+      selector: (row, i) => i + 1 + (currentPage - 1) * itemsPerPage,
+      width: "80px",
+    },
     {
       name: "Date & Time",
       selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"),
@@ -202,7 +211,8 @@ function SupportChat() {
         </div>
 
         {/* 🔹 Ticket List */}
-        <DataTableBase columns={columns} data={filteredList} pagination />
+        <DataTableBase columns={columns} data={filteredList} pagination onChangePage={(page) => setCurrentPage(page)}
+        />
 
         <h4 className="mt-0">Chat Window</h4>
 

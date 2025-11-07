@@ -9,7 +9,7 @@ import DataTableBase from '../../Utils/DataTable';
 function AllGameList() {
     const [filteredData, setFilteredData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [filterStatus, setFilterStatus] = useState('RUNNING');
+    const [filterStatus, setFilterStatus] = useState('ALL');
 
     // Individual states to store data
     const [completeLudoData, setcompleteLudoData] = useState([]);
@@ -17,6 +17,9 @@ function AllGameList() {
     const [expiredGameData, setExpiredGameData] = useState([]);
     const [openBattleData, setOpenBattleData] = useState([]);
     const [disputeGameData, setDisputeGameData] = useState([]);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const getUserName = (row) => {
         if (row?.joinedBy?.fullName) return row.joinedBy.fullName;
@@ -27,15 +30,20 @@ function AllGameList() {
     };
 
     const commonColumns = [
+        {
+            name: 'Sr No.',
+            cell: (row, rowIndex) => rowIndex + 1 + (currentPage - 1) * rowsPerPage,
+            wrap: true, width: "80px"
+        },
         { name: 'Date & Time', selector: row => moment(row.createdAt).format('DD-MM-YYYY LT'), sortable: true, wrap: true },
         { name: 'Battle Id', selector: row => row?.eventUniqueId || row?.eventUniqueId || '—', sortable: true, wrap: true },
         { name: 'Creator Name', selector: row => row?.createdBy?.fullName || row?.createdBy || '—', sortable: true, wrap: true },
         { name: 'Joiner Name', selector: row => row?.joinedBy?.fullName || row?.joinedBy || '—', sortable: true, wrap: true },
         { name: 'Winner Name', selector: row => row?.winnerId?.fullName || row?.winnerId || '—', sortable: true, wrap: true },
         { name: 'Joiner Name', selector: row => row?.loserId?.fullName || row?.loserId || '—', sortable: true, wrap: true },
-        { name: 'Cancel User One', selector: row => row?.cancelUserOne?.fullName || row?.cancelUserOne || '—', sortable: true, wrap: true },
-        { name: 'Cancel User One', selector: row => row?.cancelUserTwo?.fullName || row?.cancelUserTwo || '—', sortable: true, wrap: true },
-        { name: 'Total Bet', selector: row => `₹ ${(row?.amount) || 0}/per user`, sortable: true, wrap: true },
+        { name: 'Cancel User One', width: '150px', selector: row => row?.cancelUserOne?.fullName || row?.cancelUserOne || '—', sortable: true, wrap: true },
+        { name: 'Cancel User Two', width: '150px', selector: row => row?.cancelUserTwo?.fullName || row?.cancelUserTwo || '—', sortable: true, wrap: true },
+        { name: 'Total Bet', selector: row => `₹ ${(row?.amount) || 0}`, sortable: true, wrap: true },
         { name: 'Wallet Type', selector: row => row?.walletType || '—', sortable: true, wrap: true },
         {
             name: 'Status',
@@ -102,47 +110,93 @@ function AllGameList() {
     useEffect(() => {
         let currentData = [];
 
+        // Merge all data sets according to selected filter
         switch (filterStatus) {
-            case 'COMPLETED':
+            case "COMPLETED":
                 currentData = completeLudoData;
                 break;
-            case 'RUNNING':
+            case "RUNNING":
                 currentData = runningGameData;
                 break;
-            case 'EXPIRED':
+            case "EXPIRED":
                 currentData = expiredGameData;
                 break;
-            case 'WAITING':
+            case "WAITING":
                 currentData = openBattleData;
                 break;
-            case 'DISPUTE':
+            case "DISPUTE":
                 currentData = disputeGameData;
                 break;
-            case 'CANCELLED':
-                currentData = []; // implement if needed
+            case "CANCELLED":
+                currentData = []; // Implement if needed
                 break;
-            case 'ALL':
+            case "ALL":
             default:
                 currentData = [
                     ...completeLudoData,
                     ...runningGameData,
                     ...expiredGameData,
                     ...openBattleData,
-                    ...disputeGameData
+                    ...disputeGameData,
                 ];
         }
 
+        // 🔍 Search logic — matches in *any relevant field*
         if (searchTerm) {
-            currentData = currentData.filter(item =>
-                getUserName(item).toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (item?.utrNumber || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (item?.roomCode || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (item?.amount?.toString() || '').includes(searchTerm)
-            );
+            const term = searchTerm.toLowerCase();
+
+            currentData = currentData.filter((item) => {
+                return (
+                    (item?.createdBy?.fullName || "")
+                        .toLowerCase()
+                        .includes(term) ||
+                    (item?.joinedBy?.fullName || "")
+                        .toLowerCase()
+                        .includes(term) ||
+                    (item?.winnerId?.fullName || "")
+                        .toLowerCase()
+                        .includes(term) ||
+                    (item?.loserId?.fullName || "")
+                        .toLowerCase()
+                        .includes(term) ||
+                    (item?.cancelUserOne?.fullName || "")
+                        .toLowerCase()
+                        .includes(term) ||
+                    (item?.cancelUserTwo?.fullName || "")
+                        .toLowerCase()
+                        .includes(term) ||
+                    (item?.eventUniqueId || "")
+                        .toLowerCase()
+                        .includes(term) ||
+                    (item?.roomCode || "")
+                        .toLowerCase()
+                        .includes(term) ||
+                    (item?.utrNumber || "")
+                        .toLowerCase()
+                        .includes(term) ||
+                    (item?.walletType || "")
+                        .toLowerCase()
+                        .includes(term) ||
+                    (item?.status || "")
+                        .toLowerCase()
+                        .includes(term) ||
+                    (item?.amount?.toString() || "")
+                        .includes(term)
+                );
+            });
         }
 
         setFilteredData(currentData);
-    }, [filterStatus, searchTerm, completeLudoData, runningGameData, expiredGameData, openBattleData, disputeGameData]);
+    }, [
+        filterStatus,
+        searchTerm,
+        completeLudoData,
+        runningGameData,
+        expiredGameData,
+        openBattleData,
+        disputeGameData,
+    ]);
+
 
     return (
         <div className="dashboard_right">
@@ -178,7 +232,19 @@ function AllGameList() {
                     </div>
 
                     <div className="p-2 mobilep">
-                        <DataTableBase columns={commonColumns} data={filteredData} pagination />
+                        <DataTableBase
+                            columns={commonColumns}
+                            data={filteredData}
+                            pagination
+                            paginationServer={false}
+                            paginationPerPage={rowsPerPage}
+                            paginationDefaultPage={currentPage}
+                            onChangePage={page => setCurrentPage(page)}
+                            onChangeRowsPerPage={(newPerPage, page) => {
+                                setRowsPerPage(newPerPage);
+                                setCurrentPage(page);
+                            }}
+                        />
                     </div>
                 </div>
             </div>

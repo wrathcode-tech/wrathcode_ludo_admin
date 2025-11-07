@@ -12,6 +12,9 @@ function DashboardPage() {
     const [dashboardData, setDashboardData] = useState([]);
     const [dashboardList, setDashboardList] = useState([]);
     const [loading, setLoading] = useState(false);
+    // state setup
+    const [currentPage, setCurrentPage] = useState(1);
+    const [rowsPerPage, setRowsPerPage] = useState(10); // default
 
     useEffect(() => {
         handleDashboardData();
@@ -37,7 +40,11 @@ function DashboardPage() {
         }
     };
     const columns = [
-
+        {
+            name: "Sr No",
+            cell: (row, rowIndex) => (rowIndex + 1 + (currentPage - 1) * rowsPerPage),
+            width: '80px',
+        },
         {
             name: "Activity",
             selector: (row) => row.Activity,
@@ -103,7 +110,7 @@ function DashboardPage() {
 
                                 <li class="nth_three">
                                     <div class="user_cnt_top"
-                                        onClick={() => navigate("/dashboard/depositRequest")}
+                                        onClick={() => navigate("/dashboard/earn_depositWithdrawSummary")}
                                         style={{ cursor: "pointer" }}>
                                         <div class="cnt_lft">
                                             <span>Total Deposit (INR)</span>
@@ -190,11 +197,23 @@ function DashboardPage() {
                     <div className="dashboard_detail_s">
                         <h3>Login Details</h3>
                         {loading ? (
-                          <div style={{ minHeight: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <Loading />
-                          </div>
+                            <div style={{ minHeight: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <Loading />
+                            </div>
                         ) : (
-                          <DataTableBase columns={columns} data={dashboardList} pagination />
+                            <DataTableBase
+                                columns={columns}
+                                data={dashboardList}
+                                pagination
+                                paginationServer={false}
+                                paginationPerPage={rowsPerPage}
+                                paginationDefaultPage={currentPage}
+                                onChangePage={(page) => setCurrentPage(page)}
+                                onChangeRowsPerPage={(newPerPage, page) => {
+                                    setRowsPerPage(newPerPage);
+                                    setCurrentPage(page);
+                                }}
+                            />
                         )}
                     </div>
                 </div>

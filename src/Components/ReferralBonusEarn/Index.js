@@ -65,17 +65,13 @@ function OverAllReferralEarnList() {
         },
         { name: 'User Id', selector: row => row?.uuid || '—', sortable: true, wrap: true },
         { name: 'Full Name', selector: row => row?.fullName || '—', sortable: true, wrap: true },
-        { name: 'Email', selector: row => row?.email || '—', sortable: true, wrap: true, width: '200px' },
+        // { name: 'Email', selector: row => row?.email || '—', sortable: true, wrap: true, width: '200px' },
         { name: 'Total Credits', selector: row => `₹ ${row?.totalCredit}` || '—', sortable: true, wrap: true },
         { name: 'Total Debits', selector: row => `₹ ${row?.totalDebit}` || '—', sortable: true, wrap: true },
         { name: 'Net Balance', selector: row => `₹ ${row?.netBalance}` || '—', sortable: true, wrap: true },
     ];
 
-    const handlePageChange = (page) => setCurrentPage(page);
-    const handlePerRowsChange = (newPerPage, page) => {
-        setPerPage(newPerPage);
-        setCurrentPage(page);
-    };
+
 
     return (
         <div className="dashboard_right">

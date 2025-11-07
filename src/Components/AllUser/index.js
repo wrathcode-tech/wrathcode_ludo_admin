@@ -81,7 +81,7 @@ function AllUserList() {
         }
     }, [search, allData]);
 
-    
+
 
     const navigate = useNavigate();
 

@@ -15,6 +15,8 @@ function DisputeResponse() {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedWinningData, setSelectedWinningData] = useState(null); // Modal data
     const [showModal, setShowModal] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     // Fetch winning data on view
     const handleView = async (id) => {
@@ -83,7 +85,7 @@ function DisputeResponse() {
     };
 
     const commonColumns = [
-        { name: "Sr No.", selector: (row, index) => index + 1, wrap: true, width: "80px" },
+        { name: "Sr No.", cell: (row, rowIndex) => rowIndex + 1 + (currentPage - 1) * rowsPerPage, wrap: true, width: "80px" },
         {
             name: 'Date & Time',
             selector: row => moment(row.createdAt).format('DD-MM-YYYY LT'),
@@ -183,7 +185,19 @@ function DisputeResponse() {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
-                        <DataTableBase columns={commonColumns} data={filteredData} pagination />
+                        <DataTableBase
+                            columns={commonColumns}
+                            data={filteredData}
+                            pagination
+                            paginationServer={false}
+                            paginationPerPage={rowsPerPage}
+                            paginationDefaultPage={currentPage}
+                            onChangePage={page => setCurrentPage(page)}
+                            onChangeRowsPerPage={(newPerPage, page) => {
+                                setRowsPerPage(newPerPage);
+                                setCurrentPage(page);
+                            }}
+                        />
 
                     </div>
                 </div>
@@ -202,12 +216,12 @@ function DisputeResponse() {
                                     </p>
 
                                     <p>
-                                        <strong>Created By:</strong> {selectedWinningData.createdBy || "—"}
+                                        <strong>Created By:</strong> {selectedWinningData?.createdBy?.fullName || selectedWinningData?.createdBy || "—"}
                                     </p>
 
-                                    <p><strong>Joined By:</strong> {selectedWinningData.joinedBy || "—"}</p>
+                                    <p><strong>Joined By:</strong> {selectedWinningData?.joinedBy?.fullName || selectedWinningData?.joinedBy || "—"}</p>
                                     <p>
-                                        <strong>Total Amount:</strong> ₹{(selectedWinningData?.amount ?? 0) * 2}
+                                        <strong>Total Amount:</strong> ₹{selectedWinningData?.totalBetamount || (selectedWinningData?.amount ?? 0) * 2 || 0}
                                     </p>
 
                                 </div>
@@ -233,85 +247,72 @@ function DisputeResponse() {
                                     <tr>
                                         <th>Name</th>
                                         <th>UUID</th>
+                                        <th>Mobile Number</th>
                                         <th>Amount</th>
                                         <th>Choice</th>
                                         <th>Payment Proof</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
                                     {selectedWinningData?.allUserResponse?.length > 0 ? (
-                                        selectedWinningData?.allUserResponse.map((u, index) => (
-                                            <tr key={index}>
-                                                <td>{u?.userId?.fullName || "—"}</td>
+                                        selectedWinningData?.allUserResponse.map((u, index) => {
+                                            // Directly use userId from allUserResponse as it contains user info
+                                            const userInfo = u?.userId || {};
+                                            // Calculate individual amount (totalBetamount / 2 if both users, or use amount from response)
+                                            const individualAmount = u?.amount || (selectedWinningData?.totalBetamount ? selectedWinningData.totalBetamount / 2 : 0);
 
-                                                <td>{u?.userId?.uuid || "—"}</td>
-                                                <td>₹{selectedWinningData?.amount || ""}</td>
-                                                <td>{u?.choice || "—"}</td>
-                                                <td>
-                                                    {u?.proof ? (
-                                                        <img
-                                                            src={imageUrl + u.proof}
-                                                            alt="proof"
-                                                            style={{ width: 50, height: 50, borderRadius: 5, cursor: "pointer" }}
-                                                            onClick={() => window.open(imageUrl + u.proof, "_blank")}
-                                                        />
-                                                    ) : (
-                                                        "—"
-                                                    )}
-                                                </td>
-                                                <td>
-                                                    <button
-                                                        className="btn btn-success btn-sm me-1"
-                                                        onClick={() =>
-                                                            handleSelectResult(
-                                                                selectedWinningData.eventId,
-                                                                u.userId._id === selectedWinningData.createdBy
-                                                                    ? selectedWinningData.createdBy
-                                                                    : selectedWinningData.joinedBy,
-                                                                "WINNER"
-                                                            )
-                                                        }
-                                                    >
-                                                        Winner
-                                                    </button>
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{userInfo?.fullName || "—"}</td>
+                                                    <td>{userInfo?.uuid || "—"}</td>
+                                                    <td>{userInfo?.mobileNumber || "—"}</td>
+                                                    <td>₹{individualAmount}</td>
+                                                    <td>{u?.choice || "—"}</td>
+                                                    <td>
+                                                        {u?.proof ? (
+                                                            <img
+                                                                src={imageUrl + u.proof}
+                                                                alt="proof"
+                                                                style={{ width: 50, height: 50, borderRadius: 5, cursor: "pointer" }}
+                                                                onClick={() => window.open(imageUrl + u.proof, "_blank")}
+                                                            />
+                                                        ) : (
+                                                            "—"
+                                                        )}
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            className="btn btn-success btn-sm me-1"
+                                                            onClick={() =>
+                                                                handleSelectResult(
+                                                                    selectedWinningData.eventId,
+                                                                    userInfo?._id,
+                                                                    "WINNER"
+                                                                )
+                                                            }
+                                                        >
+                                                            Winner
+                                                        </button>
 
-                                                    {/* <button
-                                                        className="btn btn-danger btn-sm me-1"
-                                                        onClick={() =>
-                                                            handleSelectResult(
-                                                                selectedWinningData.eventId,
-                                                                u.userId._id === selectedWinningData.createdBy
-                                                                    ? selectedWinningData.createdBy
-                                                                    : selectedWinningData.joinedBy,
-                                                                "LOSER"
-                                                            )
-                                                        }
-                                                    >
-                                                        Loser
-                                                    </button> */}
-
-                                                    {/* ✅ New Contact Support Button */}
-                                                    <button
-                                                        className="btn btn-info btn-sm"
-                                                        onClick={() => {
-                                                            const userId = u?.userId?._id || u.userId._id;
-                                                            navigate("/dashboard/support", {
-                                                                state: { openChat: true, userId },
-                                                            });
-                                                        }}>
-                                                        Contact User
-                                                    </button>
-
-
-
-                                                </td>
-
-                                            </tr>
-                                        ))
+                                                        <button
+                                                            className="btn btn-info btn-sm"
+                                                            onClick={() =>
+                                                                navigate("/dashboard/support", {
+                                                                    state: { openChat: true, userId: userInfo?._id },
+                                                                })
+                                                            }
+                                                        >
+                                                            Contact User
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })
                                     ) : (
                                         <tr>
-                                            <td colSpan="6" className="text-center text-muted">
+                                            <td colSpan="7" className="text-center text-muted">
                                                 No user responses found
                                             </td>
                                         </tr>
@@ -319,6 +320,8 @@ function DisputeResponse() {
                                 </tbody>
                             </table>
                         </div>
+
+
                         <div className="modal_actions mt-3">
                             <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
                                 Close
