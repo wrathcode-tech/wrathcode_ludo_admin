@@ -591,10 +591,13 @@ const AuthService = {
     return ApiCallPost(url, params, headers);
   },
 
-  usersList: async (page, pageSize) => {
+  usersList: async (page, pageSize, search = '') => {
     const token = sessionStorage.getItem("token");
     const { baseUrl, usersList } = ApiConfig;
-    const url = `${baseUrl}${usersList}?page=${page}&pageSize=${pageSize}`;
+    let url = `${baseUrl}${usersList}?page=${page}&pageSize=${pageSize}`;
+    if (search) {
+      url += `&search=${encodeURIComponent(search)}`;
+    }
     const headers = {
       'Content-Type': 'application/json',
       Authorization: token

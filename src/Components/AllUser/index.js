@@ -74,7 +74,7 @@ function AllUserList() {
 
     useEffect(() => {
         if (search) {
-            const filterdData = allData?.filter((item) => item?.emailId?.toLowerCase()?.includes(search?.toLowerCase()) || item?.uId?.includes(search));
+            const filterdData = allData?.filter((item) => item?.mobileNumber?.toLowerCase()?.includes(search?.toLowerCase()) || item?.uuid?.includes(search));
             setUserList(filterdData)
         } else {
             setUserList(allData)
