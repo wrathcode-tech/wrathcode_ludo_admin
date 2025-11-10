@@ -21,13 +21,13 @@ function AllGameList() {
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    const getUserName = (row) => {
-        if (row?.joinedBy?.fullName) return row.joinedBy.fullName;
-        if (row?.createdBy?.fullName) return row.createdBy.fullName;
-        if (typeof row?.joinedBy === "string") return row.joinedBy;
-        if (typeof row?.createdBy === "string") return row.createdBy;
-        return '—';
-    };
+    // const getUserName = (row) => {
+    //     if (row?.joinedBy?.fullName) return row.joinedBy.fullName;
+    //     if (row?.createdBy?.fullName) return row.createdBy.fullName;
+    //     if (typeof row?.joinedBy === "string") return row.joinedBy;
+    //     if (typeof row?.createdBy === "string") return row.createdBy;
+    //     return '—';
+    // };
 
     const commonColumns = [
         {
@@ -223,7 +223,7 @@ function AllGameList() {
                             <div className="user_search">
                                 <input
                                     type="text"
-                                    placeholder="Search by user, UTR, amount..."
+                                    placeholder="Search..."
                                     value={searchTerm}
                                     onChange={e => setSearchTerm(e.target.value)}
                                 />

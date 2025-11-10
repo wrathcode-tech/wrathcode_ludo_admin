@@ -35,6 +35,33 @@ function DepositRequest() {
         }
     };
 
+
+
+    const handleStatusUpdate = async (userId, transactionId, status, rejectReason) => {
+        try {
+            LoaderHelper.loaderStatus(true);
+            const result = await AuthService.updateDepositRequest(userId, transactionId, status, rejectReason);
+            if (result?.success) {
+                alertSuccessMessage(`Deposit ${status} successfully`);
+
+                // Remove the updated row from the current state immediately
+                setPendingDepositRequest(prev =>
+                    prev.filter(item => item._id !== transactionId)
+                );
+
+                // Optionally also update allData to keep search consistent
+                setAllData(prev => prev.filter(item => item._id !== transactionId));
+
+            } else {
+                alertErrorMessage(result?.message);
+            }
+        } catch (error) {
+            alertErrorMessage(error?.message);
+        } finally {
+            LoaderHelper.loaderStatus(false);
+        }
+    };
+
     const columns = [
         { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
         { name: "User Id", selector: (row) => row?.userId?.uuid, sortable: true, wrap: true },
@@ -66,35 +93,8 @@ function DepositRequest() {
             button: true,
         },
     ];
-
-const handleStatusUpdate = async (userId, transactionId, status, rejectReason) => {
-    try {
-        LoaderHelper.loaderStatus(true);
-        const result = await AuthService.updateDepositRequest(userId, transactionId, status, rejectReason);
-        if (result?.success) {
-            alertSuccessMessage(`Deposit ${status} successfully`);
-
-            // Remove the updated row from the current state immediately
-            setPendingDepositRequest(prev =>
-                prev.filter(item => item._id !== transactionId)
-            );
-
-            // Optionally also update allData to keep search consistent
-            setAllData(prev => prev.filter(item => item._id !== transactionId));
-
-        } else {
-            alertErrorMessage(result?.message);
-        }
-    } catch (error) {
-        alertErrorMessage(error?.message);
-    } finally {
-        LoaderHelper.loaderStatus(false);
-    }
-};
-
-
     function searchObjects(e) {
-        const keysToSearch = ["userId.fullName", "utrNumber", "amount"];
+        const keysToSearch = ["userId?.uuid", "userId?.fullName", "userId?.mobileNumber", "amount", "utrNumber"];
         const userInput = e.target.value;
         const searchTerm = userInput?.toLowerCase();
         if (!searchTerm) {

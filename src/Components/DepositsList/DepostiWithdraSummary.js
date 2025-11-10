@@ -43,7 +43,7 @@ function DepostiWithdraSummary() {
 
         if (value) {
             const filteredData = userList.filter(item => {
-                const email = String(item?.email || "").toLowerCase();
+                const email = String(item?.mobileNumber || "").toLowerCase();
                 const userId = String(item?.userId || "");
                 const fullName = String(item?.fullName || "").toLowerCase();
                 const totalDeposit = String(item?.totalDeposit || "");
@@ -71,7 +71,7 @@ function DepostiWithdraSummary() {
         },
         { name: 'User Id', selector: row => row?.uuid || '—', sortable: true, wrap: true },
         { name: 'Full Name', selector: row => row?.fullName || '—', sortable: true, wrap: true },
-        { name: 'Email', selector: row => row?.email || '—', sortable: true, wrap: true, width: '200px' },
+        { name: 'Mobile Number', selector: row => row?.mobileNumber || '—', sortable: true, wrap: true, width: '200px' },
         { name: 'Total Deposit', selector: row => `₹ ${row?.totalDeposit}` || '—', sortable: true, wrap: true },
         { name: 'Total Withdrawal', selector: row => `₹ ${row?.totalWithdrawal}` || '—', sortable: true, wrap: true },
         { name: 'Net Amount', selector: row => `₹ ${row?.net}` || '—', sortable: true, wrap: true },
@@ -95,10 +95,10 @@ function DepostiWithdraSummary() {
                         </div>
                     </div>
                     <div className="card-body">
-                      
-                            <DataTableBase columns={columns} data={userList} pagination />
-                        </div>
-                    
+
+                        <DataTableBase columns={columns} data={userList} pagination />
+                    </div>
+
                 </div>
             </div>
         </div>
