@@ -93,7 +93,7 @@ function CommissionBonusList() {
             ),
         },
         { name: 'Full Name', selector: row => row?.fullName || '—', sortable: true, wrap: true },
-        // { name: 'Email', selector: row => row?.emailId || '—', sortable: true, wrap: true, width: '200px' },
+        { name: 'Mobile Number', selector: row => row?.mobileNumber || '—', sortable: true, wrap: true, width: '200px' },
         { name: 'Total Credits', selector: row => ` ₹ ${row?.totalCredit}` || '—', sortable: true, wrap: true },
         { name: 'Total Debits', selector: row => `₹ ${row?.totalDebit}` || '—', sortable: true, wrap: true },
     ];

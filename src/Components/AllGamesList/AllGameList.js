@@ -45,33 +45,75 @@ function AllGameList() {
 
         { name: 'Battle Id', selector: row => row?.eventUniqueId || row?.eventUniqueId || '—', sortable: true, wrap: true },
         {
-            name: "User Id",
+            name: "User Id (CreatedBy / JoinedBy)",
             wrap: true,
-            width: "160px",
-            selector: (row) => (
-                <div className="d-flex align-items-center ">
-                    <button
-                        onClick={() => handleUserClick(row?._id)}
-                        className="btn p-0 text-primary"
-                        style={{ cursor: "pointer" }}
-                    >
-                        {row?.uuid || "------"}
-                    </button>
-                    <div className="mx-2 " style={{ cursor: "pointer" }}
-                        onClick={() => {
-                            if (row?.uuid) {
-                                navigator?.clipboard?.writeText(row?.uuid);
-                                alertSuccessMessage("UUID copied!");
-                            } else {
-                                alertErrorMessage("No UUID found");
-                            }
-                        }}
-                    >
-                        <i className="far fa-copy" aria-hidden="true"></i>
+            width: "220px",
+            selector: (row) => {
+                const createdUuid = row?.createdBy?.uuid;
+                const joinedUuid = row?.joinedBy?.uuid;
+
+                return (
+                    <div>
+                        {/* Created By */}
+                        <div className="mb-1">
+                            <strong>Created By:</strong>
+                            <div className="d-flex align-items-center mt-1">
+                                <button
+                                    onClick={() => handleUserClick(createdUuid)}
+                                    className="btn p-0 text-primary"
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    {createdUuid || "—"}
+                                </button>
+                                <div
+                                    className="mx-2"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => {
+                                        if (createdUuid) {
+                                            navigator?.clipboard?.writeText(createdUuid);
+                                            alertSuccessMessage("UUID copied!");
+                                        } else {
+                                            alertErrorMessage("No UUID found");
+                                        }
+                                    }}
+                                >
+                                    <i className="far fa-copy" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Joined By */}
+                        {joinedUuid && (
+                            <div>
+                                <strong>Joined By:</strong>
+                                <div className="d-flex align-items-center mt-1">
+                                    <button
+                                        onClick={() => handleUserClick(joinedUuid)}
+                                        className="btn p-0 text-primary"
+                                        style={{ cursor: "pointer" }}
+                                    >
+                                        {joinedUuid}
+                                    </button>
+                                    <div
+                                        className="mx-2"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => {
+                                            navigator?.clipboard?.writeText(joinedUuid);
+                                            alertSuccessMessage("UUID copied!");
+                                        }}
+                                    >
+                                        <i className="far fa-copy" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
-                </div>
-            ),
+                );
+            },
         },
+
+
+
         { name: 'Creator Name', selector: row => row?.createdBy?.fullName || row?.createdBy || '—', sortable: true, wrap: true },
         { name: 'Joiner Name', selector: row => row?.joinedBy?.fullName || row?.joinedBy || '—', sortable: true, wrap: true },
         { name: 'Winner Name', selector: row => row?.winnerId?.fullName || row?.winnerId || '—', sortable: true, wrap: true },

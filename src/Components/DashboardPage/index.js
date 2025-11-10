@@ -165,24 +165,24 @@ function DashboardPage() {
                                     {/* <p><span><img src="/images/markert_range_icon.svg" alt="market" />8.5%</span>Up from yesterday</p> */}
                                 </li>
                                 <li class="nth_four">
-                                    <div class="user_cnt_top" onClick={() => navigate("/dashboard/earn_referralBonus")}
+                                    <div class="user_cnt_top" onClick={() => navigate("/dashboard/AllGamesList")}
                                         style={{ cursor: "pointer" }}>
                                         <div class="cnt_lft">
-                                            <span>Total Referrals Bonus</span>
-                                            <h3>{dashboardData?.overalAllReferBonus}</h3>
+                                            <span>Total Admin Commission</span>
+                                            <h3>{dashboardData?.totalAdminCommission}</h3>
                                         </div>
                                         <div class="dashboard_icon">
-                                            <img src="/images/dashboad_list_icon4.svg" alt="dashboard" />
+                                            <img src="/images/dashboad_list_icon5.svg" alt="dashboard" />
                                         </div>
                                     </div>
                                     {/* <p><span><img src="/images/markert_range_icon.svg" alt="market" />8.5%</span>Up from yesterday</p> */}
                                 </li>
                                 <li class="nth_five">
-                                    <div class="user_cnt_top" onClick={() => navigate("/dashboard/earn_commissionBonus")}
+                                    <div class="user_cnt_top" onClick={() => navigate("/dashboard/commissionBonusList")}
                                         style={{ cursor: "pointer" }}>
                                         <div class="cnt_lft">
-                                            <span>Total Commission Bonus</span>
-                                            <h3>{dashboardData?.overalAllCommission}</h3>
+                                            <span>Total Commission Distibuted</span>
+                                            <h3>{dashboardData?.totalUserCommission}</h3>
                                         </div>
                                         <div class="dashboard_icon">
                                             <img src="/images/dashboad_list_icon5.svg" alt="dashboard" />
