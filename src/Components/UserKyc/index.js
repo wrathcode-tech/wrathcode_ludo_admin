@@ -6,6 +6,7 @@ import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertM
 import moment from 'moment';
 import DataTableBase from '../../Utils/DataTable';
 import { imageUrl } from '../../Api/Api_Config/ApiEndpoints';
+import { useNavigate } from 'react-router-dom';
 
 function UserKyc() {
     const [kycPendingList, setKycPendingList] = useState([]);
@@ -44,7 +45,7 @@ function UserKyc() {
             LoaderHelper.loaderStatus(true);
             const result = await AuthService.getapprovedKycList(userId);
             if (result?.success) {
-                alertSuccessMessage("KYC Approved Successfully");
+                // alertSuccessMessage(result?.message);
 
                 // Remove the approved user from the pending list
                 setKycPendingList(prev => prev.filter(user => user._id !== userId));
@@ -116,13 +117,43 @@ function UserKyc() {
         }
     }, [activeTab]);
 
-
+    const navigate = useNavigate();
+    const handleUserClick = (userId) => {
+        navigate(`/dashboard/UserDetails`, { state: { userId } });
+    };
 
     // ---------------- Columns ----------------
     const PendingKycList = [
         { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
         { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-        { name: "UUID", selector: (row) => row?.uuid, sortable: true, wrap: true },
+        {
+            name: "User Id",
+            wrap: true,
+            width: "160px",
+            selector: (row) => (
+                <div className="d-flex align-items-center ">
+                    <button
+                        onClick={() => handleUserClick(row?._id)}
+                        className="btn p-0 text-primary"
+                        style={{ cursor: "pointer" }}
+                    >
+                        {row?.uuid || "------"}
+                    </button>
+                    <div className="mx-2 " style={{ cursor: "pointer" }}
+                        onClick={() => {
+                            if (row?.uuid) {
+                                navigator?.clipboard?.writeText(row?.uuid);
+                                alertSuccessMessage("UUID copied!");
+                            } else {
+                                alertErrorMessage("No UUID found");
+                            }
+                        }}
+                    >
+                        <i className="far fa-copy" aria-hidden="true"></i>
+                    </div>
+                </div>
+            ),
+        },
         { name: "User Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
         { name: "Mobile Number", selector: (row) => row?.mobileNumber, sortable: true, wrap: true },
         {

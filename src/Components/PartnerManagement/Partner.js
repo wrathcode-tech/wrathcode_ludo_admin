@@ -6,6 +6,7 @@ import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertM
 import { imageUrl } from '../../Api/Api_Config/ApiEndpoints';
 import moment from 'moment';
 import DataTableBase from '../../Utils/DataTable';
+import { useNavigate } from 'react-router-dom';
 
 function Partner() {
     const [allData, setAllData] = useState([]);
@@ -29,6 +30,12 @@ function Partner() {
             LoaderHelper.loaderStatus(false);
         }
     };
+    const navigate = useNavigate();
+
+    const handleUserClick = (userId) => {
+        navigate(`/dashboard/UserDetails`, { state: { userId } });
+    };
+
 
     const columns = [
         {
@@ -43,17 +50,40 @@ function Partner() {
             sortable: true,
             wrap: true,
         },
-        {
-            name: "Email ID",
-            selector: (row) => row.emailId || "---",
-            sortable: true,
-            wrap: true,
-        },
+
         {
             name: "Mobile Number",
             selector: (row) => row.mobileNumber || "---",
             sortable: true,
             wrap: true,
+        },
+        {
+            name: "User Id",
+            wrap: true,
+            width: "160px",
+            selector: (row) => (
+                <div className="d-flex align-items-center ">
+                    <button
+                        onClick={() => handleUserClick(row?._id)}
+                        className="btn p-0 text-primary"
+                        style={{ cursor: "pointer" }}
+                    >
+                        {row?.uuid || "------"}
+                    </button>
+                    <div className="mx-2 " style={{ cursor: "pointer" }}
+                        onClick={() => {
+                            if (row?.uuid) {
+                                navigator?.clipboard?.writeText(row?.uuid);
+                                alertSuccessMessage("UUID copied!");
+                            } else {
+                                alertErrorMessage("No UUID found");
+                            }
+                        }}
+                    >
+                        <i className="far fa-copy" aria-hidden="true"></i>
+                    </div>
+                </div>
+            ),
         },
         {
             name: "Users Count",

@@ -5,6 +5,7 @@ import AuthService from '../../Api/Api_Services/AuthService';
 import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertMessage';
 import moment from 'moment';
 import DataTableBase from '../../Utils/DataTable';
+import { useNavigate } from 'react-router-dom';
 
 function WithdrawalRequest() {
     const [activeTab, setActiveTab] = useState("PENDING");
@@ -20,10 +21,8 @@ function WithdrawalRequest() {
         try {
             LoaderHelper.loaderStatus(true);
             const result = await AuthService.pendingWithdrawalRequest();
-
             if (result?.success) {
                 const data = result?.data || [];
-
                 if (data.length === 0) {
                     // ✅ No pending withdrawals, clear the list
                     setWithdrawalRequestData([]);
@@ -34,7 +33,7 @@ function WithdrawalRequest() {
             } else {
                 // Optional: clear list on error
                 setWithdrawalRequestData([]);
-                alertErrorMessage(result?.message);
+                // alertErrorMessage(result?.message);
             }
 
         } catch (error) {
@@ -111,7 +110,34 @@ function WithdrawalRequest() {
     const withdrawalRequest = [
         { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
         { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-        { name: "UUID", selector: (row) => row?.userId?.uuid, sortable: true, wrap: true },
+        {
+            name: "User Id",
+            wrap: true,
+            width: "160px",
+            selector: (row) => (
+                <div className="d-flex align-items-center ">
+                    <button
+                        onClick={() => handleUserClick(row?._id)}
+                        className="btn p-0 text-primary"
+                        style={{ cursor: "pointer" }}
+                    >
+                        {row?.uuid || "------"}
+                    </button>
+                    <div className="mx-2 " style={{ cursor: "pointer" }}
+                        onClick={() => {
+                            if (row?.uuid) {
+                                navigator?.clipboard?.writeText(row?.uuid);
+                                alertSuccessMessage("UUID copied!");
+                            } else {
+                                alertErrorMessage("No UUID found");
+                            }
+                        }}
+                    >
+                        <i className="far fa-copy" aria-hidden="true"></i>
+                    </div>
+                </div>
+            ),
+        },
         { name: "Full Name", selector: (row) => row?.userId?.fullName, sortable: true, wrap: true },
         { name: "Amount", selector: (row) => row?.amount, sortable: true, wrap: true },
         { name: "Transaction Type", selector: (row) => row?.transactionType, sortable: true, wrap: true },
@@ -159,7 +185,34 @@ function WithdrawalRequest() {
     const approvedWithdrawalList = [
         { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
         { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-        { name: "UUID", selector: (row) => row?.userId?.uuid, sortable: true, wrap: true },
+        {
+            name: "User Id",
+            wrap: true,
+            width: "160px",
+            selector: (row) => (
+                <div className="d-flex align-items-center ">
+                    <button
+                        onClick={() => handleUserClick(row?._id)}
+                        className="btn p-0 text-primary"
+                        style={{ cursor: "pointer" }}
+                    >
+                        {row?.uuid || "------"}
+                    </button>
+                    <div className="mx-2 " style={{ cursor: "pointer" }}
+                        onClick={() => {
+                            if (row?.uuid) {
+                                navigator?.clipboard?.writeText(row?.uuid);
+                                alertSuccessMessage("UUID copied!");
+                            } else {
+                                alertErrorMessage("No UUID found");
+                            }
+                        }}
+                    >
+                        <i className="far fa-copy" aria-hidden="true"></i>
+                    </div>
+                </div>
+            ),
+        },
         { name: "Full Name", selector: (row) => row?.userId?.fullName, sortable: true, wrap: true },
         { name: "Amount", selector: (row) => `₹ ${(row?.amount) || 0}`, sortable: true, wrap: true },
         { name: "Transaction Type", selector: (row) => row?.transactionType, sortable: true, wrap: true },
@@ -173,10 +226,43 @@ function WithdrawalRequest() {
         },
     ];
 
+    const navigate = useNavigate();
+
+    const handleUserClick = (userId) => {
+        navigate(`/dashboard/UserDetails`, { state: { userId } });
+    };
+
     const rejectedWithdrawalList = [
         { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
         { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-        { name: "UUID", selector: (row) => row?.userId?.uuid, sortable: true, wrap: true },
+        {
+            name: "User Id",
+            wrap: true,
+            width: "160px",
+            selector: (row) => (
+                <div className="d-flex align-items-center ">
+                    <button
+                        onClick={() => handleUserClick(row?._id)}
+                        className="btn p-0 text-primary"
+                        style={{ cursor: "pointer" }}
+                    >
+                        {row?.uuid || "------"}
+                    </button>
+                    <div className="mx-2 " style={{ cursor: "pointer" }}
+                        onClick={() => {
+                            if (row?.uuid) {
+                                navigator?.clipboard?.writeText(row?.uuid);
+                                alertSuccessMessage("UUID copied!");
+                            } else {
+                                alertErrorMessage("No UUID found");
+                            }
+                        }}
+                    >
+                        <i className="far fa-copy" aria-hidden="true"></i>
+                    </div>
+                </div>
+            ),
+        },
         { name: "Full Name", selector: (row) => row?.userId?.fullName, sortable: true, wrap: true },
         { name: "Amount", selector: (row) => `₹ ${(row?.amount) || 0}`, sortable: true, wrap: true },
         { name: "Transaction Type", selector: (row) => row?.transactionType, sortable: true, wrap: true },

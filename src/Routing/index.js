@@ -6,16 +6,14 @@ import Notification from "../Components/NotificationPage";
 import SupportPage from "../Components/SupportPage";
 import AllUserList from "../Components/AllUser";
 import Sidebar from "../Components/Sidebar";
-import { Outlet } from "react-router-dom";
+// import { Outlet } from "react-router-dom";
 import BlogPage from "../Components/BlogPage";
 // import Chatpage from "../Components/SupportPage/Chatpage";
-import ContactusList from "../Components/ContactusList";
 import UserKyc from "../Components/UserKyc";
 import MatchDetails from "../Components/MatchDetails/Index";
 import OverAllReferralEarnList from "../Components/ReferralBonusEarn/Index";
 import OverAllCommissionEarnList from "../Components/AllCommissionBonusEarn/Index";
 import DepostiWithdraSummary from "../Components/DepositsList/DepostiWithdraSummary";
-import UserEarningSummary from "../Components/UserEarningSummary";
 import WithdrawalRequest from "../Components/WithdrawalRequest/Index";
 import UserDetails from "../Components/AllUser/UserDetails";
 import BannerManagement from "../Components/BannerManagement/BannerManagement";
@@ -49,11 +47,10 @@ const Routing = () => {
         <Route path="DespositRequest" element={<ProtectedRoute> <DepositRequest /></ProtectedRoute>} />
         <Route path="matchDetails" element={<ProtectedRoute> <MatchDetails /></ProtectedRoute>} />
         <Route path="blog" element={<ProtectedRoute> <BlogPage /></ProtectedRoute>} />
-        <Route path="contactRequest" element={<ProtectedRoute> <ContactusList /></ProtectedRoute>} />
+        {/* <Route path="contactRequest" element={<ProtectedRoute> <ContactusList /></ProtectedRoute>} /> */}
         <Route path="earn_referralBonus" element={<ProtectedRoute> <OverAllReferralEarnList /></ProtectedRoute>} />
         <Route path="earn_commissionBonus" element={<ProtectedRoute> <OverAllCommissionEarnList /></ProtectedRoute>} />
         <Route path="earn_depositWithdrawSummary" element={<ProtectedRoute> <DepostiWithdraSummary /></ProtectedRoute>} />
-        <Route path="earn_userEarningSummary" element={<ProtectedRoute> <UserEarningSummary /></ProtectedRoute>} />
         <Route path="withdrawalRequest" element={<ProtectedRoute> <WithdrawalRequest /></ProtectedRoute>} />
         <Route path="UserDetails" element={<ProtectedRoute> <UserDetails /></ProtectedRoute>} />
         <Route path="BannerManagement" element={<ProtectedRoute> <BannerManagement /></ProtectedRoute>} />

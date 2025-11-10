@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import moment from "moment";
-import { alertErrorMessage } from "../../Utils/CustomAlertMessage";
+import { alertErrorMessage, alertSuccessMessage } from "../../Utils/CustomAlertMessage";
 import LoaderHelper from "../../Utils/Loading/LoaderHelper";
 import AuthService from "../../Api/Api_Services/AuthService";
 import DataTableBase from "../../Utils/DataTable";
 import { imageUrl } from "../../Api/Api_Config/ApiEndpoints";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function SupportChat() {
   const adminId = "68a4b42c776734c76dfc7248";
@@ -141,6 +141,13 @@ function SupportChat() {
   // 🔹 DataTable columns
 
   const itemsPerPage = 10;
+
+
+  const navigate = useNavigate();
+
+  const handleUserClick = (userId) => {
+    navigate(`/dashboard/UserDetails`, { state: { userId } });
+  };
   const columns = [
     {
       name: "Sr No.",
@@ -152,8 +159,34 @@ function SupportChat() {
       selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"),
       sortable: true,
     },
-    { name: "User ID", selector: (row) => row?.userId?.uuid || "—" },
-    { name: "User Name", selector: (row) => row?.userId?.fullName || "—" },
+    {
+      name: "User Id",
+      wrap: true,
+      width: "160px",
+      selector: (row) => (
+        <div className="d-flex align-items-center ">
+          <button
+            onClick={() => handleUserClick(row?._id)}
+            className="btn p-0 text-primary"
+            style={{ cursor: "pointer" }}
+          >
+            {row?.userId?.uuid || "------"}
+          </button>
+          <div className="mx-2 " style={{ cursor: "pointer" }}
+            onClick={() => {
+              if (row?.userId?.uuid) {
+                navigator?.clipboard?.writeText(row?.userId?.uuid);
+                alertSuccessMessage("UUID copied!");
+              } else {
+                alertErrorMessage("No UUID found");
+              }
+            }}
+          >
+            <i className="far fa-copy" aria-hidden="true"></i>
+          </div>
+        </div>
+      ),
+    }, { name: "User Name", selector: (row) => row?.userId?.fullName || "—" },
     { name: "Mobile", selector: (row) => row?.userId?.mobileNumber || "—" },
     { name: "Last Message", selector: (row) => row?.lastMessage || "—" },
     { name: "Status", selector: (row) => row?.status?.toUpperCase() || "—" },

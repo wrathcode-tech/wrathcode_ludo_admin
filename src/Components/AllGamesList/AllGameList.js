@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import UserHeader from '../../Layout/UserHeader';
 import LoaderHelper from '../../Utils/Loading/LoaderHelper';
 import AuthService from '../../Api/Api_Services/AuthService';
-import { alertErrorMessage } from '../../Utils/CustomAlertMessage';
+import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertMessage';
 import moment from 'moment';
 import DataTableBase from '../../Utils/DataTable';
+import { useNavigate } from 'react-router-dom';
 
 function AllGameList() {
     const [filteredData, setFilteredData] = useState([]);
@@ -28,6 +29,11 @@ function AllGameList() {
     //     if (typeof row?.createdBy === "string") return row.createdBy;
     //     return '—';
     // };
+    const navigate = useNavigate();
+    const handleUserClick = (userId) => {
+        navigate(`/dashboard/UserDetails`, { state: { userId } });
+    };
+
 
     const commonColumns = [
         {
@@ -36,7 +42,36 @@ function AllGameList() {
             wrap: true, width: "80px"
         },
         { name: 'Date & Time', selector: row => moment(row.createdAt).format('DD-MM-YYYY LT'), sortable: true, wrap: true },
+
         { name: 'Battle Id', selector: row => row?.eventUniqueId || row?.eventUniqueId || '—', sortable: true, wrap: true },
+        {
+            name: "User Id",
+            wrap: true,
+            width: "160px",
+            selector: (row) => (
+                <div className="d-flex align-items-center ">
+                    <button
+                        onClick={() => handleUserClick(row?._id)}
+                        className="btn p-0 text-primary"
+                        style={{ cursor: "pointer" }}
+                    >
+                        {row?.uuid || "------"}
+                    </button>
+                    <div className="mx-2 " style={{ cursor: "pointer" }}
+                        onClick={() => {
+                            if (row?.uuid) {
+                                navigator?.clipboard?.writeText(row?.uuid);
+                                alertSuccessMessage("UUID copied!");
+                            } else {
+                                alertErrorMessage("No UUID found");
+                            }
+                        }}
+                    >
+                        <i className="far fa-copy" aria-hidden="true"></i>
+                    </div>
+                </div>
+            ),
+        },
         { name: 'Creator Name', selector: row => row?.createdBy?.fullName || row?.createdBy || '—', sortable: true, wrap: true },
         { name: 'Joiner Name', selector: row => row?.joinedBy?.fullName || row?.joinedBy || '—', sortable: true, wrap: true },
         { name: 'Winner Name', selector: row => row?.winnerId?.fullName || row?.winnerId || '—', sortable: true, wrap: true },

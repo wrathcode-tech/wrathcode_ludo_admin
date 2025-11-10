@@ -84,6 +84,9 @@ function DisputeResponse() {
         }
     };
 
+    const handleUserClick = (userId) => {
+        navigate(`/dashboard/UserDetails`, { state: { userId } });
+    };
     const commonColumns = [
         { name: "Sr No.", cell: (row, rowIndex) => rowIndex + 1 + (currentPage - 1) * rowsPerPage, wrap: true, width: "80px" },
         {
@@ -98,6 +101,35 @@ function DisputeResponse() {
             sortable: true,
             wrap: true
         },
+        {
+            name: "User Id",
+            wrap: true,
+            width: "160px",
+            selector: (row) => (
+                <div className="d-flex align-items-center ">
+                    <button
+                        onClick={() => handleUserClick(row?._id)}
+                        className="btn p-0 text-primary"
+                        style={{ cursor: "pointer" }}
+                    >
+                        {row?.uuid || "------"}
+                    </button>
+                    <div className="mx-2 " style={{ cursor: "pointer" }}
+                        onClick={() => {
+                            if (row?.uuid) {
+                                navigator?.clipboard?.writeText(row?.uuid);
+                                alertSuccessMessage("UUID copied!");
+                            } else {
+                                alertErrorMessage("No UUID found");
+                            }
+                        }}
+                    >
+                        <i className="far fa-copy" aria-hidden="true"></i>
+                    </div>
+                </div>
+            ),
+        },
+
         {
             name: 'Amount',
             selector: row => `₹ ${row?.matchAmount || 0}`,
