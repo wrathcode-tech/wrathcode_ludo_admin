@@ -327,6 +327,7 @@ function UserDetails() {
         ),
     },
   ];
+
   const UserKycDetails = [
     {
       name: "Sr. No.",
@@ -335,7 +336,13 @@ function UserDetails() {
       selector: (row, index) => skip + 1 + index,
     },
     {
-      name: "Full Name",
+      name: "Name",
+      sortable: true,
+      wrap: true,
+      selector: (row) => row?.userId?.name || "------",
+    },
+    {
+      name: "Fista User Name",
       sortable: true,
       wrap: true,
       selector: (row) => row?.userId?.fullName || "------",
@@ -398,6 +405,7 @@ function UserDetails() {
         "---",
     },
   ];
+
   const BankDetailscolumns = [
     { name: "Sr. No.", selector: (row, index) => index + 1, },
     { name: "Bank Account Name", selector: (row) => row?.accountHolderName ? row?.accountHolderName : "-----", sortable: true },
@@ -682,8 +690,16 @@ function UserDetails() {
 
                         <div className="doc_img py-3 px-2 my-2">
                           {/* 🔹 Basic Info */}
+
                           <div className="row mb-3">
-                            <label className="col-lg-5 fw-bold text-muted">Full Name:</label>
+                            <label className="col-lg-5 fw-bold text-muted">Name:</label>
+                            <div className="col-lg-7">
+                              <span className="fw-bolder fs-6 text-dark">{userDetails?.name || "N/A"}</span>
+                            </div>
+                          </div>
+
+                          <div className="row mb-3">
+                            <label className="col-lg-5 fw-bold text-muted">Fista User Name:</label>
                             <div className="col-lg-7">
                               <span className="fw-bolder fs-6 text-dark">{userDetails?.fullName || "N/A"}</span>
                             </div>

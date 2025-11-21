@@ -104,31 +104,62 @@ function DisputeResponse() {
         {
             name: "User Id",
             wrap: true,
-            width: "160px",
+            width: "200px",
             selector: (row) => (
-                <div className="d-flex align-items-center ">
-                    <button
-                        onClick={() => handleUserClick(row?._id)}
-                        className="btn p-0 text-primary"
-                        style={{ cursor: "pointer" }}
-                    >
-                        {row?.uuid || "------"}
-                    </button>
-                    <div className="mx-2 " style={{ cursor: "pointer" }}
-                        onClick={() => {
-                            if (row?.uuid) {
-                                navigator?.clipboard?.writeText(row?.uuid);
-                                alertSuccessMessage("UUID copied!");
-                            } else {
-                                alertErrorMessage("No UUID found");
-                            }
-                        }}
-                    >
-                        <i className="far fa-copy" aria-hidden="true"></i>
+                <div className="d-flex flex-column">
+
+                    {/* Creator ID */}
+                    <div className="d-flex align-items-center mb-1">
+                        <strong className="me-1">Creator:</strong>
+                        <button
+                            onClick={() => handleUserClick(row?.createdBy?._id)}
+                            className="btn p-0 text-primary"
+                            style={{ cursor: "pointer" }}
+                        >
+                            {row?.createdBy?.uuid || "------"}
+                        </button>
+                        <i
+                            className="far fa-copy ms-2"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                                if (row?.createdBy?.uuid) {
+                                    navigator.clipboard.writeText(row?.createdBy?.uuid);
+                                    alertSuccessMessage("Creator UUID Copied!");
+                                } else {
+                                    alertErrorMessage("No Creator UUID found");
+                                }
+                            }}
+                        ></i>
                     </div>
+
+                    {/* Joiner ID */}
+                    <div className="d-flex align-items-center">
+                        <strong className="me-1">Joiner:</strong>
+                        <button
+                            onClick={() => handleUserClick(row?.joinedBy?._id)}
+                            className="btn p-0 text-primary"
+                            style={{ cursor: "pointer" }}
+                        >
+                            {row?.joinedBy?.uuid || "------"}
+                        </button>
+                        <i
+                            className="far fa-copy ms-2"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                                if (row?.joinedBy?.uuid) {
+                                    navigator.clipboard.writeText(row?.joinedBy?.uuid);
+                                    alertSuccessMessage("Joiner UUID Copied!");
+                                } else {
+                                    alertErrorMessage("No Joiner UUID found");
+                                }
+                            }}
+                        ></i>
+                    </div>
+
                 </div>
             ),
         },
+
 
         {
             name: 'Amount',
@@ -248,10 +279,19 @@ function DisputeResponse() {
                                     </p>
 
                                     <p>
-                                        <strong>Created By:</strong> {selectedWinningData?.createdBy?.fullName || selectedWinningData?.createdBy || "—"}
+                                        <strong>Created By:</strong>{" "}
+                                        {selectedWinningData?.createdBy?.name?.trim()
+                                            || selectedWinningData?.createdBy?.fullName?.trim()
+                                            || "—"}
                                     </p>
 
-                                    <p><strong>Joined By:</strong> {selectedWinningData?.joinedBy?.fullName || selectedWinningData?.joinedBy || "—"}</p>
+                                    <p>
+                                        <strong>Joined By:</strong>{" "}
+                                        {selectedWinningData?.joinedBy?.name?.trim()
+                                            || selectedWinningData?.joinedBy?.fullName?.trim()
+                                            || "—"}
+                                    </p>
+
                                     <p>
                                         <strong>Total Amount:</strong> ₹{selectedWinningData?.totalBetamount || (selectedWinningData?.amount ?? 0) * 2 || 0}
                                     </p>
@@ -278,6 +318,7 @@ function DisputeResponse() {
                                 <thead>
                                     <tr>
                                         <th>Name</th>
+                                        <th>Fista Username</th>
                                         <th>UUID</th>
                                         <th>Mobile Number</th>
                                         <th>Amount</th>
@@ -297,7 +338,10 @@ function DisputeResponse() {
 
                                             return (
                                                 <tr key={index}>
+                                                    <td>{userInfo?.name || "—"}</td>
+
                                                     <td>{userInfo?.fullName || "—"}</td>
+
                                                     <td>{userInfo?.uuid || "—"}</td>
                                                     <td>{userInfo?.mobileNumber || "—"}</td>
                                                     <td>₹{individualAmount}</td>

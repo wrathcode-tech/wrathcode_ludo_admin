@@ -117,16 +117,16 @@ function WithdrawalRequest() {
             selector: (row) => (
                 <div className="d-flex align-items-center ">
                     <button
-                        onClick={() => handleUserClick(row?._id)}
+                        onClick={() => handleUserClick(row?.userId?.id)}
                         className="btn p-0 text-primary"
                         style={{ cursor: "pointer" }}
                     >
-                        {row?.uuid || "------"}
+                        {row?.userId?.uuid || "------"}
                     </button>
                     <div className="mx-2 " style={{ cursor: "pointer" }}
                         onClick={() => {
                             if (row?.uuid) {
-                                navigator?.clipboard?.writeText(row?.uuid);
+                                navigator?.clipboard?.writeText(row?.userId?.uuid);
                                 alertSuccessMessage("UUID copied!");
                             } else {
                                 alertErrorMessage("No UUID found");
@@ -138,6 +138,7 @@ function WithdrawalRequest() {
                 </div>
             ),
         },
+        { name: "Name", selector: (row) => row?.userId?.name, sortable: true, wrap: true },
         { name: "Full Name", selector: (row) => row?.userId?.fullName, sortable: true, wrap: true },
         { name: "Amount", selector: (row) => row?.amount, sortable: true, wrap: true },
         { name: "Transaction Type", selector: (row) => row?.transactionType, sortable: true, wrap: true },
@@ -192,16 +193,16 @@ function WithdrawalRequest() {
             selector: (row) => (
                 <div className="d-flex align-items-center ">
                     <button
-                        onClick={() => handleUserClick(row?._id)}
+                        onClick={() => handleUserClick(row?.userId?._id)}
                         className="btn p-0 text-primary"
                         style={{ cursor: "pointer" }}
                     >
-                        {row?.uuid || "------"}
+                        {row?.userId?.uuid || "------"}
                     </button>
                     <div className="mx-2 " style={{ cursor: "pointer" }}
                         onClick={() => {
                             if (row?.uuid) {
-                                navigator?.clipboard?.writeText(row?.uuid);
+                                navigator?.clipboard?.writeText(row?.userId?.uuid);
                                 alertSuccessMessage("UUID copied!");
                             } else {
                                 alertErrorMessage("No UUID found");
@@ -213,6 +214,8 @@ function WithdrawalRequest() {
                 </div>
             ),
         },
+        { name: "Name", selector: (row) => row?.userId?.name, sortable: true, wrap: true },
+
         { name: "Full Name", selector: (row) => row?.userId?.fullName, sortable: true, wrap: true },
         { name: "Amount", selector: (row) => `₹ ${(row?.amount) || 0}`, sortable: true, wrap: true },
         { name: "Transaction Type", selector: (row) => row?.transactionType, sortable: true, wrap: true },
@@ -242,16 +245,16 @@ function WithdrawalRequest() {
             selector: (row) => (
                 <div className="d-flex align-items-center ">
                     <button
-                        onClick={() => handleUserClick(row?._id)}
+                        onClick={() => handleUserClick(row?.userId?._id)}
                         className="btn p-0 text-primary"
                         style={{ cursor: "pointer" }}
                     >
-                        {row?.uuid || "------"}
+                        {row?.userId?.uuid || "------"}
                     </button>
                     <div className="mx-2 " style={{ cursor: "pointer" }}
                         onClick={() => {
                             if (row?.uuid) {
-                                navigator?.clipboard?.writeText(row?.uuid);
+                                navigator?.clipboard?.writeText(row?.userId?.uuid);
                                 alertSuccessMessage("UUID copied!");
                             } else {
                                 alertErrorMessage("No UUID found");
@@ -263,7 +266,8 @@ function WithdrawalRequest() {
                 </div>
             ),
         },
-        { name: "Full Name", selector: (row) => row?.userId?.fullName, sortable: true, wrap: true },
+        { name: "Name", selector: (row) => row?.userId?.name, sortable: true, wrap: true },
+        { name: "Fista Username", selector: (row) => row?.userId?.fullName, sortable: true, wrap: true },
         { name: "Amount", selector: (row) => `₹ ${(row?.amount) || 0}`, sortable: true, wrap: true },
         { name: "Transaction Type", selector: (row) => row?.transactionType, sortable: true, wrap: true },
         { name: "Description", selector: (row) => row?.description || "------", sortable: true, wrap: true },

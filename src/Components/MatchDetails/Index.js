@@ -54,7 +54,7 @@ function MatchDetails() {
                         className="btn p-0 text-primary"
                         style={{ cursor: "pointer" }}
                     >
-                        {row?.uuid || "------"}
+                        {row?.userId?.uuid || "------"}
                     </button>
                     <div className="mx-2 " style={{ cursor: "pointer" }}
                         onClick={() => {

@@ -166,7 +166,7 @@ function SupportChat() {
       selector: (row) => (
         <div className="d-flex align-items-center ">
           <button
-            onClick={() => handleUserClick(row?._id)}
+            onClick={() => handleUserClick(row?.userId?.id)}
             className="btn p-0 text-primary"
             style={{ cursor: "pointer" }}
           >
@@ -186,7 +186,9 @@ function SupportChat() {
           </div>
         </div>
       ),
-    }, { name: "User Name", selector: (row) => row?.userId?.fullName || "—" },
+    },
+    { name: "Name", selector: (row) => row?.userId?.name || "—" },
+    { name: "Fista User Name", selector: (row) => row?.userId?.fullName || "—" },
     { name: "Mobile", selector: (row) => row?.userId?.mobileNumber || "—" },
     { name: "Last Message", selector: (row) => row?.lastMessage || "—" },
     { name: "Status", selector: (row) => row?.status?.toUpperCase() || "—" },

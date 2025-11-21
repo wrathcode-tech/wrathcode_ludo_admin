@@ -128,9 +128,15 @@ function AllUserList() {
                 </div>
             ),
         },
+        {
+            name: 'Name',
+            selector: row => row?.name || '—',
+            sortable: true,
+            wrap: true
+        },
 
         {
-            name: 'Full Name',
+            name: 'Fista Username',
             selector: row => row?.fullName || '—',
             sortable: true,
             wrap: true

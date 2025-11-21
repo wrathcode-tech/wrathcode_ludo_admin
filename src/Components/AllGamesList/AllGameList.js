@@ -59,7 +59,7 @@ function AllGameList() {
                             <strong>Created By:</strong>
                             <div className="d-flex align-items-center mt-1">
                                 <button
-                                    onClick={() => handleUserClick(createdUuid)}
+                                    onClick={() => handleUserClick(row?.createdBy?.id)}
                                     className="btn p-0 text-primary"
                                     style={{ cursor: "pointer" }}
                                 >
@@ -88,7 +88,7 @@ function AllGameList() {
                                 <strong>Joined By:</strong>
                                 <div className="d-flex align-items-center mt-1">
                                     <button
-                                        onClick={() => handleUserClick(joinedUuid)}
+                                        onClick={() => handleUserClick(row?.joinedBy?.id)}
                                         className="btn p-0 text-primary"
                                         style={{ cursor: "pointer" }}
                                     >
@@ -114,12 +114,12 @@ function AllGameList() {
 
 
 
-        { name: 'Creator Name', selector: row => row?.createdBy?.fullName || row?.createdBy || '—', sortable: true, wrap: true },
-        { name: 'Joiner Name', selector: row => row?.joinedBy?.fullName || row?.joinedBy || '—', sortable: true, wrap: true },
-        { name: 'Winner Name', selector: row => row?.winnerId?.fullName || row?.winnerId || '—', sortable: true, wrap: true },
-        { name: 'Joiner Name', selector: row => row?.loserId?.fullName || row?.loserId || '—', sortable: true, wrap: true },
-        { name: 'Cancel User One', width: '150px', selector: row => row?.cancelUserOne?.fullName || row?.cancelUserOne || '—', sortable: true, wrap: true },
-        { name: 'Cancel User Two', width: '150px', selector: row => row?.cancelUserTwo?.fullName || row?.cancelUserTwo || '—', sortable: true, wrap: true },
+        { name: 'Creator Name', selector: row => row?.createdBy?.name?.trim() || row?.createdBy?.fullName?.trim() || '—', sortable: true, wrap: true },
+        { name: 'Joiner Name', selector: row => row?.joinedBy?.name?.trim() || row?.joinedBy?.fullName?.trim() || '—', sortable: true, wrap: true },
+        { name: 'Winner Name', selector: row => row?.winnerId?.name?.trim() || row?.winnerId?.fullName?.trim() || '—', sortable: true, wrap: true },
+        { name: 'Joiner Name', selector: row => row?.loserId?.name?.trim() || row?.loserId?.fullName?.trim() || '—', sortable: true, wrap: true },
+        { name: 'Cancel User One', width: '150px', selector: row => row?.cancelUserOne?.name?.trim() || row?.cancelUserOne?.fullName?.trim() || '—', sortable: true, wrap: true },
+        { name: 'Cancel User Two', width: '150px', selector: row => row?.cancelUserTwo?.name?.trim() || row?.cancelUserTwo?.fullName?.trim() || '—', sortable: true, wrap: true },
         { name: 'Total Bet', selector: row => `₹ ${(row?.amount) || 0}`, sortable: true, wrap: true },
         { name: 'Wallet Type', selector: row => row?.walletType || '—', sortable: true, wrap: true },
         {
