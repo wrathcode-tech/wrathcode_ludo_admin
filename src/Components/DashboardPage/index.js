@@ -89,7 +89,7 @@ function DashboardPage() {
                                             <h3>{dashboardData?.totalUser}</h3>
                                         </div>
                                         <div className="dashboard_icon">
-                                            <img src="/images/user2.svg" alt="user" />
+                                            <img src="/images/user2.svg" loading="lazy" alt="user" />
                                         </div>
                                     </div>
                                 </li>
@@ -103,7 +103,7 @@ function DashboardPage() {
                                             <h3>{dashboardData?.totalDispute}</h3>
                                         </div>
                                         <div className="dashboard_icon">
-                                            <img src="/images/user2.svg" alt="user" />
+                                            <img src="/images/user2.svg" loading="lazy" alt="user" />
                                         </div>
                                     </div>
                                 </li>
@@ -117,7 +117,7 @@ function DashboardPage() {
                                             <h3>{dashboardData?.totalDepositInr}</h3>
                                         </div>
                                         <div class="dashboard_icon">
-                                            <img src="/images/dashboad_list_icon3.svg" alt="dashboard" />
+                                            <img src="/images/dashboad_list_icon3.svg" loading="lazy" alt="dashboard" />
                                         </div>
                                     </div>
                                     {/* <p><span><img src="/images/markert_range_icon.svg" alt="market" />8.5%</span>Up from yesterday</p> */}
@@ -131,7 +131,7 @@ function DashboardPage() {
                                             <h3>{dashboardData?.totalWithdrawalInr}</h3>
                                         </div>
                                         <div class="dashboard_icon">
-                                            <img src="/images/dashboad_list_icon2.svg" alt="dashboard" />
+                                            <img src="/images/dashboad_list_icon2.svg" loading="lazy" alt="dashboard" />
                                         </div>
                                     </div>
                                     {/* <p class="low_market"><span><img src="/images/markert_range_low.svg" alt="market" />4.3%</span>Down from
@@ -145,7 +145,7 @@ function DashboardPage() {
                                             <h3>{dashboardData?.totalRunninnGame}</h3>
                                         </div>
                                         <div class="dashboard_icon">
-                                            <img src="/images/dashboad_list_icon6.svg" alt="dashboard" />
+                                            <img src="/images/dashboad_list_icon6.svg" loading="lazy" alt="dashboard" />
                                         </div>
                                     </div>
                                     {/* <p class="low_market"><span><img src="/images/markert_range_low.svg" alt="market" />8.5%</span>Down from
@@ -159,7 +159,7 @@ function DashboardPage() {
                                             <h3>{dashboardData?.totalWaitingGame}</h3>
                                         </div>
                                         <div class="dashboard_icon">
-                                            <img src="/images/dashboad_list_icon7.svg" alt="dashboard" />
+                                            <img src="/images/dashboad_list_icon7.svg" loading="lazy" alt="dashboard" />
                                         </div>
                                     </div>
                                     {/* <p><span><img src="/images/markert_range_icon.svg" alt="market" />8.5%</span>Up from yesterday</p> */}
@@ -172,7 +172,7 @@ function DashboardPage() {
                                             <h3>{dashboardData?.totalAdminCommission}</h3>
                                         </div>
                                         <div class="dashboard_icon">
-                                            <img src="/images/dashboad_list_icon5.svg" alt="dashboard" />
+                                            <img src="/images/dashboad_list_icon5.svg" loading="lazy" alt="dashboard" />
                                         </div>
                                     </div>
                                     {/* <p><span><img src="/images/markert_range_icon.svg" alt="market" />8.5%</span>Up from yesterday</p> */}
@@ -185,7 +185,7 @@ function DashboardPage() {
                                             <h3>{dashboardData?.totalUserCommission}</h3>
                                         </div>
                                         <div class="dashboard_icon">
-                                            <img src="/images/dashboad_list_icon5.svg" alt="dashboard" />
+                                            <img src="/images/dashboad_list_icon5.svg" loading="lazy" alt="dashboard" />
                                         </div>
                                     </div>
                                     {/* <p><span><img src="/images/markert_range_icon.svg" alt="market" />8.5%</span>Up from yesterday</p> */}

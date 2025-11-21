@@ -306,7 +306,7 @@ function DisputeResponse() {
                                                         {u?.proof ? (
                                                             <img
                                                                 src={imageUrl + u.proof}
-                                                                alt="proof"
+                                                                alt="proof" loading="lazy"
                                                                 style={{ width: 50, height: 50, borderRadius: 5, cursor: "pointer" }}
                                                                 onClick={() => window.open(imageUrl + u.proof, "_blank")}
                                                             />

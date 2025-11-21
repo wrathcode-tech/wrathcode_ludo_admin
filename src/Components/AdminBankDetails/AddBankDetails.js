@@ -85,7 +85,7 @@ function AddBankDetails() {
         { name: "Bank Name", selector: (r) => r.bankName || "---" },
         { name: "UPI ID", selector: (r) => r.upiId || "---" },
         { name: "UPI Name", selector: (r) => r.upiName || "---" },
-        { name: "QR Code", cell: (r) => imageUrl + r.qrCode ? <img src={imageUrl + r.qrCode} alt="QR" style={{ width: 50, height: 50 }} /> : "---" },
+        { name: "QR Code", cell: (r) => imageUrl + r.qrCode ? <img src={imageUrl + r.qrCode}  alt="QR" style={{ width: 50, height: 50 }} /> : "---" },
         {
             name: "Action",
             cell: (r) => (

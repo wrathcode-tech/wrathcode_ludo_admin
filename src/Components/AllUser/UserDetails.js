@@ -1187,7 +1187,7 @@ function UserDetails() {
             <div className="modal-content">
               <button className="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
               <div className="ratio ratio-16x9">
-                <img src={showImage} className="w-100 cc_modal_img " alt="" />
+                <img src={showImage} loading="lazy" className="w-100 cc_modal_img " alt="" />
               </div>
             </div>
           </div>

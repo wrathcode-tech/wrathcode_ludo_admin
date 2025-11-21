@@ -167,7 +167,7 @@ function UserKyc() {
                     >
                         <img
                             src={imageUrl + row?.kycDetails?.documentFrontImage}
-                            alt="Document Front"
+                            alt="Document Front" loading="lazy"
                             style={{
                                 width: "70px",
                                 height: "50px",
@@ -194,7 +194,7 @@ function UserKyc() {
                     >
                         <img
                             src={imageUrl + row?.kycDetails?.documentBackImage}
-                            alt="Document Back"
+                            alt="Document Back" loading="lazy"
                             style={{
                                 width: "70px",
                                 height: "50px",

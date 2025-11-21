@@ -302,7 +302,7 @@ function SupportChat() {
                       {chat?.image && (
                         <img
                           src={imageUrl + chat.image}
-                          alt="chat-media"
+                          alt="chat-media" loading="lazy"
                           style={{
                             maxWidth: "200px",
                             borderRadius: "8px",
@@ -330,7 +330,7 @@ function SupportChat() {
               <>
                 {filePreview && (
                   <div className="preview-inside">
-                    <img src={filePreview} alt="preview" />
+                    <img src={filePreview} alt="preview" loading="lazy" />
                     <button
                       type="button"
                       className="remove-btn"

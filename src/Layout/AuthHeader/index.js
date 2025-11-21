@@ -37,13 +37,13 @@ const AuthHeader = () => {
           <div className="row">
             <div className="col-sm-12 col-md-12 col-lg-2">
               <div className="logo">
-                <Link to="/"><img src="/images/logoplayfista.png" alt="logo" /></Link>
+                <Link to="/"><img src="/images/logoplayfista.png" loading="lazy" alt="logo" /></Link>
               </div>
             </div>
             <div className="col-sm-12  col-md-12 col-lg-6 ">
               <div className="navigation">
                 <div class="toggle_menu">
-                  <img src="/images/toggle_icon.svg" alt="toggle" />
+                  <img src="/images/toggle_icon.svg" loading="lazy" alt="toggle" />
                 </div>
                 <div className="navi_sidebar">
                   <nav className="navbar navbar-expand-lg ">

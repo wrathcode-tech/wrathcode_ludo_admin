@@ -125,7 +125,7 @@ function MatchDetails() {
                                 {/* <p>Active Members</p> */}
                             </div>
                             <div class="user_search">
-                                <button><img src="/images/search_icon.svg" alt="search" /></button>
+                                <button><img src="/images/search_icon.svg" loading="lazy" alt="search" /></button>
                                 <input type="search" placeholder="Search here..." name="search" onChange={searchObjects} />
 
                             </div>

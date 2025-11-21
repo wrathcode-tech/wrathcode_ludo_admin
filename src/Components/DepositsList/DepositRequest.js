@@ -105,7 +105,7 @@ function DepositRequest() {
     name: "Payment Proof", cell: (row) => (<a href={imageUrl + row?.paymentProof} target="_blank" rel="noopener noreferrer" style={{
         width: "50px", height: "50px"
     }}>
-        <img src={imageUrl + row?.paymentProof} alt="proof" /></a>),
+        <img src={imageUrl + row?.paymentProof} loading="lazy" alt="proof" /></a>),
         },
 {
     name: "Actions", width: "200px",
@@ -156,7 +156,7 @@ return (
                             <h4>All Pending Deposits Requests</h4>
                         </div>
                         <div class="user_search">
-                            <button><img src="/images/search_icon.svg" alt="search" /></button>
+                            <button><img src="/images/search_icon.svg" loading="lazy" alt="search" /></button>
                             <input type="search" placeholder="Search here..." name="search" onChange={searchObjects} />
 
                         </div>

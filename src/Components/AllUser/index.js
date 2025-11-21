@@ -213,7 +213,7 @@ function AllUserList() {
                                 <h4>User List</h4>
                             </div>
                             <div class="user_search">
-                                <button><img src="/images/search_icon.svg" alt="search" /></button>
+                                <button><img src="/images/search_icon.svg" loading="lazy" alt="search" /></button>
                                 <input type="search" placeholder="Search User" onChange={(e) => setSearch(e.target.value)} value={search} />
                             </div>
                         </div>

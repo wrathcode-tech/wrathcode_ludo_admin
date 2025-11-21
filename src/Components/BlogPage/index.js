@@ -174,7 +174,7 @@ function BlogPage() {
                                                     <p>{item?.content}</p>
                                                 </td>
                                                 <td>
-                                                    <div class="blog_img"><img src={imageUrl + item?.blogMedia} alt="blog" /></div>
+                                                    <div class="blog_img"><img src={imageUrl + item?.blogMedia} loading="lazy" alt="blog" /></div>
                                                 </td>
                                                 <td class="Inactive"><button onClick={()=>handleDeleteBlog(item?._id)}>Delete</button></td>
                                             </tr>

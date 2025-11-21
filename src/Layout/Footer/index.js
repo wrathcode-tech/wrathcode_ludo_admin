@@ -14,7 +14,7 @@ const Footer = () => {
               <div className="footer_info">
 
                 <div className="logo_div">
-                  <img src="/images/logo2.svg" alt="logo" />
+                  <img src="/images/logo2.svg" loading="lazy" alt="logo" />
                 </div>
 
                 <p>At Brainstorm Solution we specialize in professional crypto wallet recovery services, ensuring you regain
@@ -57,13 +57,13 @@ const Footer = () => {
                 <h3>Location us</h3>
 
                 <address>
-                  <div className="phone_icon"><img src="/images/phone.svg" alt="phone" /></div>
+                  <div className="phone_icon"><img src="/images/phone.svg" loading="lazy" alt="phone" /></div>
                   Toll Free Customer Care<br />
                   012 3456 7890
                 </address>
 
                 <address>
-                  <div className="phone_icon"><img src="/images/Email.svg" alt="email" /></div>
+                  <div className="phone_icon"><img src="/images/Email.svg" loading="lazy" alt="email" /></div>
                   Have questions or want support?<br />
                   Support@test.com
 

@@ -46,7 +46,7 @@ const UserHeader = () => {
                     </div> */}
                 </div>
                 <div class="toggle_menu">
-                    <img src="/images/toggle_icon.svg" alt="toggle" />
+                    <img src="/images/toggle_icon.svg" loading="lazy" alt="toggle" />
                 </div>
             </div>
         </>

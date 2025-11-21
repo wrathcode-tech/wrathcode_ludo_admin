@@ -100,7 +100,7 @@ const BannerManagement = () => {
                 row?.bannerImage ? (
                     <img
                         src={`${imageUrl}${row?.bannerImage}`}
-                        alt="Banner"
+                        alt="Banner" loading="lazy"
                         style={{ maxWidth: "100px", height: "auto", borderRadius: "8px" }}
                     />
                 ) : "No image"
@@ -333,7 +333,7 @@ const BannerManagement = () => {
                                                                         }}
                                                                     >
                                                                         <img
-                                                                            src={previewImage}
+                                                                            src={previewImage} loading="lazy"
                                                                             alt="Desktop Preview"
                                                                             className="img-fluid w-100"
                                                                             style={{ borderRadius: "8px" }}
@@ -351,7 +351,7 @@ const BannerManagement = () => {
                                                                         }}
                                                                     >
                                                                         <img
-                                                                            src={previewImage}
+                                                                            src={previewImage} loading="lazy"
                                                                             alt="Mobile Preview"
                                                                             className="img-fluid w-100"
                                                                             style={{ borderRadius: "8px" }}

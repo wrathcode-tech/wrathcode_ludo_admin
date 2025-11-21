@@ -119,7 +119,7 @@ function OverAllCommissionEarnList() {
                 <div className="dashboard_detail_s user_list_table user_summary_t">
                     <div className="user_list_top">
                         <div className="user_search">
-                            <button><img src="/images/search_icon.svg" alt="search" /></button>
+                            <button><img src="/images/search_icon.svg" loading="lazy" alt="search" /></button>
                             <input
                                 type="search"
                                 placeholder="Search User"
