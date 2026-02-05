@@ -86,7 +86,7 @@ function LoginPage() {
                         <div className="form_input d-flex">
                             <input
                                 type="email"
-                                placeholder="Email *"
+                                placeholder="Mobile Number *"
                                 value={emailId}
                                 onChange={(e) => setEmailId(e.target.value)}
                                 required
