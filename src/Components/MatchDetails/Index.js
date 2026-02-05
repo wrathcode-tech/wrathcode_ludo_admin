@@ -1,143 +1,113 @@
-import React, { useEffect, useState } from 'react'
-import UserHeader from '../../Layout/UserHeader'
-import LoaderHelper from '../../Utils/Loading/LoaderHelper';
-import AuthService from '../../Api/Api_Services/AuthService';
-import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertMessage';
-import { imageUrl } from '../../Api/Api_Config/ApiEndpoints';
-import moment from 'moment';
-import DataTableBase from '../../Utils/DataTable';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import UserHeader from "../../Layout/UserHeader";
+import LoaderHelper from "../../Utils/Loading/LoaderHelper";
+import AuthService from "../../Api/Api_Services/AuthService";
+import { alertErrorMessage, alertSuccessMessage } from "../../Utils/CustomAlertMessage";
+import moment from "moment";
+import DataTableBase from "../../Utils/DataTable";
+import { useNavigate } from "react-router-dom";
+
+const TEAL_ACCENT = "#0d9488";
 
 function MatchDetails() {
+  const [allData, setAllData] = useState([]);
+  const [responseData, setResponseData] = useState([]);
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
 
-    const [allData, setAllData] = useState([]);
-    const [responseData, setResponseData] = useState([]);
-
-    useEffect(() => {
-        const handlePendingDepositReq = async () => {
-            try {
-                LoaderHelper.loaderStatus(true);
-                const result = await AuthService.getUsersRespose();
-                if (result?.success) {
-                    setAllData(result?.data);
-                    setResponseData(result?.data);
-                } else {
-                    alertErrorMessage(result?.message);
-                }
-            } catch (error) {
-                alertErrorMessage(error?.message);
-            } finally {
-                LoaderHelper.loaderStatus(false);
-            }
-        };
-        handlePendingDepositReq();
-    }, []);
-
-    const navigate = useNavigate();
-
-    const handleUserClick = (userId) => {
-        navigate(`/dashboard/UserDetails`, { state: { userId } });
-    };
-
-
-    const columns = [
-
-        { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-        {
-            name: "User Id",
-            wrap: true,
-            width: "160px",
-            selector: (row) => (
-                <div className="d-flex align-items-center ">
-                    <button
-                        onClick={() => handleUserClick(row?._id)}
-                        className="btn p-0 text-primary"
-                        style={{ cursor: "pointer" }}
-                    >
-                        {row?.userId?.uuid || "------"}
-                    </button>
-                    <div className="mx-2 " style={{ cursor: "pointer" }}
-                        onClick={() => {
-                            if (row?.uuid) {
-                                navigator?.clipboard?.writeText(row?.uuid);
-                                alertSuccessMessage("UUID copied!");
-                            } else {
-                                alertErrorMessage("No UUID found");
-                            }
-                        }}
-                    >
-                        <i className="far fa-copy" aria-hidden="true"></i>
-                    </div>
-                </div>
-            ),
-        },
-        { name: "Event ID", selector: (row) => row?.eventId, sortable: true, wrap: true },
-        { name: "Match Amount", selector: (row) => `₹ ${row?.matchAmount}`, sortable: true, wrap: true },
-        { name: "Status", selector: (row) => row.status, cell: (row) => (<span style={{ color: "#1eb5c0" }}>{row?.status}</span>), sortable: true, wrap: true },
-    ];
-    function searchObjects(e) {
-        const keysToSearch = ["userId.fullName", "utrNumber", "amount"];
-        const userInput = e.target.value;
-        const searchTerm = userInput?.toLowerCase();
-        if (!searchTerm) {
-            setResponseData(allData);
-            return;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        LoaderHelper.loaderStatus(true);
+        const result = await AuthService.getUsersRespose();
+        if (result?.success) {
+          const data = result?.data || [];
+          setAllData(data);
+          setResponseData(data);
+        } else {
+          alertErrorMessage(result?.message);
         }
+      } catch (error) {
+        alertErrorMessage(error?.message);
+      } finally {
+        LoaderHelper.loaderStatus(false);
+      }
+    };
+    fetchData();
+  }, []);
 
-        const matchingObjects = allData?.filter((obj) => {
-            return keysToSearch.some((key) => {
-                const value = key.split(".").reduce((acc, k) => acc?.[k], obj);
-                return value?.toString()?.toLowerCase()?.includes(searchTerm);
-            });
-        });
-
-        setResponseData(matchingObjects);
+  useEffect(() => {
+    if (!search.trim()) {
+      setResponseData(allData);
+      return;
     }
-    // const handleStatusUpdate = async (id, status) => {
+    const term = search.toLowerCase();
+    const keys = ["userId.fullName", "userId.uuid", "eventId", "utrNumber", "amount", "matchAmount"];
+    const filtered = allData.filter((obj) =>
+      keys.some((key) => {
+        const value = key.split(".").reduce((acc, k) => acc?.[k], obj);
+        return value?.toString()?.toLowerCase()?.includes(term);
+      })
+    );
+    setResponseData(filtered);
+  }, [search, allData]);
 
-    //     try {
-    //         LoaderHelper.loaderStatus(true);
-    //         const result = await AuthService.usersStatusUpdate(id, status);
-    //         if (result?.success) {
-    //             handlePendingDepositReq()
+  const handleUserClick = (userId) => {
+    navigate("/dashboard/UserDetails", { state: { userId } });
+  };
 
-    //         } else {
-    //             alertErrorMessage(result?.message);
-    //         }
+  const columns = [
+    { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
+    {
+      name: "User Id",
+      width: "160px",
+      cell: (row) => (
+        <div className="d-flex align-items-center gap-2">
+          <button type="button" onClick={() => handleUserClick(row?.userId?._id)} className="btn btn-link p-0 text-decoration-none fw-semibold" style={{ color: TEAL_ACCENT, cursor: "pointer" }}>{row?.userId?.uuid || "—"}</button>
+          <button type="button" className="btn btn-link p-0 text-secondary" style={{ cursor: "pointer" }} onClick={() => { const u = row?.userId?.uuid; if (u) { navigator?.clipboard?.writeText(u); alertSuccessMessage("UUID copied!"); } else alertErrorMessage("No UUID found"); }} title="Copy"><i className="far fa-copy" /></button>
+        </div>
+      ),
+    },
+    { name: "Event ID", selector: (row) => row?.eventId ?? "—", sortable: true, wrap: true },
+    { name: "Match Amount", selector: (row) => `₹ ${row?.matchAmount ?? 0}`, sortable: true, wrap: true },
+    { name: "Status", width: "100px", cell: (row) => <span className="badge rounded-pill border-0" style={{ fontSize: "0.7rem", fontWeight: 600, background: "#0d9488", color: "#fff" }}>{row?.status ?? "—"}</span>, sortable: true },
+  ];
 
-    //     } catch (error) {
-    //         alertErrorMessage(error?.message);
-    //     } finally {
-    //         LoaderHelper.loaderStatus(false);
-    //     }
-    // };
-
-    return (
-        <>
-            <div class="dashboard_right">
-                <UserHeader />
-                <div class="dashboard_outer_s">
-                    <h2>After Match User Response List</h2>
-                    <div class="dashboard_detail_s user_list_table user_summary_t">
-                        <div class="user_list_top">
-                            <div class="user_list_l">
-                                <h4>After Match User Responses</h4>
-                                {/* <p>Active Members</p> */}
-                            </div>
-                            <div class="user_search">
-                                <button><img src="/images/search_icon.svg" loading="lazy" alt="search" /></button>
-                                <input type="search" placeholder="Search here..." name="search" onChange={searchObjects} />
-
-                            </div>
-                        </div>
-                        <div className="p-2 mobilep">
-                            <DataTableBase columns={columns} data={responseData} pagination />
-                        </div>
-                    </div>
-                </div>
-            </div >
-        </>
-    )
+  return (
+    <div className="dashboard_right">
+      <UserHeader />
+      <div className="dashboard_outer_s">
+        <div className="mb-4">
+          <div className="rounded-4 overflow-hidden border-0 p-4 p-md-5" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #14b8a6 100%)", boxShadow: "0 16px 48px rgba(13,148,136,0.25)" }}>
+            <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+              <div>
+                <h1 className="mb-1 text-white fw-bold" style={{ fontSize: "1.75rem", letterSpacing: "-0.02em" }}>After Match User Response List</h1>
+                <p className="mb-0 text-white opacity-75" style={{ fontSize: "0.9rem" }}>User responses after match completion</p>
+              </div>
+              <div className="rounded-3 d-none d-md-flex align-items-center justify-content-center text-white" style={{ width: "56px", height: "56px", background: "rgba(255,255,255,0.2)" }}><i className="fas fa-trophy fa-lg" /></div>
+            </div>
+          </div>
+        </div>
+        <div className="card border-0 rounded-4 overflow-hidden" style={{ boxShadow: "0 10px 40px rgba(0,0,0,0.08)", borderTop: "3px solid #0d9488" }}>
+          <div className="card-header border-0 py-3 px-4" style={{ background: "linear-gradient(90deg, rgba(13,148,136,0.08) 0%, transparent 100%)" }}>
+            <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3">
+              <h3 className="mb-0 fw-bold text-dark d-flex align-items-center gap-2" style={{ fontSize: "1.1rem" }}>
+                <span className="rounded-3 d-inline-flex align-items-center justify-content-center" style={{ width: "40px", height: "40px", background: "linear-gradient(135deg, #0d9488, #0f766e)", color: "#fff" }}><i className="fas fa-list" /></span>
+                User Responses
+              </h3>
+              <div className="d-flex align-items-center rounded-3 border overflow-hidden" style={{ background: "#f8fafc", maxWidth: "280px" }}>
+                <span className="px-3 py-2 text-muted"><i className="fas fa-search" style={{ color: TEAL_ACCENT }} /></span>
+                <input type="search" className="form-control border-0 bg-transparent py-2" placeholder="Search by name, UUID, event, amount..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ fontSize: "0.9rem" }} />
+              </div>
+            </div>
+          </div>
+          <div className="card-body p-0">
+            <DataTableBase columns={columns} data={responseData} pagination />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default MatchDetails;

@@ -8,6 +8,8 @@ import DataTableBase from '../../Utils/DataTable';
 import { imageUrl } from '../../Api/Api_Config/ApiEndpoints';
 import { useNavigate } from 'react-router-dom';
 
+const TEAL_BTN = "linear-gradient(135deg, #0d9488, #0f766e)";
+
 function UserKyc() {
     const [kycPendingList, setKycPendingList] = useState([]);
     const [activeTab, setActiveTab] = useState("PENDING");
@@ -124,137 +126,68 @@ function UserKyc() {
 
     // ---------------- Columns ----------------
     const PendingKycList = [
-        { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
-        { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
+        { name: "Sr. No.", cell: (row, index) => <span className="text-secondary fw-medium" style={{ fontSize: "0.875rem" }}>{(currentPage - 1) * rowsPerPage + index + 1}</span>, width: "72px" },
+        { name: "Date & Time", cell: (row) => <span style={{ fontSize: "0.875rem" }}>{moment(row.createdAt).format("DD MMM YYYY, hh:mm A")}</span>, sortable: true, wrap: true },
         {
             name: "User Id",
             wrap: true,
             width: "160px",
-            selector: (row) => (
-                <div className="d-flex align-items-center ">
-                    <button
-                        onClick={() => handleUserClick(row?._id)}
-                        className="btn p-0 text-primary"
-                        style={{ cursor: "pointer" }}
-                    >
-                        {row?.uuid || "------"}
-                    </button>
-                    <div className="mx-2 " style={{ cursor: "pointer" }}
-                        onClick={() => {
-                            if (row?.uuid) {
-                                navigator?.clipboard?.writeText(row?.uuid);
-                                alertSuccessMessage("UUID copied!");
-                            } else {
-                                alertErrorMessage("No UUID found");
-                            }
-                        }}
-                    >
-                        <i className="far fa-copy" aria-hidden="true"></i>
-                    </div>
+            cell: (row) => (
+                <div className="d-flex align-items-center gap-1">
+                    <button type="button" onClick={() => handleUserClick(row?._id)} className="btn btn-link p-0 text-decoration-none border-0" style={{ color: "#0d9488", fontWeight: 600, cursor: "pointer", fontSize: "0.875rem" }}>{row?.uuid || "—"}</button>
+                    <button type="button" className="btn btn-sm p-1 rounded" style={{ background: "#f1f5f9", color: "#64748b" }} onClick={() => { if (row?.uuid) { navigator?.clipboard?.writeText(row.uuid); alertSuccessMessage("Copied!"); } else alertErrorMessage("No UUID found"); }} title="Copy"><i className="far fa-copy" style={{ fontSize: "0.7rem" }} /></button>
                 </div>
             ),
         },
-        { name: "User Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
-        { name: "Mobile Number", selector: (row) => row?.mobileNumber, sortable: true, wrap: true },
+        { name: "User Name", cell: (row) => <span style={{ fontSize: "0.875rem", fontWeight: 500 }}>{row?.fullName || "—"}</span>, sortable: true, wrap: true },
+        { name: "Mobile", cell: (row) => <span style={{ fontSize: "0.875rem" }}>{row?.mobileNumber || "—"}</span>, sortable: true, wrap: true },
         {
-            name: "Document Front Img",
+            name: "Document Front",
+            width: "120px",
             cell: (row) =>
                 row?.kycDetails?.documentFrontImage ? (
-                    <a
-                        href={imageUrl + row?.kycDetails?.documentFrontImage}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <img
-                            src={imageUrl + row?.kycDetails?.documentFrontImage}
-                            alt="Document Front" loading="lazy"
-                            style={{
-                                width: "70px",
-                                height: "50px",
-                                objectFit: "cover",
-                                borderRadius: "6px",
-                                cursor: "pointer",
-                            }}
-                        />
+                    <a href={imageUrl + row.kycDetails.documentFrontImage} target="_blank" rel="noopener noreferrer" className="d-inline-block">
+                        <img src={imageUrl + row.kycDetails.documentFrontImage} alt="Document Front" loading="lazy" className="rounded-3 shadow-sm" style={{ width: "70px", height: "50px", objectFit: "cover", cursor: "pointer" }} />
                     </a>
-                ) : (
-                    "N/A"
-                ),
+                ) : <span className="text-muted" style={{ fontSize: "0.875rem" }}>N/A</span>,
             sortable: false,
             wrap: true,
         },
         {
-            name: "Document Back Img",
+            name: "Document Back",
+            width: "120px",
             cell: (row) =>
                 row?.kycDetails?.documentBackImage ? (
-                    <a
-                        href={imageUrl + row?.kycDetails?.documentBackImage}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <img
-                            src={imageUrl + row?.kycDetails?.documentBackImage}
-                            alt="Document Back" loading="lazy"
-                            style={{
-                                width: "70px",
-                                height: "50px",
-                                objectFit: "cover",
-                                borderRadius: "6px",
-                                cursor: "pointer",
-                            }}
-                        />
+                    <a href={imageUrl + row.kycDetails.documentBackImage} target="_blank" rel="noopener noreferrer" className="d-inline-block">
+                        <img src={imageUrl + row.kycDetails.documentBackImage} alt="Document Back" loading="lazy" className="rounded-3 shadow-sm" style={{ width: "70px", height: "50px", objectFit: "cover", cursor: "pointer" }} />
                     </a>
-                ) : (
-                    "N/A"
-                ),
+                ) : <span className="text-muted" style={{ fontSize: "0.875rem" }}>N/A</span>,
             sortable: false,
             wrap: true,
         },
-
-
         {
             name: "KYC Status",
-            cell: (row) => (
-                <span style={{
-                    color: row.kycVerified === "APPROVED"
-                        ? "green"
-                        : row.kycVerified === "PENDING"
-                            ? "orange"
-                            : "red",
-                    fontWeight: "600",
-                }}>
-                    {row?.kycVerified}
-                </span>
-            ),
-            sortable: true, wrap: true,
+            width: "100px",
+            cell: (row) => {
+                const status = row?.kycVerified || "—";
+                const style = status === "APPROVED" ? { background: "linear-gradient(135deg, #22c55e, #16a34a)", color: "#fff" } : status === "PENDING" ? { background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#fff" } : { background: "#dc2626", color: "#fff" };
+                return <span className="badge rounded-pill border-0 px-3 py-1" style={{ fontSize: "0.75rem", fontWeight: 600, ...style }}>{status}</span>;
+            },
+            sortable: true,
+            wrap: true,
         },
-
-        // ✅ Action Buttons
         {
             name: "Actions",
             width: "200px",
             cell: (row) => (
-                <div style={{ display: "flex", gap: "8px" }}>
-                    <button
-                        className="btn btn-success btn-sm"
-                        onClick={() => handleKycStatus(row._id, "APPROVED")}
-
-                    >
-
-                        Approve
-                    </button>
-                    <button
-                        className="btn btn-danger btn-sm"
-                        onClick={() => handleRejectClick(row._id)}
-                    >
-                        Reject
-                    </button>
+                <div className="d-flex gap-2">
+                    <button type="button" className="btn btn-sm rounded-pill border-0 px-3" style={{ background: "linear-gradient(135deg, #22c55e, #16a34a)", color: "#fff", fontWeight: 600 }} onClick={() => handleKycStatus(row._id, "APPROVED")}>Approve</button>
+                    <button type="button" className="btn btn-sm rounded-pill border-0 px-3" style={{ background: "#dc2626", color: "#fff", fontWeight: 600 }} onClick={() => handleRejectClick(row._id)}>Reject</button>
                 </div>
             ),
             ignoreRowClick: true,
             allowOverflow: true,
             button: true,
-
         },
     ];
 
@@ -264,43 +197,55 @@ function UserKyc() {
     };
 
     const ApprovedKycList = [
-        { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
-        { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-        { name: "UUID", selector: (row) => row?.uuid, sortable: true, wrap: true },
-        { name: "User Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
-        { name: "Mobile Number", selector: (row) => row?.mobileNumber, sortable: true, wrap: true },
+        { name: "Sr. No.", cell: (row, index) => <span className="text-secondary fw-medium" style={{ fontSize: "0.875rem" }}>{(currentPage - 1) * rowsPerPage + index + 1}</span>, width: "72px" },
+        { name: "Date & Time", cell: (row) => <span style={{ fontSize: "0.875rem" }}>{moment(row.createdAt).format("DD MMM YYYY, hh:mm A")}</span>, sortable: true, wrap: true },
+        {
+            name: "User Id",
+            width: "160px",
+            cell: (row) => (
+                <div className="d-flex align-items-center gap-1">
+                    <button type="button" onClick={() => handleUserClick(row?._id)} className="btn btn-link p-0 text-decoration-none border-0" style={{ color: "#0d9488", fontWeight: 600, cursor: "pointer", fontSize: "0.875rem" }}>{row?.uuid || "—"}</button>
+                    <button type="button" className="btn btn-sm p-1 rounded" style={{ background: "#f1f5f9", color: "#64748b" }} onClick={() => { if (row?.uuid) { navigator?.clipboard?.writeText(row.uuid); alertSuccessMessage("Copied!"); } }} title="Copy"><i className="far fa-copy" style={{ fontSize: "0.7rem" }} /></button>
+                </div>
+            ),
+            sortable: true,
+            wrap: true,
+        },
+        { name: "User Name", cell: (row) => <span style={{ fontSize: "0.875rem", fontWeight: 500 }}>{row?.fullName || "—"}</span>, sortable: true, wrap: true },
+        { name: "Mobile", cell: (row) => <span style={{ fontSize: "0.875rem" }}>{row?.mobileNumber || "—"}</span>, sortable: true, wrap: true },
         {
             name: "KYC Status",
-            cell: (row) => (
-                <span style={{
-                    color: "green",
-                    fontWeight: "600",
-                }}>
-                    {row?.kycVerified}
-                </span>
-            ),
-            sortable: true, wrap: true,
+            width: "100px",
+            cell: (row) => <span className="badge rounded-pill border-0 px-3 py-1" style={{ fontSize: "0.75rem", fontWeight: 600, background: "linear-gradient(135deg, #22c55e, #16a34a)", color: "#fff" }}>{row?.kycVerified || "APPROVED"}</span>,
+            sortable: true,
+            wrap: true,
         },
     ];
 
     const RejectedKycList = [
-        { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
-        { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-        { name: "Updated At", selector: (row) => moment(row.updatedAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-        { name: "UUID", selector: (row) => row?.uuid, sortable: true, wrap: true },
-        { name: "User Name", selector: (row) => row?.fullName, sortable: true, wrap: true },
-        { name: "Mobile Number", selector: (row) => row?.mobileNumber, sortable: true, wrap: true },
+        { name: "Sr. No.", cell: (row, index) => <span className="text-secondary fw-medium" style={{ fontSize: "0.875rem" }}>{(currentPage - 1) * rowsPerPage + index + 1}</span>, width: "72px" },
+        { name: "Date & Time", cell: (row) => <span style={{ fontSize: "0.875rem" }}>{moment(row.createdAt).format("DD MMM YYYY, hh:mm A")}</span>, sortable: true, wrap: true },
+        { name: "Updated At", cell: (row) => <span style={{ fontSize: "0.875rem" }}>{moment(row.updatedAt).format("DD MMM YYYY, hh:mm A")}</span>, sortable: true, wrap: true },
+        {
+            name: "User Id",
+            width: "160px",
+            cell: (row) => (
+                <div className="d-flex align-items-center gap-1">
+                    <button type="button" onClick={() => handleUserClick(row?._id)} className="btn btn-link p-0 text-decoration-none border-0" style={{ color: "#0d9488", fontWeight: 600, cursor: "pointer", fontSize: "0.875rem" }}>{row?.uuid || "—"}</button>
+                    <button type="button" className="btn btn-sm p-1 rounded" style={{ background: "#f1f5f9", color: "#64748b" }} onClick={() => { if (row?.uuid) { navigator?.clipboard?.writeText(row.uuid); alertSuccessMessage("Copied!"); } }} title="Copy"><i className="far fa-copy" style={{ fontSize: "0.7rem" }} /></button>
+                </div>
+            ),
+            sortable: true,
+            wrap: true,
+        },
+        { name: "User Name", cell: (row) => <span style={{ fontSize: "0.875rem", fontWeight: 500 }}>{row?.fullName || "—"}</span>, sortable: true, wrap: true },
+        { name: "Mobile", cell: (row) => <span style={{ fontSize: "0.875rem" }}>{row?.mobileNumber || "—"}</span>, sortable: true, wrap: true },
         {
             name: "KYC Status",
-            cell: (row) => (
-                <span style={{
-                    color: "red",
-                    fontWeight: "600",
-                }}>
-                    {row?.kycVerified}
-                </span>
-            ),
-            sortable: true, wrap: true,
+            width: "100px",
+            cell: (row) => <span className="badge rounded-pill border-0 px-3 py-1" style={{ fontSize: "0.75rem", fontWeight: 600, background: "#dc2626", color: "#fff" }}>{row?.kycVerified || "REJECTED"}</span>,
+            sortable: true,
+            wrap: true,
         },
     ];
 
@@ -308,104 +253,79 @@ function UserKyc() {
         <div className="dashboard_right">
             <UserHeader />
             <div className="dashboard_outer_s">
-                <h2>Kyc Verification Details</h2>
-                <div className="dashboard_detail_s user_list_table user_summary_t">
-                    <div className="user_list_top">
-                        <div className="user_list_l">
-                            <h4 className="text-xl font-semibold mb-4">
-                                {activeTab === "PENDING" && <span>Pending Kyc List</span>}
-                                {activeTab === "APPROVED" && <span >Approved Kyc List</span>}
-                                {activeTab === "REJECTED" && <span >Rejected Kyc List</span>}
-                            </h4>
+                {/* Premium page header */}
+                <div className="mb-4">
+                    <div className="rounded-4 overflow-hidden border-0 p-4 p-md-5" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #14b8a6 100%)", boxShadow: "0 16px 48px rgba(13,148,136,0.25)" }}>
+                        <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                            <div>
+                                <h1 className="mb-1 text-white fw-bold" style={{ fontSize: "1.75rem", letterSpacing: "-0.02em" }}>KYC Verification Details</h1>
+                                <p className="mb-0 text-white opacity-75" style={{ fontSize: "0.9rem" }}>Review and approve or reject user KYC submissions</p>
+                            </div>
+                            <div className="rounded-3 d-none d-md-flex align-items-center justify-content-center text-white" style={{ width: "56px", height: "56px", background: "rgba(255,255,255,0.2)" }}><i className="fas fa-id-card fa-lg" /></div>
                         </div>
                     </div>
-                    <div className="dashboard_summary">
-                        <ul className="nav nav-tabs" role="tablist">
-                            <li className="nav-item">
-                                <button className={`nav-link ${activeTab === "PENDING" ? "active" : ""}`} onClick={() => setActiveTab("PENDING")}>
-                                    Pending
-                                </button>
-                            </li>
-                            <li className="nav-item">
-                                <button className={`nav-link ${activeTab === "APPROVED" ? "active" : ""}`} onClick={() => setActiveTab("APPROVED")}>
-                                    Approved
-                                </button>
-                            </li>
-                            <li className="nav-item">
-                                <button className={`nav-link ${activeTab === "REJECTED" ? "active" : ""}`} onClick={() => setActiveTab("REJECTED")}>
-                                    Rejected
-                                </button>
-                            </li>
-                        </ul>
+                </div>
 
-                        <div className="p-4">
-                            {activeTab === "PENDING" && (
-                                <DataTableBase columns={PendingKycList} data={kycPendingList || []} pagination />
-                            )}
+                {/* Tabs - rounded pills */}
+                <div className="mb-3">
+                    <ul className="nav nav-pills gap-2 flex-wrap">
+                        <li className="nav-item">
+                            <button type="button" className={`nav-link rounded-pill ${activeTab === "PENDING" ? "active" : ""}`} style={activeTab === "PENDING" ? { background: TEAL_BTN, color: "#fff", border: "none", fontWeight: 600 } : { background: "#f1f5f9", color: "#64748b", border: "none" }} onClick={() => setActiveTab("PENDING")}>Pending</button>
+                        </li>
+                        <li className="nav-item">
+                            <button type="button" className={`nav-link rounded-pill ${activeTab === "APPROVED" ? "active" : ""}`} style={activeTab === "APPROVED" ? { background: TEAL_BTN, color: "#fff", border: "none", fontWeight: 600 } : { background: "#f1f5f9", color: "#64748b", border: "none" }} onClick={() => setActiveTab("APPROVED")}>Approved</button>
+                        </li>
+                        <li className="nav-item">
+                            <button type="button" className={`nav-link rounded-pill ${activeTab === "REJECTED" ? "active" : ""}`} style={activeTab === "REJECTED" ? { background: TEAL_BTN, color: "#fff", border: "none", fontWeight: 600 } : { background: "#f1f5f9", color: "#64748b", border: "none" }} onClick={() => setActiveTab("REJECTED")}>Rejected</button>
+                        </li>
+                    </ul>
+                </div>
 
-                            {activeTab === "APPROVED" && (
-                                <DataTableBase columns={ApprovedKycList} data={kycApprovedList || []} pagination />
-                            )}
-
-                            {activeTab === "REJECTED" && (
-                                <DataTableBase columns={RejectedKycList} data={kycRejectedList || []} pagination />
-                            )}
-                        </div>
+                {/* Table card */}
+                <div className="card border-0 shadow-sm rounded-4 overflow-hidden" style={{ borderLeft: "4px solid #0d9488" }}>
+                    <div className="card-header bg-white border-0 py-3 px-4">
+                        <h5 className="mb-0 fw-semibold text-dark d-flex align-items-center gap-2" style={{ fontSize: "1.1rem" }}>
+                            <span className="rounded-3 d-inline-flex align-items-center justify-content-center" style={{ width: "40px", height: "40px", background: "linear-gradient(135deg, #0d9488, #0f766e)", color: "#fff" }}><i className="fas fa-list" /></span>
+                            {activeTab === "PENDING" && "Pending KYC List"}
+                            {activeTab === "APPROVED" && "Approved KYC List"}
+                            {activeTab === "REJECTED" && "Rejected KYC List"}
+                        </h5>
+                    </div>
+                    <div className="card-body p-0">
+                        {activeTab === "PENDING" && <DataTableBase columns={PendingKycList} data={kycPendingList || []} pagination />}
+                        {activeTab === "APPROVED" && <DataTableBase columns={ApprovedKycList} data={kycApprovedList || []} pagination />}
+                        {activeTab === "REJECTED" && <DataTableBase columns={RejectedKycList} data={kycRejectedList || []} pagination />}
                     </div>
                 </div>
             </div>
 
-            {/* ✅ Reject Reason Modal */}
+            {/* Reject Reason Modal - premium */}
             {showModal && (
-                <div className="custom-modal-overlay">
-                    <div className="custom-modal">
-                        <h4>Reject KYC</h4>
-                        <textarea
-                            rows="4"
-                            className="form-control"
-                            placeholder="Enter reason for rejection"
-                            value={rejectReason}
-                            onChange={(e) => setRejectReason(e.target.value)}
-                        />
-                        <div style={{ marginTop: "15px", display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-                            <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
-                                Cancel
-                            </button>
-                            <button
-                                className="btn btn-danger"
-                                onClick={() => handleKycStatus(selectedUserId, "REJECTED", rejectReason)}
-                            >
-                                Submit
-                            </button>
+                <div className="custom-modal-overlay" onClick={() => setShowModal(false)}>
+                    <div className="custom-modal rounded-4 overflow-hidden border-0 shadow-lg" style={{ maxWidth: "420px" }} onClick={(e) => e.stopPropagation()}>
+                        <div className="border-0 py-3 px-4 text-white" style={{ background: "linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)" }}>
+                            <h5 className="mb-0 fw-bold d-flex align-items-center gap-2"><i className="fas fa-times-circle" /> Reject KYC</h5>
+                        </div>
+                        <div className="p-4">
+                            <label className="form-label fw-semibold small text-secondary">Reason for rejection (optional)</label>
+                            <textarea rows="4" className="form-control rounded-3 border" placeholder="Enter reason for rejection..." value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} />
+                            <div className="d-flex justify-content-end gap-2 mt-4">
+                                <button type="button" className="btn rounded-pill px-4" style={{ background: "#64748b", color: "#fff" }} onClick={() => setShowModal(false)}>Cancel</button>
+                                <button type="button" className="btn rounded-pill px-4 border-0 text-white fw-semibold" style={{ background: "#dc2626" }} onClick={() => handleKycStatus(selectedUserId, "REJECTED", rejectReason)}>Submit Rejection</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* ✅ Inline CSS for modal */}
             <style>{`
                 .custom-modal-overlay {
-                    position: fixed;
-                    top: 0; left: 0; right: 0; bottom: 0;
+                    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
                     background: rgba(0,0,0,0.5);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    z-index: 1000;
+                    display: flex; align-items: center; justify-content: center;
+                    z-index: 1050;
                 }
-                .custom-modal {
-                    background: #fff;
-                    padding: 20px;
-                    border-radius: 8px;
-                    width: 400px;
-                    max-width: 90%;
-                }
-                .form-control {
-                    width: 100%;
-                    padding: 8px;
-                    border: 1px solid #ccc;
-                    border-radius: 4px;
-                }
+                .custom-modal { background: #fff; width: 90%; }
             `}</style>
         </div>
     );

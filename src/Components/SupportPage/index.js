@@ -6,46 +6,46 @@ import AuthService from "../../Api/Api_Services/AuthService";
 import DataTableBase from "../../Utils/DataTable";
 import { imageUrl } from "../../Api/Api_Config/ApiEndpoints";
 import { useLocation, useNavigate } from "react-router-dom";
+import UserHeader from "../../Layout/UserHeader";
+
+const TEAL_GRADIENT = "linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #14b8a6 100%)";
+const TEAL_ACCENT = "#0d9488";
+const TEAL_BTN = "linear-gradient(135deg, #0d9488, #0f766e)";
 
 function SupportChat() {
   const adminId = "68a4b42c776734c76dfc7248";
 
-  const [allMsgData, setAllMsgData] = useState([]); // 🔹 Ticket list
-  const [supportData, setSupportData] = useState([]); // 🔹 Chat messages
-  const [selectedTicket, setSelectedTicket] = useState(null); // 🔹 Selected userId
-
+  const [allMsgData, setAllMsgData] = useState([]);
+  const [supportData, setSupportData] = useState([]);
+  const [selectedTicket, setSelectedTicket] = useState(null);
   const [isClosed, setIsClosed] = useState(false);
   const [message, setMessage] = useState("");
   const [file, setFile] = useState(null);
   const [filePreview, setFilePreview] = useState("");
   const [search, setSearch] = useState("");
-
   const chatEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const location = useLocation();
-
   const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const navigate = useNavigate();
 
-
-  // 🔹 Scroll to bottom on chat update
   useEffect(() => {
     if (chatEndRef.current) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [supportData]);
 
-  // 🔹 Fetch all tickets (runs only once)
   const handleAllMsg = async () => {
     try {
       LoaderHelper.loaderStatus(true);
       const result = await AuthService.allMsg();
       if (result?.success) {
-        setAllMsgData(result.data);
+        setAllMsgData(result.data || []);
       } else {
-        alertErrorMessage(result?.message || "Failed to fetch all messages.");
+        alertErrorMessage(result?.message || "Failed to fetch messages.");
       }
     } catch (error) {
-      console.error("❌ Failed to fetch all messages:", error);
       alertErrorMessage("Server error while fetching messages.");
     } finally {
       LoaderHelper.loaderStatus(false);
@@ -53,10 +53,9 @@ function SupportChat() {
   };
 
   useEffect(() => {
-    handleAllMsg(); // ✅ Only once on mount
+    handleAllMsg();
   }, []);
 
-  // 🔹 Fetch single user's chat
   const handleGetMsg = async (userId, { showLoader = true } = {}) => {
     if (!userId) return;
     if (showLoader) LoaderHelper.loaderStatus(true);
@@ -68,16 +67,14 @@ function SupportChat() {
           : result.data?.messages || [];
         setSupportData(messages);
         setIsClosed(
-          result?.ticketStatus === "closed" ||
-          result?.data?.ticketStatus === "closed"
+          result?.ticketStatus === "closed" || result?.data?.ticketStatus === "closed"
         );
-        setSelectedTicket(userId); // ✅ ensure selectedTicket set
+        setSelectedTicket(userId);
       } else {
         alertErrorMessage(result?.message || "Failed to fetch messages.");
         setSupportData([]);
       }
     } catch (error) {
-      console.error("❌ Failed to fetch messages:", error);
       alertErrorMessage("Server error while fetching messages.");
       setSupportData([]);
     } finally {
@@ -85,11 +82,10 @@ function SupportChat() {
     }
   };
 
-  // 🔹 Handle send message
   const handleMsgSend = async () => {
     const trimmed = message.trim();
     if (!selectedTicket) return;
-    if (!trimmed && !file) return; // nothing to send
+    if (!trimmed && !file) return;
 
     const formData = new FormData();
     formData.append("userId", selectedTicket);
@@ -105,20 +101,21 @@ function SupportChat() {
         setMessage("");
         try {
           if (filePreview) URL.revokeObjectURL(filePreview);
-        } catch (_) { }
+        } catch (_) {}
         setFile(null);
         setFilePreview("");
         if (fileInputRef.current) fileInputRef.current.value = "";
 
-        // Optimistic message update
         if (trimmed) {
           setSupportData((prev) => [
             ...(Array.isArray(prev) ? prev : []),
-            { sender: "admin", message: trimmed, timestamp: new Date().toISOString() },
+            {
+              sender: "admin",
+              message: trimmed,
+              timestamp: new Date().toISOString(),
+            },
           ]);
         }
-
-        // 🔹 Fetch latest chat (no loader)
         await handleGetMsg(selectedTicket, { showLoader: false });
       } else {
         alertErrorMessage(result?.message);
@@ -130,7 +127,6 @@ function SupportChat() {
     }
   };
 
-  // 🔹 Auto-open chat from "Contact User"
   useEffect(() => {
     const userId = location?.state?.userId;
     if (location?.state?.openChat && userId) {
@@ -138,79 +134,14 @@ function SupportChat() {
     }
   }, [location?.state]);
 
-  // 🔹 DataTable columns
-
-  const itemsPerPage = 10;
-
-
-  const navigate = useNavigate();
-
   const handleUserClick = (userId) => {
-    navigate(`/dashboard/UserDetails`, { state: { userId } });
+    navigate("/dashboard/UserDetails", { state: { userId } });
   };
-  const columns = [
-    {
-      name: "Sr No.",
-      selector: (row, i) => i + 1 + (currentPage - 1) * itemsPerPage,
-      width: "80px",
-    },
-    {
-      name: "Date & Time",
-      selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"),
-      sortable: true,
-    },
-    {
-      name: "User Id",
-      wrap: true,
-      width: "160px",
-      selector: (row) => (
-        <div className="d-flex align-items-center ">
-          <button
-            onClick={() => handleUserClick(row?.userId?.id)}
-            className="btn p-0 text-primary"
-            style={{ cursor: "pointer" }}
-          >
-            {row?.userId?.uuid || "------"}
-          </button>
-          <div className="mx-2 " style={{ cursor: "pointer" }}
-            onClick={() => {
-              if (row?.userId?.uuid) {
-                navigator?.clipboard?.writeText(row?.userId?.uuid);
-                alertSuccessMessage("UUID copied!");
-              } else {
-                alertErrorMessage("No UUID found");
-              }
-            }}
-          >
-            <i className="far fa-copy" aria-hidden="true"></i>
-          </div>
-        </div>
-      ),
-    },
-    { name: "Name", selector: (row) => row?.userId?.name || "—" },
-    { name: "Fista User Name", selector: (row) => row?.userId?.fullName || "—" },
-    { name: "Mobile", selector: (row) => row?.userId?.mobileNumber || "—" },
-    { name: "Last Message", selector: (row) => row?.lastMessage || "—" },
-    { name: "Status", selector: (row) => row?.status?.toUpperCase() || "—" },
-    {
-      name: "Action",
-      cell: (row) => (
-        <button
-          className="btn btn-sm btn-primary"
-          onClick={() => handleGetMsg(row.userId._id)}
-        >
-          View
-        </button>
-      ),
-    },
-  ];
 
   const handleSearch = (e) => {
-    const value = e.target.value?.trim()?.toLowerCase() || "";
-    setSearch(value);
+    setSearch(e.target.value?.trim()?.toLowerCase() || "");
   };
 
-  // Filter list
   const filteredList = allMsgData.filter((item) => {
     const text = search.toLowerCase();
     if (!text) return true;
@@ -228,174 +159,371 @@ function SupportChat() {
     );
   });
 
+  const columns = [
+    {
+      name: "Sr No.",
+      selector: (row, i) => i + 1 + (currentPage - 1) * itemsPerPage,
+      width: "80px",
+    },
+    {
+      name: "Date & Time",
+      selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"),
+      sortable: true,
+    },
+    {
+      name: "User Id",
+      wrap: true,
+      width: "160px",
+      cell: (row) => (
+        <div className="d-flex align-items-center gap-2">
+          <button
+            type="button"
+            onClick={() => handleUserClick(row?.userId?.id)}
+            className="btn btn-link p-0 text-decoration-none fw-semibold"
+            style={{ color: TEAL_ACCENT, cursor: "pointer" }}
+          >
+            {row?.userId?.uuid || "—"}
+          </button>
+          <button
+            type="button"
+            className="btn btn-link p-0 text-secondary"
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              if (row?.userId?.uuid) {
+                navigator?.clipboard?.writeText(row?.userId?.uuid);
+                alertSuccessMessage("UUID copied!");
+              } else {
+                alertErrorMessage("No UUID found");
+              }
+            }}
+            title="Copy UUID"
+          >
+            <i className="far fa-copy" />
+          </button>
+        </div>
+      ),
+    },
+    { name: "Name", selector: (row) => row?.userId?.name || "—" },
+    { name: "Fista User Name", selector: (row) => row?.userId?.fullName || "—" },
+    { name: "Mobile", selector: (row) => row?.userId?.mobileNumber || "—", width: "130px" },
+    { name: "Last Message", selector: (row) => row?.lastMessage || "—", wrap: true },
+    {
+      name: "Status",
+      cell: (row) => {
+        const status = (row?.status || "").toUpperCase();
+        const isClosed = status === "CLOSED";
+        const isResolved = status === "RESOLVED";
+        return (
+          <span
+            className="badge rounded-pill border-0"
+            style={{
+              fontSize: "0.7rem",
+              fontWeight: 600,
+              ...(isClosed && { background: "#64748b", color: "#fff" }),
+              ...(isResolved && { background: "linear-gradient(135deg, #22c55e, #16a34a)", color: "#fff" }),
+              ...(!isClosed && !isResolved && { background: "rgba(13,148,136,0.15)", color: "#0f766e" }),
+            }}
+          >
+            {status || "—"}
+          </span>
+        );
+      },
+      width: "100px",
+    },
+    {
+      name: "Action",
+      width: "100px",
+      cell: (row) => (
+        <button
+          type="button"
+          className="btn btn-sm rounded-pill border-0 px-3"
+          style={{
+            background: TEAL_BTN,
+            color: "#fff",
+            fontWeight: 600,
+            fontSize: "0.75rem",
+          }}
+          onClick={() => handleGetMsg(row.userId._id)}
+        >
+          View
+        </button>
+      ),
+    },
+  ];
 
   return (
     <div className="dashboard_right">
+      <UserHeader />
       <div className="dashboard_outer_s">
-        <h2>Support Chat</h2>
-
-        {/* 🔍 Search Box */}
-        <div className="col-3 mb-3">
-          <input
-            className="form-control"
-            type="search"
-            placeholder="Search by name, email, or mobile..."
-            value={search}
-            onChange={handleSearch}
-          />
+        {/* Page header - same theme */}
+        <div className="mb-4">
+          <div
+            className="rounded-4 overflow-hidden border-0 p-4 p-md-5"
+            style={{
+              background: TEAL_GRADIENT,
+              boxShadow: "0 16px 48px rgba(13,148,136,0.25)",
+            }}
+          >
+            <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+              <div>
+                <h1 className="mb-1 text-white fw-bold" style={{ fontSize: "1.75rem", letterSpacing: "-0.02em" }}>
+                  Support Chat
+                </h1>
+                <p className="mb-0 text-white opacity-75" style={{ fontSize: "0.9rem" }}>
+                  View tickets and chat with users
+                </p>
+              </div>
+              <div
+                className="rounded-3 d-none d-md-flex align-items-center justify-content-center text-white"
+                style={{ width: "56px", height: "56px", background: "rgba(255,255,255,0.2)" }}
+              >
+                <i className="fas fa-headset fa-lg" />
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* 🔹 Ticket List */}
-        <DataTableBase columns={columns} data={filteredList} pagination onChangePage={(page) => setCurrentPage(page)}
-        />
-
-        <h4 className="mt-0">Chat Window</h4>
-
-        {/* 🔹 Chat Window */}
-        {selectedTicket && (
-          <div className="chatbox_div_massages">
-            {/* 🔁 Refresh Button */}
-            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "10px" }}>
-              <button
-                className="btn btn-secondary btn-sm"
-                onClick={() => handleGetMsg(selectedTicket, { showLoader: true })}
+        {/* Ticket list card */}
+        <div
+          className="card border-0 rounded-4 overflow-hidden mb-4"
+          style={{ boxShadow: "0 10px 40px rgba(0,0,0,0.08)", borderTop: "3px solid #0d9488" }}
+        >
+          <div
+            className="card-header border-0 py-3 px-4"
+            style={{ background: "linear-gradient(90deg, rgba(13,148,136,0.08) 0%, transparent 100%)" }}
+          >
+            <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3">
+              <h3 className="mb-0 fw-bold text-dark d-flex align-items-center gap-2" style={{ fontSize: "1.1rem" }}>
+                <span
+                  className="rounded-3 d-inline-flex align-items-center justify-content-center"
+                  style={{ width: "40px", height: "40px", background: TEAL_BTN, color: "#fff" }}
+                >
+                  <i className="fas fa-ticket-alt" />
+                </span>
+                Tickets
+              </h3>
+              <div
+                className="d-flex align-items-center rounded-3 border overflow-hidden"
+                style={{ background: "#f8fafc", maxWidth: "320px" }}
               >
-                <i className="fa fa-refresh" style={{ marginRight: "5px" }}></i>
-                Refresh
-              </button>
+                <span className="px-3 py-2 text-muted">
+                  <i className="fas fa-search" style={{ color: TEAL_ACCENT }} />
+                </span>
+                <input
+                  type="search"
+                  className="form-control border-0 bg-transparent py-2"
+                  placeholder="Search by name, mobile, UUID..."
+                  value={search}
+                  onChange={handleSearch}
+                  style={{ fontSize: "0.9rem" }}
+                />
+              </div>
             </div>
+          </div>
+          <div className="card-body p-0">
+            <DataTableBase
+              columns={columns}
+              data={filteredList}
+              pagination
+              onChangePage={(page) => setCurrentPage(page)}
+            />
+          </div>
+        </div>
 
-            {/* 🔹 Chat Messages */}
+        {/* Chat window card */}
+        {selectedTicket && (
+          <div
+            className="card border-0 rounded-4 overflow-hidden"
+            style={{ boxShadow: "0 10px 40px rgba(0,0,0,0.08)", borderTop: "3px solid #6366f1" }}
+          >
             <div
-              className="chat_messages_block"
-              style={{
-                maxHeight: "400px",
-                overflowY: "auto",
-                padding: "15px",
-                border: "1px solid #ddd",
-                borderRadius: "8px",
-                marginBottom: "15px",
-                background: "#fafafa",
-              }}
+              className="card-header border-0 py-3 px-4"
+              style={{ background: "linear-gradient(90deg, rgba(99,102,241,0.08) 0%, transparent 100%)" }}
             >
-              {supportData.length > 0 ? (
-                supportData.map((chat, i) => (
-                  <div
-                    key={i}
+              <div className="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h3 className="mb-0 fw-bold text-dark d-flex align-items-center gap-2" style={{ fontSize: "1.1rem" }}>
+                  <span
+                    className="rounded-3 d-inline-flex align-items-center justify-content-center"
                     style={{
-                      display: "flex",
-                      justifyContent: chat.sender === "admin" ? "flex-end" : "flex-start",
-                      marginBottom: "12px",
+                      width: "40px",
+                      height: "40px",
+                      background: "linear-gradient(135deg, #6366f1, #4f46e5)",
+                      color: "#fff",
                     }}
                   >
-                    <div
-                      style={{
-                        background: chat.sender === "admin" ? "#03C2C7" : "#e5e5e5",
-                        color: chat.sender === "admin" ? "#fff" : "#000",
-                        padding: "8px 12px",
-                        borderRadius: "10px",
-                        maxWidth: "70%",
-                      }}
-                    >
-                      <strong style={{ display: "block", marginBottom: "4px" }}>
-                        {chat.sender === "admin" ? "You (Admin)" : "User"}
-                      </strong>
-
-                      {chat?.image && (
-                        <img
-                          src={imageUrl + chat.image}
-                          alt="chat-media" loading="lazy"
-                          style={{
-                            maxWidth: "200px",
-                            borderRadius: "8px",
-                            marginTop: "5px",
-                          }}
-                        />
-                      )}
-                      <p style={{ margin: "4px 0" }}>{chat.message}</p>
-                      <small style={{ fontSize: "11px", opacity: 0.7 }}>
-                        {chat?.timestamp
-                          ? moment(chat.timestamp).format("DD/MM/YYYY hh:mm A")
-                          : ""}
-                      </small>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p style={{ textAlign: "center", color: "#777" }}>No messages yet</p>
-              )}
-              <div ref={chatEndRef}></div>
+                    <i className="fas fa-comments" />
+                  </span>
+                  Chat
+                </h3>
+                <button
+                  type="button"
+                  className="btn btn-sm rounded-pill border-0 d-inline-flex align-items-center gap-2"
+                  style={{ background: "#64748b", color: "#fff", fontWeight: 600 }}
+                  onClick={() => handleGetMsg(selectedTicket, { showLoader: true })}
+                >
+                  <i className="fas fa-sync-alt" /> Refresh
+                </button>
+              </div>
             </div>
 
-            {/* 🔹 Message Input */}
-            {!isClosed ? (
-              <>
-                {filePreview && (
-                  <div className="preview-inside">
-                    <img src={filePreview} alt="preview" loading="lazy" />
-                    <button
-                      type="button"
-                      className="remove-btn"
-                      onClick={() => {
-                        try {
-                          if (filePreview) URL.revokeObjectURL(filePreview);
-                        } catch (_) { }
-                        setFile(null);
-                        setFilePreview("");
-                        if (fileInputRef.current) fileInputRef.current.value = "";
+            <div className="card-body p-4">
+              {/* Messages area */}
+              <div
+                className="rounded-4 overflow-auto mb-4"
+                style={{
+                  maxHeight: "420px",
+                  minHeight: "200px",
+                  background: "#f8fafc",
+                  border: "1px solid rgba(0,0,0,0.06)",
+                  padding: "1rem",
+                }}
+              >
+                {supportData.length > 0 ? (
+                  supportData.map((chat, i) => (
+                    <div
+                      key={i}
+                      className="d-flex mb-3"
+                      style={{
+                        justifyContent: chat.sender === "admin" ? "flex-end" : "flex-start",
                       }}
                     >
-                      ✕
-                    </button>
+                      <div
+                        className="rounded-4 px-3 py-2 shadow-sm"
+                        style={{
+                          maxWidth: "75%",
+                          background:
+                            chat.sender === "admin"
+                              ? TEAL_BTN
+                              : "#fff",
+                          color: chat.sender === "admin" ? "#fff" : "#1e293b",
+                          border: chat.sender === "admin" ? "none" : "1px solid rgba(0,0,0,0.08)",
+                        }}
+                      >
+                        <div className="small fw-semibold mb-1 opacity-90">
+                          {chat.sender === "admin" ? "You (Admin)" : "User"}
+                        </div>
+                        {chat?.image && (
+                          <img
+                            src={imageUrl + chat.image}
+                            alt="chat"
+                            loading="lazy"
+                            className="rounded-3 mt-1"
+                            style={{ maxWidth: "200px", display: "block" }}
+                          />
+                        )}
+                        <div className="mb-1">{chat.message}</div>
+                        <small className="opacity-75" style={{ fontSize: "0.7rem" }}>
+                          {chat?.timestamp
+                            ? moment(chat.timestamp).format("DD/MM/YYYY hh:mm A")
+                            : ""}
+                        </small>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center text-muted py-5">
+                    <i className="fas fa-inbox fa-2x mb-2 opacity-50" />
+                    <p className="mb-0">No messages yet</p>
                   </div>
                 )}
+                <div ref={chatEndRef} />
+              </div>
 
-                <div className="chatbox_bottom">
-                  <div className="messages_file_in">
-                    <div className="input-with-preview">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Type your message..."
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && handleMsgSend()}
-                      />
-
-                      <label htmlFor="fileInput" className="upload-icon">
-                        <i className="fa fa-paperclip"></i>
-                      </label>
-                      <input
-                        type="file"
-                        id="fileInput"
-                        accept="image/*"
-                        ref={fileInputRef}
-                        style={{ display: "none" }}
-                        onChange={(e) => {
-                          const file = e.target.files[0];
-                          if (file) {
-                            setFile(file);
-                            setFilePreview(URL.createObjectURL(file));
-                          }
-                        }}
-                      />
-
+              {/* Input area or closed message */}
+              {!isClosed ? (
+                <>
+                  {filePreview && (
+                    <div
+                      className="position-relative d-inline-block mb-2 rounded-3 overflow-hidden"
+                      style={{ background: "#f1f5f9", padding: "8px" }}
+                    >
+                      <img src={filePreview} alt="Preview" style={{ maxHeight: "80px" }} />
                       <button
-                        className="btn send-btn"
-                        onClick={handleMsgSend}
-                        disabled={!message.trim() && !file}
+                        type="button"
+                        className="btn btn-sm position-absolute top-0 end-0 rounded-circle"
+                        style={{ background: "#dc2626", color: "#fff" }}
+                        onClick={() => {
+                          try {
+                            if (filePreview) URL.revokeObjectURL(filePreview);
+                          } catch (_) {}
+                          setFile(null);
+                          setFilePreview("");
+                          if (fileInputRef.current) fileInputRef.current.value = "";
+                        }}
                       >
-                        Send
+                        ×
                       </button>
                     </div>
+                  )}
+
+                  <div className="d-flex align-items-center gap-2 flex-wrap">
+                    <input
+                      type="text"
+                      className="form-control rounded-pill flex-grow-1"
+                      placeholder="Type your message..."
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && handleMsgSend()}
+                      style={{ padding: "0.6rem 1rem", minWidth: "200px" }}
+                    />
+                    <label
+                      htmlFor="supportFileInput"
+                      className="btn rounded-pill mb-0 d-inline-flex align-items-center justify-content-center"
+                      style={{
+                        width: "44px",
+                        height: "44px",
+                        background: "#f1f5f9",
+                        color: TEAL_ACCENT,
+                        cursor: "pointer",
+                      }}
+                      title="Attach image"
+                    >
+                      <i className="fas fa-paperclip" />
+                    </label>
+                    <input
+                      type="file"
+                      id="supportFileInput"
+                      accept="image/*"
+                      ref={fileInputRef}
+                      style={{ display: "none" }}
+                      onChange={(e) => {
+                        const f = e.target.files[0];
+                        if (f) {
+                          setFile(f);
+                          setFilePreview(URL.createObjectURL(f));
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="btn rounded-pill border-0 px-4"
+                      style={{
+                        background: TEAL_BTN,
+                        color: "#fff",
+                        fontWeight: 600,
+                      }}
+                      onClick={handleMsgSend}
+                      disabled={!message.trim() && !file}
+                    >
+                      Send
+                    </button>
                   </div>
+                </>
+              ) : (
+                <div
+                  className="text-center rounded-4 py-4"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(34,197,94,0.1) 0%, rgba(34,197,94,0.05) 100%)",
+                    border: "1px solid rgba(34,197,94,0.3)",
+                  }}
+                >
+                  <span className="badge rounded-pill border-0 mb-2" style={{ background: "linear-gradient(135deg, #22c55e, #16a34a)", color: "#fff", fontSize: "0.8rem" }}>
+                    Resolved
+                  </span>
+                  <p className="mb-0 text-success fw-semibold">This ticket has been closed</p>
                 </div>
-              </>
-            ) : (
-              <div style={{ textAlign: "center", marginTop: "20px", color: "green" }}>
-                <p>This ticket has been resolved ✅</p>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         )}
       </div>

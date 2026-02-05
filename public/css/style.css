@@ -1258,6 +1258,115 @@ button.closed_btn {
     height: 100%;
 }
 
+/* ===== Premium Sidebar (same theme as dashboard) ===== */
+.sidebar-premium.leftside_menu {
+    border-right: 3px solid #0d9488;
+    box-shadow: 4px 0 24px rgba(13, 148, 136, 0.08);
+}
+
+.sidebar-premium .sidebar-logo {
+    padding: 20px 16px 16px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(13, 148, 136, 0.15);
+}
+
+.sidebar-premium .sidebar-logo a {
+    display: block;
+}
+
+.sidebar-premium .sidebar-logo img {
+    max-width: 140px;
+    width: 100%;
+    height: auto;
+}
+
+.sidebar-premium .navi_sidebar ul.list-unstyled.ps-0 {
+    padding: 8px 12px 24px !important;
+}
+
+.sidebar-premium .sidebar-section-label {
+    list-style: none;
+    padding: 14px 12px 6px;
+    margin: 0;
+}
+
+.sidebar-premium .sidebar-section-label span {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #94a3b8;
+    text-transform: uppercase;
+}
+
+.sidebar-premium .navi_sidebar ul li:not(.sidebar-section-label) a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    margin-bottom: 4px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-premium .navi_sidebar ul li:not(.sidebar-section-label) a i {
+    width: 20px;
+    text-align: center;
+    font-size: 1rem;
+    color: #0d9488;
+    transition: color 0.2s ease;
+}
+
+.sidebar-premium .navi_sidebar ul li:not(.sidebar-section-label) a:hover {
+    background: rgba(13, 148, 136, 0.08);
+    color: #0f766e;
+}
+
+.sidebar-premium .navi_sidebar ul li:not(.sidebar-section-label).active a {
+    background: linear-gradient(135deg, #0d9488, #0f766e);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+}
+
+.sidebar-premium .navi_sidebar ul li:not(.sidebar-section-label).active a i {
+    color: #fff;
+}
+
+.sidebar-premium .logout_btn {
+    padding: 12px;
+    border-top: 1px solid rgba(13, 148, 136, 0.12);
+    background: #fff;
+}
+
+.sidebar-premium .logout_btn a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    text-decoration: none;
+    transition: opacity 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+}
+
+.sidebar-premium .logout_btn a:hover {
+    opacity: 0.95;
+    box-shadow: 0 6px 16px rgba(220, 38, 38, 0.35);
+    color: #fff;
+}
+
+.sidebar-premium .logout_btn a i {
+    font-size: 1rem;
+}
+
 
 .logout_btn.mobile {
     display: none;

@@ -1,467 +1,425 @@
-import React, { useEffect, useState } from 'react';
-import UserHeader from '../../Layout/UserHeader';
-import LoaderHelper from '../../Utils/Loading/LoaderHelper';
-import AuthService from '../../Api/Api_Services/AuthService';
-import { alertErrorMessage, alertSuccessMessage } from '../../Utils/CustomAlertMessage';
-import moment from 'moment';
-import DataTableBase from '../../Utils/DataTable';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import UserHeader from "../../Layout/UserHeader";
+import LoaderHelper from "../../Utils/Loading/LoaderHelper";
+import AuthService from "../../Api/Api_Services/AuthService";
+import { alertErrorMessage, alertSuccessMessage } from "../../Utils/CustomAlertMessage";
+import moment from "moment";
+import DataTableBase from "../../Utils/DataTable";
+import { useNavigate } from "react-router-dom";
+
+const TEAL_ACCENT = "#0d9488";
+const TEAL_BTN = "linear-gradient(135deg, #0d9488, #0f766e)";
 
 function WithdrawalRequest() {
-    const [activeTab, setActiveTab] = useState("PENDING");
-    const [withdrawalRequestData, setWithdrawalRequestData] = useState([]);
-    const [withdrawalApprovedList, setWithdrawalApprovedList] = useState([]);
-    const [withdrawalRejectedList, setWithdrawalRejectedList] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const rowsPerPage = 10;
-    useEffect(() => {
+  const [activeTab, setActiveTab] = useState("PENDING");
+  const [withdrawalRequestData, setWithdrawalRequestData] = useState([]);
+  const [withdrawalApprovedList, setWithdrawalApprovedList] = useState([]);
+  const [withdrawalRejectedList, setWithdrawalRejectedList] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const rowsPerPage = 10;
+  const navigate = useNavigate();
+
+  const handlePendingWithdrawalList = async () => {
+    try {
+      LoaderHelper.loaderStatus(true);
+      const result = await AuthService.pendingWithdrawalRequest();
+      if (result?.success) {
+        const data = result?.data || [];
+        setWithdrawalRequestData(data.length ? data.reverse() : []);
+      } else {
+        setWithdrawalRequestData([]);
+      }
+    } catch (error) {
+      alertErrorMessage(error?.message);
+      setWithdrawalRequestData([]);
+    } finally {
+      LoaderHelper.loaderStatus(false);
+    }
+  };
+
+  const handleApprovedList = async () => {
+    try {
+      LoaderHelper.loaderStatus(true);
+      const result = await AuthService.approvedWithdrawalRequest();
+      if (result?.success) setWithdrawalApprovedList(result?.data?.reverse() || []);
+    } catch (error) {
+      alertErrorMessage(error?.message);
+    } finally {
+      LoaderHelper.loaderStatus(false);
+    }
+  };
+
+  const handleRejectedList = async () => {
+    try {
+      LoaderHelper.loaderStatus(true);
+      const result = await AuthService.cancelWithdrawalRequest();
+      if (result?.success) setWithdrawalRejectedList(result?.data?.reverse() || []);
+    } catch (error) {
+      alertErrorMessage(error?.message);
+    } finally {
+      LoaderHelper.loaderStatus(false);
+    }
+  };
+
+  const handleStatus = async (userId, status, transactionId) => {
+    const reason = status === "REJECTED" ? "Rejected by Admin" : "";
+    try {
+      LoaderHelper.loaderStatus(true);
+      const result = await AuthService.updateWithdrawalStatus(userId, status, transactionId, reason);
+      if (result?.success) {
+        alertSuccessMessage(`Withdrawal ${status} successfully`);
+        window.dispatchEvent(new CustomEvent("refreshSidebarCounts"));
         handlePendingWithdrawalList();
-    }, []);
-    const handlePendingWithdrawalList = async () => {
-        try {
-            LoaderHelper.loaderStatus(true);
-            const result = await AuthService.pendingWithdrawalRequest();
-            if (result?.success) {
-                const data = result?.data || [];
-                if (data.length === 0) {
-                    // ✅ No pending withdrawals, clear the list
-                    setWithdrawalRequestData([]);
-                } else {
-                    // Reverse to show latest first
-                    setWithdrawalRequestData(data.reverse());
-                }
-            } else {
-                // Optional: clear list on error
-                setWithdrawalRequestData([]);
-                // alertErrorMessage(result?.message);
-            }
+        if (status === "APPROVED") handleApprovedList();
+        if (status === "REJECTED") handleRejectedList();
+      } else {
+        alertErrorMessage(result?.message);
+      }
+    } catch (error) {
+      alertErrorMessage(error?.message);
+    } finally {
+      LoaderHelper.loaderStatus(false);
+    }
+  };
 
-        } catch (error) {
-            alertErrorMessage(error?.message);
-            setWithdrawalRequestData([]); // clear list on catch
-        } finally {
-            LoaderHelper.loaderStatus(false);
-        }
-    };
+  useEffect(() => {
+    handlePendingWithdrawalList();
+  }, []);
 
-    const handleApprovedList = async () => {
-        try {
-            LoaderHelper.loaderStatus(true);
-            const result = await AuthService.approvedWithdrawalRequest();
-            if (result?.success) {
-                setWithdrawalApprovedList(result?.data?.reverse());
-            } else {
-                // alertErrorMessage(result?.message);
-            }
-        } catch (error) {
-            alertErrorMessage(error?.message);
-        } finally {
-            LoaderHelper.loaderStatus(false);
-        }
-    };
+  useEffect(() => {
+    if (activeTab === "APPROVED" && withdrawalApprovedList?.length === 0) handleApprovedList();
+    if (activeTab === "REJECTED" && withdrawalRejectedList?.length === 0) handleRejectedList();
+  }, [activeTab]);
 
-    const handleRejectedList = async () => {
-        try {
-            LoaderHelper.loaderStatus(true);
-            const result = await AuthService.cancelWithdrawalRequest();
-            if (result?.success) {
-                setWithdrawalRejectedList(result?.data?.reverse());
-            } else {
-                // alertErrorMessage(result?.message);
-            }
-        } catch (error) {
-            alertErrorMessage(error?.message);
-        } finally {
-            LoaderHelper.loaderStatus(false);
-        }
-    };
+  const handleUserClick = (userId) => {
+    navigate("/dashboard/UserDetails", { state: { userId } });
+  };
 
-    const handleStatus = async (userId, status, transactionId, reason) => {
-        try {
-            LoaderHelper.loaderStatus(true);
-            const reason = status === "REJECTED" ? "Rejected by Admin" : "";
-            const result = await AuthService.updateWithdrawalStatus(userId, status, transactionId, reason);
-            if (result?.success) {
-                alertSuccessMessage(`KYC ${status} successfully`);
-                handlePendingWithdrawalList();
-                if (status === "APPROVED") handleApprovedList();
-                if (status === "REJECTED") handleRejectedList();
-            } else {
-                alertErrorMessage(result?.message);
-            }
-        } catch (error) {
-            alertErrorMessage(error?.message);
-        } finally {
-            LoaderHelper.loaderStatus(false);
-        }
-    };
+  const handleView = (row) => {
+    setSelectedUser(row);
+    setShowModal(true);
+  };
 
-    useEffect(() => {
-        if (activeTab === "APPROVED" && withdrawalApprovedList?.length === 0) {
-            handleApprovedList();
-        }
-        if (activeTab === "REJECTED" && withdrawalRejectedList?.length === 0) {
-            handleRejectedList();
-        }
-    }, [activeTab]);
+  const handleClose = () => {
+    setShowModal(false);
+    setSelectedUser(null);
+  };
 
+  const userIdCell = (row) => (
+    <div className="d-flex align-items-center gap-2">
+      <button
+        type="button"
+        onClick={() => handleUserClick(row?.userId?.id || row?.userId?._id)}
+        className="btn btn-link p-0 text-decoration-none fw-semibold"
+        style={{ color: TEAL_ACCENT, cursor: "pointer" }}
+      >
+        {row?.userId?.uuid || "—"}
+      </button>
+      <button
+        type="button"
+        className="btn btn-link p-0 text-secondary"
+        style={{ cursor: "pointer" }}
+        onClick={() => {
+          const uuid = row?.userId?.uuid;
+          if (uuid) {
+            navigator?.clipboard?.writeText(uuid);
+            alertSuccessMessage("UUID copied!");
+          } else alertErrorMessage("No UUID found");
+        }}
+        title="Copy UUID"
+      >
+        <i className="far fa-copy" />
+      </button>
+    </div>
+  );
 
-    // ---------------- Columns ----------------
-    const withdrawalRequest = [
-        { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
-        { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-        {
-            name: "User Id",
-            wrap: true,
-            width: "160px",
-            selector: (row) => (
-                <div className="d-flex align-items-center ">
-                    <button
-                        onClick={() => handleUserClick(row?.userId?.id)}
-                        className="btn p-0 text-primary"
-                        style={{ cursor: "pointer" }}
-                    >
-                        {row?.userId?.uuid || "------"}
-                    </button>
-                    <div className="mx-2 " style={{ cursor: "pointer" }}
-                        onClick={() => {
-                            if (row?.uuid) {
-                                navigator?.clipboard?.writeText(row?.userId?.uuid);
-                                alertSuccessMessage("UUID copied!");
-                            } else {
-                                alertErrorMessage("No UUID found");
-                            }
-                        }}
-                    >
-                        <i className="far fa-copy" aria-hidden="true"></i>
-                    </div>
-                </div>
-            ),
-        },
-        { name: "Name", selector: (row) => row?.userId?.name, sortable: true, wrap: true },
-        { name: "Full Name", selector: (row) => row?.userId?.fullName, sortable: true, wrap: true },
-        { name: "Amount", selector: (row) => row?.amount, sortable: true, wrap: true },
-        { name: "Transaction Type", selector: (row) => row?.transactionType, sortable: true, wrap: true },
-        // { name: "Description", selector: (row) => row?.description, sortable: true, wrap: true },
-        {
-            name: "Status", selector: (row) => row?.status, cell: (row) => (
-                <span style={{ color: "orange", fontWeight: "500" }}>
-                    {row?.status || "—"}
-                </span>
-            ), sortable: true, wrap: true
-        },
-        {
-            name: "Actions",
-            width: "250px",
-            cell: (row) => (
-                <div style={{ display: "flex", gap: "8px" }}>
-                    <button
-                        className="btn btn-primary btn-sm"
-                        onClick={() => handleView(row)}
-                    >
-                        View
-                    </button>
-
-                    <button
-                        className="btn btn-success btn-sm"
-                        onClick={() => handleStatus(row.userId?._id, "APPROVED", row?._id)}
-                    >
-                        Approve
-                    </button>
-                    <button
-                        className="btn btn-danger btn-sm"
-                        onClick={() => handleStatus(row.userId?._id, "REJECTED", row?._id)}
-                    >
-                        Reject
-                    </button>
-                </div>
-            ),
-            ignoreRowClick: true,
-            allowOverflow: true,
-            button: true,
-        }
-
-
-    ];
-    const approvedWithdrawalList = [
-        { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
-        { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-        {
-            name: "User Id",
-            wrap: true,
-            width: "160px",
-            selector: (row) => (
-                <div className="d-flex align-items-center ">
-                    <button
-                        onClick={() => handleUserClick(row?.userId?._id)}
-                        className="btn p-0 text-primary"
-                        style={{ cursor: "pointer" }}
-                    >
-                        {row?.userId?.uuid || "------"}
-                    </button>
-                    <div className="mx-2 " style={{ cursor: "pointer" }}
-                        onClick={() => {
-                            if (row?.uuid) {
-                                navigator?.clipboard?.writeText(row?.userId?.uuid);
-                                alertSuccessMessage("UUID copied!");
-                            } else {
-                                alertErrorMessage("No UUID found");
-                            }
-                        }}
-                    >
-                        <i className="far fa-copy" aria-hidden="true"></i>
-                    </div>
-                </div>
-            ),
-        },
-        { name: "Name", selector: (row) => row?.userId?.name, sortable: true, wrap: true },
-
-        { name: "Full Name", selector: (row) => row?.userId?.fullName, sortable: true, wrap: true },
-        { name: "Amount", selector: (row) => `₹ ${(row?.amount) || 0}`, sortable: true, wrap: true },
-        { name: "Transaction Type", selector: (row) => row?.transactionType, sortable: true, wrap: true },
-        { name: "Description", selector: (row) => row?.description || "------", sortable: true, wrap: true },
-        {
-            name: "Status", selector: (row) => row?.status, cell: (row) => (
-                <span style={{ color: "green", fontWeight: "500" }}>
-                    {row?.status || "—"}
-                </span>
-            ), sortable: true, wrap: true
-        },
-    ];
-
-    const navigate = useNavigate();
-
-    const handleUserClick = (userId) => {
-        navigate(`/dashboard/UserDetails`, { state: { userId } });
-    };
-
-    const rejectedWithdrawalList = [
-        { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
-        { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
-        {
-            name: "User Id",
-            wrap: true,
-            width: "160px",
-            selector: (row) => (
-                <div className="d-flex align-items-center ">
-                    <button
-                        onClick={() => handleUserClick(row?.userId?._id)}
-                        className="btn p-0 text-primary"
-                        style={{ cursor: "pointer" }}
-                    >
-                        {row?.userId?.uuid || "------"}
-                    </button>
-                    <div className="mx-2 " style={{ cursor: "pointer" }}
-                        onClick={() => {
-                            if (row?.uuid) {
-                                navigator?.clipboard?.writeText(row?.userId?.uuid);
-                                alertSuccessMessage("UUID copied!");
-                            } else {
-                                alertErrorMessage("No UUID found");
-                            }
-                        }}
-                    >
-                        <i className="far fa-copy" aria-hidden="true"></i>
-                    </div>
-                </div>
-            ),
-        },
-        { name: "Name", selector: (row) => row?.userId?.name, sortable: true, wrap: true },
-        { name: "Fista Username", selector: (row) => row?.userId?.fullName, sortable: true, wrap: true },
-        { name: "Amount", selector: (row) => `₹ ${(row?.amount) || 0}`, sortable: true, wrap: true },
-        { name: "Transaction Type", selector: (row) => row?.transactionType, sortable: true, wrap: true },
-        { name: "Description", selector: (row) => row?.description || "------", sortable: true, wrap: true },
-        {
-            name: "Status", selector: (row) => row?.status, cell: (row) => (
-                <span style={{ color: "red", fontWeight: "500" }}>
-                    {row?.status || "—"}
-                </span>
-            ), sortable: true, wrap: true
-        },
-
-
-        // {
-        //     name: "Mobile",
-        //     selector: (row) => row?.countryCode && row?.mobileNumber
-        //         ? `${row.countryCode} ${row.mobileNumber}`
-        //         : "N/A",
-        //     sortable: true, wrap: true
-        // },
-        // {
-        //     name: "KYC Status",
-        //     cell: (row) => (
-        //         <span style={{
-        //             color: "red",
-        //             fontWeight: "600",
-        //         }}>
-        //             {row?.kycVerified}
-        //         </span>
-        //     ),
-        //     sortable: true, wrap: true,
-        // },
-    ];
-
-    const [showModal, setShowModal] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
-
-
-    const handleView = (row) => {
-        setSelectedUser(row);
-        setShowModal(true);
-    };
-
-    const handleClose = () => {
-        setShowModal(false);
-        setSelectedUser(null);
-    };
-
-
+  const statusBadge = (status, type) => {
+    const isPending = status === "PENDING";
+    const isApproved = status === "APPROVED";
+    const isRejected = status === "REJECTED";
     return (
-        <div className="dashboard_right">
-            <UserHeader />
-            <div className="dashboard_outer_s">
-                <h2>Withdrawal Request Details</h2>
-                <div className="dashboard_detail_s user_list_table user_summary_t">
-                    <div className="user_list_top">
-                        <div className="user_list_l">
-                            <h4 className="text-xl font-semibold mb-4">
-                                {/* Withdrawal Request List{" "} */}
-                                {activeTab === "PENDING" && <span >Pending Withdrawal Request List</span>}
-                                {activeTab === "APPROVED" && <span>Approved Withdrawal Request List</span>}
-                                {activeTab === "REJECTED" && <span>Rejected Withdrawal Request List</span>}
-                            </h4>
-                        </div>
-                    </div>
-                    <div className="dashboard_summary">
-                        <ul className="nav nav-tabs" role="tablist">
-                            <li className="nav-item">
-                                <button className={`nav-link ${activeTab === "PENDING" ? "active" : ""}`} onClick={() => setActiveTab("PENDING")}>
-                                    Pending
-                                </button>
-                            </li>
-                            <li className="nav-item">
-                                <button className={`nav-link ${activeTab === "APPROVED" ? "active" : ""}`} onClick={() => setActiveTab("APPROVED")}>
-                                    Approved
-                                </button>
-                            </li>
-                            <li className="nav-item">
-                                <button className={`nav-link ${activeTab === "REJECTED" ? "active" : ""}`} onClick={() => setActiveTab("REJECTED")}>
-                                    Rejected
-                                </button>
-                            </li>
-                        </ul>
-
-                        <div className="p-4">
-                            {activeTab === "PENDING" && (
-                                <DataTableBase columns={withdrawalRequest} data={withdrawalRequestData || []} pagination />
-
-
-                            )}
-
-                            {activeTab === "APPROVED" && (
-                                <DataTableBase columns={approvedWithdrawalList} data={withdrawalApprovedList || []} pagination />
-
-                            )}
-
-                            {activeTab === "REJECTED" && (
-                                <DataTableBase columns={rejectedWithdrawalList} data={withdrawalRejectedList || []} pagination />
-
-                            )}
-                        </div>
-                    </div>
-                    {/* Bootstrap 5 Modal */}
-                    <div
-                        className={`modal fade ${showModal ? "show d-block" : ""}`}
-                        id="viewUserModal"
-                        tabIndex="-1"
-                        aria-labelledby="viewUserModalLabel"
-                        aria-hidden={!showModal}
-                    >
-                        <div className="modal-dialog">
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title" id="viewUserModalLabel">User Details</h5>
-                                    <button
-                                        type="button"
-                                        className="btn-close"
-                                        onClick={handleClose}
-                                        aria-label="Close"
-                                    ></button>
-                                </div>
-                                <div className="modal-body">
-                                    {selectedUser ? (
-                                        <div className='userdetails_list'>
-                                            <p><strong>Name:</strong> <span>{selectedUser?.userId?.fullName} </span></p>
-                                            <p><strong>UUID:</strong> <span>{selectedUser?.userId?.uuid}</span></p>
-                                            {/* <p><strong>Email:</strong> {selectedUser?.userId?.email || "N/A"}</p>
-                                            <p><strong>Phone:</strong> {selectedUser?.userId?.phone || "N/A"}</p> */}
-                                            <hr />
-                                            <h6 style={{ textAlign: "center" }}>Withdrawal Details:</h6>
-                                            <p><strong>Amount:</strong> <span>₹ {selectedUser?.amount}</span></p>
-                                            <p><strong>Transaction Type:</strong> <span>{selectedUser?.transactionType}</span></p>
-                                            <p><strong>Status:</strong> <span>{selectedUser?.status}</span></p>
-                                            <p><strong>Withdrawal Method:</strong> <span>{selectedUser?.withdrawalMethod || "—"}</span></p>
-
-                                            {selectedUser?.bankAndUpi && (
-                                                <>
-                                                    <hr />
-                                                    <h6 style={{ textAlign: "center", marginBottom: "20px" }}>Bank / UPI Details:</h6>
-
-                                                    {/* ✅ Copy Function */}
-                                                    {[
-                                                        { label: "UPI ID", value: selectedUser?.bankAndUpi?.upiId },
-                                                        { label: "UPI Name", value: selectedUser?.bankAndUpi?.upiName },
-
-                                                        { label: "Account Number", value: selectedUser?.bankAndUpi?.accountNumber },
-                                                        { label: "Bank Name", value: selectedUser?.bankAndUpi?.bankName },
-                                                        { label: "IFSC Code", value: selectedUser?.bankAndUpi?.ifscCode },
-                                                    ]
-                                                        .filter(item => item.value)
-                                                        .map((item, index) => (
-                                                            <p key={index} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                                                                <span>
-                                                                    <strong>{item?.label}:</strong> <span>{item?.value}</span>
-                                                                </span>
-                                                                <i
-                                                                    className="fa fa-copy"
-                                                                    style={{
-                                                                        cursor: "pointer",
-                                                                        color: "#007bff",
-                                                                        marginLeft: "10px",
-                                                                        fontSize: "16px"
-                                                                    }}
-                                                                    onClick={() => {
-                                                                        navigator.clipboard.writeText(item?.value);
-                                                                        alertSuccessMessage(`${item?.label} copied to clipboard!`);
-                                                                    }}
-                                                                ></i>
-                                                            </p>
-                                                        ))}
-                                                </>
-                                            )}
-                                        </div>
-                                    ) : (
-                                        <p>Loading...</p>
-                                    )}
-                                </div>
-
-
-                                <div className="modal-footer">
-                                    <button
-                                        type="button"
-                                        className="btn btn-secondary"
-                                        onClick={handleClose}
-                                    >
-                                        Close
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <span
+        className="badge rounded-pill border-0"
+        style={{
+          fontSize: "0.7rem",
+          fontWeight: 600,
+          ...(isPending && { background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#fff" }),
+          ...(isApproved && { background: "linear-gradient(135deg, #22c55e, #16a34a)", color: "#fff" }),
+          ...(isRejected && { background: "#dc2626", color: "#fff" }),
+          ...(!isPending && !isApproved && !isRejected && { background: "#f1f5f9", color: "#64748b" }),
+        }}
+      >
+        {status || "—"}
+      </span>
     );
+  };
+
+  const withdrawalRequestColumns = [
+    { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
+    { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
+    { name: "User Id", width: "160px", cell: userIdCell },
+    { name: "Name", selector: (row) => row?.userId?.name ?? "—", sortable: true, wrap: true },
+    { name: "Full Name", selector: (row) => row?.userId?.fullName ?? "—", sortable: true, wrap: true },
+    { name: "Amount", selector: (row) => `₹ ${row?.amount ?? 0}`, sortable: true, wrap: true },
+    { name: "Transaction Type", selector: (row) => row?.transactionType ?? "—", sortable: true, wrap: true },
+    { name: "Status", width: "100px", cell: (row) => statusBadge(row?.status), sortable: true },
+    {
+      name: "Actions",
+      width: "240px",
+      cell: (row) => (
+        <div className="d-flex gap-2 flex-wrap">
+          <button
+            type="button"
+            className="btn btn-sm rounded-pill border-0 px-3"
+            style={{ background: TEAL_BTN, color: "#fff", fontWeight: 600, fontSize: "0.75rem" }}
+            onClick={() => handleView(row)}
+          >
+            View
+          </button>
+          <button
+            type="button"
+            className="btn btn-sm rounded-pill border-0 px-3"
+            style={{ background: "linear-gradient(135deg, #22c55e, #16a34a)", color: "#fff", fontWeight: 600, fontSize: "0.75rem" }}
+            onClick={() => handleStatus(row.userId?._id, "APPROVED", row?._id)}
+          >
+            Approve
+          </button>
+          <button
+            type="button"
+            className="btn btn-sm rounded-pill border-0 px-3"
+            style={{ background: "#dc2626", color: "#fff", fontWeight: 600, fontSize: "0.75rem" }}
+            onClick={() => handleStatus(row.userId?._id, "REJECTED", row?._id)}
+          >
+            Reject
+          </button>
+        </div>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+  ];
+
+  const approvedColumns = [
+    { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
+    { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
+    { name: "User Id", width: "160px", cell: userIdCell },
+    { name: "Name", selector: (row) => row?.userId?.name ?? "—", sortable: true, wrap: true },
+    { name: "Full Name", selector: (row) => row?.userId?.fullName ?? "—", sortable: true, wrap: true },
+    { name: "Amount", selector: (row) => `₹ ${row?.amount ?? 0}`, sortable: true, wrap: true },
+    { name: "Transaction Type", selector: (row) => row?.transactionType ?? "—", sortable: true, wrap: true },
+    { name: "Description", selector: (row) => row?.description ?? "—", sortable: true, wrap: true },
+    { name: "Status", width: "100px", cell: (row) => statusBadge(row?.status), sortable: true },
+  ];
+
+  const rejectedColumns = [
+    { name: "Sr. No.", cell: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, width: "80px" },
+    { name: "Date & Time", selector: (row) => moment(row.createdAt).format("DD-MM-YYYY LT"), sortable: true, wrap: true },
+    { name: "User Id", width: "160px", cell: userIdCell },
+    { name: "Name", selector: (row) => row?.userId?.name ?? "—", sortable: true, wrap: true },
+    { name: "Fista Username", selector: (row) => row?.userId?.fullName ?? "—", sortable: true, wrap: true },
+    { name: "Amount", selector: (row) => `₹ ${row?.amount ?? 0}`, sortable: true, wrap: true },
+    { name: "Transaction Type", selector: (row) => row?.transactionType ?? "—", sortable: true, wrap: true },
+    { name: "Description", selector: (row) => row?.description ?? "—", sortable: true, wrap: true },
+    { name: "Status", width: "100px", cell: (row) => statusBadge(row?.status), sortable: true },
+  ];
+
+  const tabs = [
+    { id: "PENDING", label: "Pending", icon: "fa-clock" },
+    { id: "APPROVED", label: "Approved", icon: "fa-check-circle" },
+    { id: "REJECTED", label: "Rejected", icon: "fa-times-circle" },
+  ];
+
+  return (
+    <div className="dashboard_right">
+      <UserHeader />
+      <div className="dashboard_outer_s">
+        <div className="mb-4">
+          <div
+            className="rounded-4 overflow-hidden border-0 p-4 p-md-5"
+            style={{
+              background: "linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #14b8a6 100%)",
+              boxShadow: "0 16px 48px rgba(13,148,136,0.25)",
+            }}
+          >
+            <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+              <div>
+                <h1 className="mb-1 text-white fw-bold" style={{ fontSize: "1.75rem", letterSpacing: "-0.02em" }}>
+                  Withdrawal Requests
+                </h1>
+                <p className="mb-0 text-white opacity-75" style={{ fontSize: "0.9rem" }}>
+                  Manage pending, approved and rejected withdrawals
+                </p>
+              </div>
+              <div
+                className="rounded-3 d-none d-md-flex align-items-center justify-content-center text-white"
+                style={{ width: "56px", height: "56px", background: "rgba(255,255,255,0.2)" }}
+              >
+                <i className="fas fa-arrow-up fa-lg" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="card border-0 rounded-4 overflow-hidden"
+          style={{ boxShadow: "0 10px 40px rgba(0,0,0,0.08)", borderTop: "3px solid #0891b2" }}
+        >
+          <div
+            className="card-header border-0 py-3 px-4"
+            style={{ background: "linear-gradient(90deg, rgba(8,145,178,0.08) 0%, transparent 100%)" }}
+          >
+            <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3 flex-wrap">
+              <h3 className="mb-0 fw-bold text-dark d-flex align-items-center gap-2" style={{ fontSize: "1.1rem" }}>
+                <span
+                  className="rounded-3 d-inline-flex align-items-center justify-content-center"
+                  style={{ width: "40px", height: "40px", background: "linear-gradient(135deg, #0891b2, #0e7490)", color: "#fff" }}
+                >
+                  <i className="fas fa-university" />
+                </span>
+                {activeTab === "PENDING" && "Pending Withdrawals"}
+                {activeTab === "APPROVED" && "Approved Withdrawals"}
+                {activeTab === "REJECTED" && "Rejected Withdrawals"}
+              </h3>
+              <ul className="nav nav-pills gap-2 mb-0">
+                {tabs.map((tab) => (
+                  <li key={tab.id} className="nav-item">
+                    <button
+                      type="button"
+                      className={`nav-link rounded-pill d-inline-flex align-items-center gap-2 ${activeTab === tab.id ? "active" : ""}`}
+                      style={{
+                        fontSize: "0.85rem",
+                        fontWeight: 600,
+                        padding: "0.4rem 1rem",
+                        ...(activeTab === tab.id
+                          ? { background: TEAL_BTN, color: "#fff", border: "none" }
+                          : { background: "#f1f5f9", color: "#64748b", border: "none" }),
+                      }}
+                      onClick={() => setActiveTab(tab.id)}
+                    >
+                      <i className={`fas ${tab.icon}`} /> {tab.label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div className="card-body p-0">
+            <div className="p-4">
+              {activeTab === "PENDING" && (
+                <DataTableBase
+                  columns={withdrawalRequestColumns}
+                  data={withdrawalRequestData || []}
+                  pagination
+                  onChangePage={(page) => setCurrentPage(page)}
+                />
+              )}
+              {activeTab === "APPROVED" && (
+                <DataTableBase
+                  columns={approvedColumns}
+                  data={withdrawalApprovedList || []}
+                  pagination
+                  onChangePage={(page) => setCurrentPage(page)}
+                />
+              )}
+              {activeTab === "REJECTED" && (
+                <DataTableBase
+                  columns={rejectedColumns}
+                  data={withdrawalRejectedList || []}
+                  pagination
+                  onChangePage={(page) => setCurrentPage(page)}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* View modal - premium */}
+      {showModal && (
+        <div
+          className="d-flex align-items-center justify-content-center p-3"
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1050 }}
+          onClick={handleClose}
+          role="presentation"
+        >
+          <div
+            className="rounded-4 overflow-hidden border-0 bg-white"
+            style={{ width: "95%", maxWidth: "520px", maxHeight: "90vh", overflow: "auto", boxShadow: "0 24px 64px rgba(0,0,0,0.2)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              className="border-0 py-4 px-4 text-white"
+              style={{ background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)" }}
+            >
+              <h5 className="mb-0 fw-bold d-flex align-items-center gap-2" style={{ fontSize: "1.1rem" }}>
+                <i className="fas fa-user" /> User & Withdrawal Details
+              </h5>
+            </div>
+            <div className="p-4">
+              {selectedUser ? (
+                <div className="userdetails_list">
+                  <p className="mb-2"><strong>Name:</strong> <span>{selectedUser?.userId?.fullName ?? "—"}</span></p>
+                  <p className="mb-2"><strong>UUID:</strong> <span>{selectedUser?.userId?.uuid ?? "—"}</span></p>
+                  <hr />
+                  <h6 className="text-center mb-3">Withdrawal Details</h6>
+                  <p className="mb-2"><strong>Amount:</strong> <span>₹ {selectedUser?.amount ?? 0}</span></p>
+                  <p className="mb-2"><strong>Transaction Type:</strong> <span>{selectedUser?.transactionType ?? "—"}</span></p>
+                  <p className="mb-2"><strong>Status:</strong> <span>{selectedUser?.status ?? "—"}</span></p>
+                  <p className="mb-2"><strong>Withdrawal Method:</strong> <span>{selectedUser?.withdrawalMethod ?? "—"}</span></p>
+
+                  {selectedUser?.bankAndUpi && (
+                    <>
+                      <hr />
+                      <h6 className="text-center mb-3">Bank / UPI Details</h6>
+                      {[
+                        { label: "UPI ID", value: selectedUser?.bankAndUpi?.upiId },
+                        { label: "UPI Name", value: selectedUser?.bankAndUpi?.upiName },
+                        { label: "Account Number", value: selectedUser?.bankAndUpi?.accountNumber },
+                        { label: "Bank Name", value: selectedUser?.bankAndUpi?.bankName },
+                        { label: "IFSC Code", value: selectedUser?.bankAndUpi?.ifscCode },
+                      ]
+                        .filter((item) => item.value)
+                        .map((item, index) => (
+                          <p key={index} className="d-flex align-items-center justify-content-between mb-2">
+                            <span><strong>{item.label}:</strong> {item.value}</span>
+                            <button
+                              type="button"
+                              className="btn btn-link p-0"
+                              style={{ color: TEAL_ACCENT }}
+                              onClick={() => {
+                                navigator.clipboard.writeText(item.value);
+                                alertSuccessMessage(`${item.label} copied!`);
+                              }}
+                            >
+                              <i className="fas fa-copy" />
+                            </button>
+                          </p>
+                        ))}
+                    </>
+                  )}
+                </div>
+              ) : (
+                <p className="text-muted">Loading...</p>
+              )}
+              <div className="mt-4 d-flex justify-content-end">
+                <button
+                  type="button"
+                  className="btn rounded-pill px-4"
+                  style={{ background: "#64748b", color: "#fff" }}
+                  onClick={handleClose}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default WithdrawalRequest;

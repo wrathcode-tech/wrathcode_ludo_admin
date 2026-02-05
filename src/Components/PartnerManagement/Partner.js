@@ -20,7 +20,9 @@ function Partner() {
             LoaderHelper.loaderStatus(true);
             const result = await AuthService.getAllPartners();
             if (result?.success) {
-                setAllData(result?.data);
+                const data = result?.data || [];
+                setAllData(data);
+                setPartnerData(data);
             } else {
                 // alertErrorMessage(result?.message);
             }
@@ -62,26 +64,9 @@ function Partner() {
             wrap: true,
             width: "160px",
             selector: (row) => (
-                <div className="d-flex align-items-center ">
-                    <button
-                        onClick={() => handleUserClick(row?._id)}
-                        className="btn p-0 text-primary"
-                        style={{ cursor: "pointer" }}
-                    >
-                        {row?.uuid || "------"}
-                    </button>
-                    <div className="mx-2 " style={{ cursor: "pointer" }}
-                        onClick={() => {
-                            if (row?.uuid) {
-                                navigator?.clipboard?.writeText(row?.uuid);
-                                alertSuccessMessage("UUID copied!");
-                            } else {
-                                alertErrorMessage("No UUID found");
-                            }
-                        }}
-                    >
-                        <i className="far fa-copy" aria-hidden="true"></i>
-                    </div>
+                <div className="d-flex align-items-center gap-1">
+                    <button type="button" onClick={() => handleUserClick(row?._id)} className="btn btn-link p-0 text-decoration-none" style={{ color: "#0d9488", fontWeight: 600, cursor: "pointer" }}>{row?.uuid || "------"}</button>
+                    <button type="button" className="btn btn-sm p-1 rounded" style={{ background: "#f1f5f9", color: "#64748b" }} onClick={() => { if (row?.uuid) { navigator?.clipboard?.writeText(row?.uuid); alertSuccessMessage("UUID copied!"); } else { alertErrorMessage("No UUID found"); } }}><i className="far fa-copy" /></button>
                 </div>
             ),
         },
@@ -108,41 +93,18 @@ function Partner() {
                     row.status === "INACTIVE" && row.approvalStatus === "PENDING";
 
                 return (
-                    <div style={{ display: "flex", gap: "8px" }}>
-                        {/* Case 1: When status is INACTIVE & approvalStatus is PENDING → show both buttons */}
+                    <div className="d-flex gap-2 flex-wrap">
                         {isPendingInactive ? (
                             <>
-                                <button
-                                    className="btn btn-success btn-sm"
-                                    onClick={() => handleStatusUpdate(row._id, "APPROVED")}
-                                >
-                                    Approve
-                                </button>
-                                <button
-                                    className="btn btn-danger btn-sm"
-                                    onClick={() => handleStatusUpdate(row._id, "REJECTED")}
-                                >
-                                    Reject
-                                </button>
+                                <button type="button" className="btn btn-sm rounded-pill border-0 px-3" style={{ background: "linear-gradient(135deg, #22c55e, #16a34a)", color: "#fff", fontWeight: 600 }} onClick={() => handleStatusUpdate(row._id, "APPROVED")}>Approve</button>
+                                <button type="button" className="btn btn-sm rounded-pill border-0 px-3" style={{ background: "#dc2626", color: "#fff", fontWeight: 600 }} onClick={() => handleStatusUpdate(row._id, "REJECTED")}>Reject</button>
                             </>
                         ) : isInactiveRejected ? (
-                            /* Case 2: Show only Approve button if Rejected */
-                            <button
-                                className="btn btn-success btn-sm"
-                                onClick={() => handleStatusUpdate(row._id, "APPROVED")}
-                            >
-                                Approve
-                            </button>
+                            <button type="button" className="btn btn-sm rounded-pill border-0 px-3" style={{ background: "linear-gradient(135deg, #22c55e, #16a34a)", color: "#fff", fontWeight: 600 }} onClick={() => handleStatusUpdate(row._id, "APPROVED")}>Approve</button>
                         ) : isActiveApproved ? (
-                            /* Case 3: Show only Reject button if Approved */
-                            <button
-                                className="btn btn-danger btn-sm"
-                                onClick={() => handleStatusUpdate(row._id, "REJECTED")}
-                            >
-                                Reject
-                            </button>
+                            <button type="button" className="btn btn-sm rounded-pill border-0 px-3" style={{ background: "#dc2626", color: "#fff", fontWeight: 600 }} onClick={() => handleStatusUpdate(row._id, "REJECTED")}>Reject</button>
                         ) : (
-                            <span>--</span>
+                            <span className="text-muted">--</span>
                         )}
                     </div>
                 );
@@ -196,32 +158,35 @@ function Partner() {
     }
 
     return (
-        <>
-            <div class="dashboard_right">
-                <UserHeader />
-                <div class="dashboard_outer_s">
-                    <h2>All Partners List</h2>
-                    <div class="dashboard_detail_s user_list_table user_summary_t">
-                        <div class="user_list_top">
-                            <div class="user_list_l">
-                                <h4> Partners List</h4>
+        <div className="dashboard_right">
+            <UserHeader />
+            <div className="dashboard_outer_s">
+                <div className="mb-4">
+                    <div className="rounded-4 overflow-hidden border-0 p-4 p-md-5" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #14b8a6 100%)", boxShadow: "0 16px 48px rgba(13,148,136,0.25)" }}>
+                        <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                            <div>
+                                <h1 className="mb-1 text-white fw-bold" style={{ fontSize: "1.75rem", letterSpacing: "-0.02em" }}>All Partners List</h1>
+                                <p className="mb-0 text-white opacity-75" style={{ fontSize: "0.9rem" }}>Manage partner applications and status</p>
                             </div>
-                            <div class="user_search">
-                                <button><img src="/images/search_icon.svg" alt="search" /></button>
-                                <input type="search" placeholder="Search here..." name="search" onChange={searchObjects} />
-
-                            </div>
+                            <div className="rounded-3 d-none d-md-flex align-items-center justify-content-center text-white" style={{ width: "56px", height: "56px", background: "rgba(255,255,255,0.2)" }}><i className="fas fa-handshake fa-lg" /></div>
                         </div>
-                        <div className="card-body">
-
-                            <DataTableBase columns={columns} data={allData} pagination />
-                        </div>
-
                     </div>
                 </div>
-            </div >
-        </>
-    )
+                <div className="card border-0 shadow-sm rounded-4 overflow-hidden" style={{ borderLeft: "4px solid #0d9488" }}>
+                    <div className="card-header bg-white border-0 py-3 px-4 d-flex flex-wrap align-items-center justify-content-between gap-2">
+                        <h5 className="mb-0 fw-semibold text-dark">Partners List</h5>
+                        <div className="d-flex align-items-center position-relative" style={{ maxWidth: "280px" }}>
+                            <i className="fas fa-search position-absolute ms-3 text-secondary" style={{ fontSize: "0.9rem" }} />
+                            <input type="search" className="form-control form-control-sm ps-4 rounded-pill border" placeholder="Search here..." name="search" onChange={searchObjects} />
+                        </div>
+                    </div>
+                    <div className="card-body p-0">
+                        <DataTableBase columns={columns} data={partnerData.length ? partnerData : allData} pagination />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 }
 
 export default Partner

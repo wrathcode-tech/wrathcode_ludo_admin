@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
+import UserHeader from "../../Layout/UserHeader";
 import LoaderHelper from "../../Utils/Loading/LoaderHelper";
 import AuthService from "../../Api/Api_Services/AuthService";
 import { alertErrorMessage, alertSuccessMessage } from "../../Utils/CustomAlertMessage";
 import moment from "moment";
 import { ApiConfig, imageUrl } from "../../Api/Api_Config/ApiEndpoints";
 import DataTableBase from "../../Utils/DataTable";
+
+const TEAL_BTN = "linear-gradient(135deg, #0d9488, #0f766e)";
 
 const BannerManagement = () => {
     const [bannerLink, setBannerLink] = useState('');
@@ -55,34 +58,16 @@ const BannerManagement = () => {
         }
     };
 
-    const linkFollow = (row) => {
-        return (
-            <div className="d-flex gap-2">
-                <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => DeleteNotification(row?._id)}
-                >
-                    Delete
-                </button>
-
-                {row?.status === "INACTIVE" ? (
-                    <button
-                        className="btn btn-success btn-sm me-2"
-                        onClick={() => handleStatus(row?._id, "ACTIVE")}
-                    >
-                        Active
-                    </button>
-                ) : (
-                    <button
-                        className="btn btn-secondary btn-sm me-2"
-                        onClick={() => handleStatus(row?._id, "INACTIVE")}
-                    >
-                        Inactive
-                    </button>
-                )}
-            </div>
-        );
-    };
+    const linkFollow = (row) => (
+        <div className="d-flex gap-2">
+            <button type="button" className="btn btn-sm rounded-pill border-0 px-3" style={{ background: "#dc2626", color: "#fff", fontWeight: 600 }} onClick={() => DeleteNotification(row?._id)}>Delete</button>
+            {row?.status === "INACTIVE" ? (
+                <button type="button" className="btn btn-sm rounded-pill border-0 px-3" style={{ background: "linear-gradient(135deg, #22c55e, #16a34a)", color: "#fff", fontWeight: 600 }} onClick={() => handleStatus(row?._id, "ACTIVE")}>Active</button>
+            ) : (
+                <button type="button" className="btn btn-sm rounded-pill border-0 px-3" style={{ background: "#64748b", color: "#fff", fontWeight: 600 }} onClick={() => handleStatus(row?._id, "INACTIVE")}>Inactive</button>
+            )}
+        </div>
+    );
 
     const columns = [
         { name: "Sr No.", selector: (row, index) => index + 1, wrap: true, width: "80px" },
@@ -98,12 +83,8 @@ const BannerManagement = () => {
             wrap: true,
             selector: row => (
                 row?.bannerImage ? (
-                    <img
-                        src={`${imageUrl}${row?.bannerImage}`}
-                        alt="Banner" loading="lazy"
-                        style={{ maxWidth: "100px", height: "auto", borderRadius: "8px" }}
-                    />
-                ) : "No image"
+                    <img src={`${imageUrl}${row?.bannerImage}`} alt="Banner" loading="lazy" className="rounded-3 shadow-sm" style={{ maxWidth: "100px", height: "auto", objectFit: "cover" }} />
+                ) : <span className="text-muted">No image</span>
             )
         },
         {
@@ -211,51 +192,31 @@ const BannerManagement = () => {
 
 
     return (
-        <>
-            <div className="dashboard_right">
-                <div className="dashboard_outer_s">
-                    <div id="layoutSidenav_content">
-                        <main>
-                            <header className="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
-                                <div className="container2">
-                                    <div className="page-header-content pt-4">
-                                        <div className="row align-items-center justify-content-between">
-                                            <div className="col-auto">
-                                                <div className="d-flex align-items-center">
-                                                    <h1 className="page-header-title mb-0">
-                                                        Announcement Banner Management
-                                                    </h1>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <ul className="nav nav-pills mb-3 tabs_top" role="tablist">
-                                        <li className="nav-item" role="presentation" onClick={resetForm}>
-                                            <button
-                                                className={`m-0 nav-link ${activeTab === "sendToBanner" ? "active" : ""}`}
-                                                type="button"
-                                                role="tab"
-                                                onClick={() => setActiveTab("sendToBanner")}
-                                            >
-                                                Send Banner
-                                            </button>
-                                        </li>
-                                        <li className="nav-item" role="presentation" onClick={resetForm}>
-                                            <button
-                                                className={`m-0 nav-link ${activeTab === "AnnouncementBannerManagement" ? "active" : ""}`}
-                                                type="button"
-                                                role="tab"
-                                                onClick={() => setActiveTab("AnnouncementBannerManagement")}
-                                            >
-                                                Banner Management
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </header>
-
-                            <div className="container2 mt-n10 width-70">
+        <div className="dashboard_right">
+            <UserHeader />
+            <div className="dashboard_outer_s">
+                <div className="mb-4">
+                    <div className="rounded-4 overflow-hidden border-0 p-4 p-md-5" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #14b8a6 100%)", boxShadow: "0 16px 48px rgba(13,148,136,0.25)" }}>
+                        <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                            <div>
+                                <h1 className="mb-1 text-white fw-bold" style={{ fontSize: "1.75rem", letterSpacing: "-0.02em" }}>Announcement Banner Management</h1>
+                                <p className="mb-0 text-white opacity-75" style={{ fontSize: "0.9rem" }}>Create and manage announcement banners</p>
+                            </div>
+                            <div className="rounded-3 d-none d-md-flex align-items-center justify-content-center text-white" style={{ width: "56px", height: "56px", background: "rgba(255,255,255,0.2)" }}><i className="fas fa-image fa-lg" /></div>
+                        </div>
+                    </div>
+                </div>
+                <div className="mb-3">
+                    <ul className="nav nav-pills gap-2 flex-wrap">
+                        <li className="nav-item">
+                            <button type="button" className={`nav-link rounded-pill ${activeTab === "sendToBanner" ? "active" : ""}`} style={activeTab === "sendToBanner" ? { background: TEAL_BTN, color: "#fff", border: "none", fontWeight: 600 } : { background: "#f1f5f9", color: "#64748b", border: "none" }} onClick={() => { setActiveTab("sendToBanner"); resetForm(); }}>Send Banner</button>
+                        </li>
+                        <li className="nav-item">
+                            <button type="button" className={`nav-link rounded-pill ${activeTab === "AnnouncementBannerManagement" ? "active" : ""}`} style={activeTab === "AnnouncementBannerManagement" ? { background: TEAL_BTN, color: "#fff", border: "none", fontWeight: 600 } : { background: "#f1f5f9", color: "#64748b", border: "none" }} onClick={() => { setActiveTab("AnnouncementBannerManagement"); resetForm(); }}>Banner Management</button>
+                        </li>
+                    </ul>
+                </div>
+                <div className="container2 width-70">
                                 <div className="row">
                                     <div className="col-xl-12">
                                         {activeTab === "sendToBanner" && (
@@ -363,12 +324,7 @@ const BannerManagement = () => {
                                                     )}
 
                                                     {/* Submit Button */}
-                                                    <button
-                                                        className="btn btn-primary w-100 mt-2"
-                                                        onClick={() => handleAnnouncementBanner(bannerImage, startDate, endDate, bannerLink)}
-                                                    >
-                                                        Send Banner
-                                                    </button>
+                                                    <button type="button" className="btn w-100 mt-2 rounded-pill border-0 py-2 text-white fw-semibold" style={{ background: TEAL_BTN }} onClick={() => handleAnnouncementBanner(bannerImage, startDate, endDate, bannerLink)}>Send Banner</button>
                                                 </div>
                                             </div>
                                         )}
@@ -383,12 +339,9 @@ const BannerManagement = () => {
                                         )}
                                     </div>
                                 </div>
-                            </div>
-                        </main>
-                    </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

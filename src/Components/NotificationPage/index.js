@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
+import UserHeader from "../../Layout/UserHeader";
 import LoaderHelper from "../../Utils/Loading/LoaderHelper";
 import AuthService from "../../Api/Api_Services/AuthService";
 import { alertErrorMessage, alertSuccessMessage } from "../../Utils/CustomAlertMessage";
 import DataTableBase from "../../Utils/DataTable";
+
+const TEAL_BTN = "linear-gradient(135deg, #0d9488, #0f766e)";
 
 const Notification = () => {
     const [notificationTitle, setNotificationTitle] = useState('');
@@ -73,17 +76,16 @@ const Notification = () => {
         }
     };
 
-    const linkFollow = (row) => {
-        return (
-            <div className="d-flex gap-2">
-                <button className="btn btn-danger btn-sm" onClick={() => DeleteNotification(row?._id)}>Delete</button>
-                {row?.isActive === true ?
-                    <button className="btn btn-success btn-sm me-2" onClick={() => handleStatus(row?._id, false)}>Active</button>
-                    :
-                    <button className="btn btn-danger btn-sm me-2" onClick={() => handleStatus(row?._id, true)}>Inactive</button>}
-            </div>
-        );
-    };
+    const linkFollow = (row) => (
+        <div className="d-flex gap-2">
+            <button type="button" className="btn btn-sm rounded-pill border-0 px-3" style={{ background: "#dc2626", color: "#fff", fontWeight: 600 }} onClick={() => DeleteNotification(row?._id)}>Delete</button>
+            {row?.isActive === true ? (
+                <button type="button" className="btn btn-sm rounded-pill border-0 px-3" style={{ background: "linear-gradient(135deg, #22c55e, #16a34a)", color: "#fff", fontWeight: 600 }} onClick={() => handleStatus(row?._id, false)}>Active</button>
+            ) : (
+                <button type="button" className="btn btn-sm rounded-pill border-0 px-3" style={{ background: "#64748b", color: "#fff", fontWeight: 600 }} onClick={() => handleStatus(row?._id, true)}>Inactive</button>
+            )}
+        </div>
+    );
     
     const columns = [
         { name: "Sr No.", selector: (row, index) => index + 1, wrap: true, width: "80px" },
@@ -188,36 +190,39 @@ const Notification = () => {
         setSelectedUsers([]);
     };
 
+    const tabs = [
+        { id: "sendToUser", label: "Send to User" },
+        { id: "bulkNotification", label: "Bulk Notification" },
+        { id: "announceToAll", label: "Announce To All" },
+        { id: "managementNotification", label: "Management Notification" },
+    ];
+
     return (
         <div className="dashboard_right notification_s">
+            <UserHeader />
             <div className="dashboard_outer_s">
-                <div id="layoutSidenav_content">
-                    <main>
-                        <header className="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
-                            <div className="container2">
-                                <div className="page-header-content pt-4">
-                                    <h1 className="page-header-title mb-0">Notification Management</h1>
-                                </div>
-                                <ul className="nav nav-pills mb-3 tabs_top">
-                                    {["sendToUser", "bulkNotification", "announceToAll", "managementNotification"].map(tab => (
-                                        <li key={tab} className="nav-item" onClick={resetInput}>
-                                            <button
-                                                className={`m-0 nav-link ${activeTab === tab ? "active" : ""}`}
-                                                type="button"
-                                                onClick={() => setActiveTab(tab)}
-                                            >
-                                                {tab === "sendToUser" ? "Send to User" :
-                                                    tab === "bulkNotification" ? "Bulk Notification" :
-                                                        tab === "announceToAll" ? "Announce To All" :
-                                                            "Management Notification"}
-                                            </button>
-                                        </li>
-                                    ))}
-                                </ul>
+                <div className="mb-4">
+                    <div className="rounded-4 overflow-hidden border-0 p-4 p-md-5" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #14b8a6 100%)", boxShadow: "0 16px 48px rgba(13,148,136,0.25)" }}>
+                        <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                            <div>
+                                <h1 className="mb-1 text-white fw-bold" style={{ fontSize: "1.75rem", letterSpacing: "-0.02em" }}>Notification Management</h1>
+                                <p className="mb-0 text-white opacity-75" style={{ fontSize: "0.9rem" }}>Send and manage notifications</p>
                             </div>
-                        </header>
+                            <div className="rounded-3 d-none d-md-flex align-items-center justify-content-center text-white" style={{ width: "56px", height: "56px", background: "rgba(255,255,255,0.2)" }}><i className="fas fa-bell fa-lg" /></div>
+                        </div>
+                    </div>
+                </div>
+                <div className="mb-3">
+                    <ul className="nav nav-pills gap-2 flex-wrap">
+                        {tabs.map((tab) => (
+                            <li key={tab.id} className="nav-item">
+                                <button type="button" className={`nav-link rounded-pill ${activeTab === tab.id ? "active" : ""}`} style={activeTab === tab.id ? { background: TEAL_BTN, color: "#fff", border: "none", fontWeight: 600 } : { background: "#f1f5f9", color: "#64748b", border: "none" }} onClick={() => { setActiveTab(tab.id); resetInput(); }}>{tab.label}</button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
 
-                        <div className="container2 mt-n10 width-70">
+                        <div className="container2 width-70">
                             <div className="row">
                                 <div className="col-xl-12">
                                     {activeTab === "sendToUser" && (
@@ -280,10 +285,7 @@ const Notification = () => {
                                                     <input type="text" value={notificationLink} onChange={e => setNotificationLink(e.target.value)} className="form-control" placeholder="Enter Link" />
                                                 </div>
 
-                                                <button className="btn btn-primary w-100 mt-2"
-                                                    onClick={() => sendSingleUserNotification(selectedUsers?.map(u => u._id), notificationTitle, notification, notificationLink)}>
-                                                    Send Notifications
-                                                </button>
+                                                <button type="button" className="btn w-100 mt-2 rounded-pill border-0 py-2 text-white fw-semibold" style={{ background: TEAL_BTN }} onClick={() => sendSingleUserNotification(selectedUsers?.map(u => u._id), notificationTitle, notification, notificationLink)}>Send Notifications</button>
                                             </div>
                                         </div>
                                     )}
@@ -348,10 +350,7 @@ const Notification = () => {
                                                     <input type="text" value={notificationLink} onChange={e => setNotificationLink(e.target.value)} className="form-control" placeholder="Enter Link" />
                                                 </div>
 
-                                                <button className="btn btn-primary w-100 mt-2"
-                                                    onClick={() => sendBulkNotification(selectedUsers?.map(u => u._id), notificationTitle, notification, notificationLink)}>
-                                                    Send Bulk Notifications
-                                                </button>
+                                                <button type="button" className="btn w-100 mt-2 rounded-pill border-0 py-2 text-white fw-semibold" style={{ background: TEAL_BTN }} onClick={() => sendBulkNotification(selectedUsers?.map(u => u._id), notificationTitle, notification, notificationLink)}>Send Bulk Notifications</button>
                                             </div>
                                         </div>
                                     )}
@@ -373,10 +372,7 @@ const Notification = () => {
                                                     <label className="small mb-1">Link (optional)</label>
                                                     <input type="text" value={notificationLink} onChange={e => setNotificationLink(e.target.value)} className="form-control" placeholder="Enter Link" />
                                                 </div>
-                                                <button className="btn btn-primary w-100 mt-2"
-                                                    onClick={() => sendNotificationToAll(notificationTitle, notification, notificationLink)}>
-                                                    Send Notifications to All
-                                                </button>
+                                                <button type="button" className="btn w-100 mt-2 rounded-pill border-0 py-2 text-white fw-semibold" style={{ background: TEAL_BTN }} onClick={() => sendNotificationToAll(notificationTitle, notification, notificationLink)}>Send Notifications to All</button>
                                             </div>
                                         </div>
                                     )}
@@ -394,10 +390,8 @@ const Notification = () => {
                                 </div>
                             </div>
                         </div>
-                    </main>
                 </div>
             </div>
-        </div>
     );
 };
 

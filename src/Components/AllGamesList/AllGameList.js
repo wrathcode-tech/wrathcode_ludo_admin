@@ -48,63 +48,21 @@ function AllGameList() {
             name: "User Id (CreatedBy / JoinedBy)",
             wrap: true,
             width: "220px",
-            selector: (row) => {
+            cell: (row) => {
                 const createdUuid = row?.createdBy?.uuid;
                 const joinedUuid = row?.joinedBy?.uuid;
-
                 return (
-                    <div>
-                        {/* Created By */}
-                        <div className="mb-1">
-                            <strong>Created By:</strong>
-                            <div className="d-flex align-items-center mt-1">
-                                <button
-                                    onClick={() => handleUserClick(row?.createdBy?.id)}
-                                    className="btn p-0 text-primary"
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    {createdUuid || "—"}
-                                </button>
-                                <div
-                                    className="mx-2"
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => {
-                                        if (createdUuid) {
-                                            navigator?.clipboard?.writeText(createdUuid);
-                                            alertSuccessMessage("UUID copied!");
-                                        } else {
-                                            alertErrorMessage("No UUID found");
-                                        }
-                                    }}
-                                >
-                                    <i className="far fa-copy" aria-hidden="true"></i>
-                                </div>
-                            </div>
+                    <div className="small">
+                        <div className="mb-1 d-flex align-items-center gap-2">
+                            <span className="text-muted">Created:</span>
+                            <button type="button" onClick={() => handleUserClick(row?.createdBy?.id)} className="btn btn-link p-0 text-decoration-none fw-semibold" style={{ color: "#0d9488", cursor: "pointer", fontSize: "inherit" }}>{createdUuid || "—"}</button>
+                            <button type="button" className="btn btn-link p-0 text-secondary" style={{ cursor: "pointer" }} onClick={() => { if (createdUuid) { navigator?.clipboard?.writeText(createdUuid); alertSuccessMessage("UUID copied!"); } else alertErrorMessage("No UUID found"); }}><i className="far fa-copy" /></button>
                         </div>
-
-                        {/* Joined By */}
                         {joinedUuid && (
-                            <div>
-                                <strong>Joined By:</strong>
-                                <div className="d-flex align-items-center mt-1">
-                                    <button
-                                        onClick={() => handleUserClick(row?.joinedBy?.id)}
-                                        className="btn p-0 text-primary"
-                                        style={{ cursor: "pointer" }}
-                                    >
-                                        {joinedUuid}
-                                    </button>
-                                    <div
-                                        className="mx-2"
-                                        style={{ cursor: "pointer" }}
-                                        onClick={() => {
-                                            navigator?.clipboard?.writeText(joinedUuid);
-                                            alertSuccessMessage("UUID copied!");
-                                        }}
-                                    >
-                                        <i className="far fa-copy" aria-hidden="true"></i>
-                                    </div>
-                                </div>
+                            <div className="d-flex align-items-center gap-2">
+                                <span className="text-muted">Joined:</span>
+                                <button type="button" onClick={() => handleUserClick(row?.joinedBy?.id)} className="btn btn-link p-0 text-decoration-none fw-semibold" style={{ color: "#0d9488", cursor: "pointer", fontSize: "inherit" }}>{joinedUuid}</button>
+                                <button type="button" className="btn btn-link p-0 text-secondary" style={{ cursor: "pointer" }} onClick={() => { navigator?.clipboard?.writeText(joinedUuid); alertSuccessMessage("UUID copied!"); }}><i className="far fa-copy" /></button>
                             </div>
                         )}
                     </div>
@@ -124,8 +82,12 @@ function AllGameList() {
         { name: 'Wallet Type', selector: row => row?.walletType || '—', sortable: true, wrap: true },
         {
             name: 'Status',
-            selector: row => row?.status || '—',
-            cell: row => <span style={{ color: '#1eb5c0' }}>{row?.status || '—'}</span>,
+            width: '110px',
+            cell: (row) => {
+                const s = row?.status || "—";
+                const colors = { COMPLETED: "linear-gradient(135deg, #22c55e, #16a34a)", RUNNING: "#0d9488", EXPIRED: "#64748b", WAITING: "#f59e0b", DISPUTE: "#dc2626", CANCELLED: "#94a3b8" };
+                return (<span className="badge rounded-pill border-0" style={{ fontSize: "0.7rem", fontWeight: 600, background: colors[s] || "#f1f5f9", color: "#fff" }}>{s}</span>);
+            },
             sortable: true,
             wrap: true,
         },
@@ -279,14 +241,26 @@ function AllGameList() {
         <div className="dashboard_right">
             <UserHeader />
             <div className="dashboard_outer_s">
-                <h2>All Ludo Games List</h2>
-                <div className="dashboard_detail_s user_list_table user_summary_t">
-                    <div className="user_list_top d-flex justify-content-between align-items-center">
-                        <h4>All Ludo Games</h4>
-
-                        <div className='d-flex gap-2 align-center'>
-                            <div className='select_option'>
-                                <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
+                <div className="mb-4">
+                    <div className="rounded-4 overflow-hidden border-0 p-4 p-md-5" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #14b8a6 100%)", boxShadow: "0 16px 48px rgba(13,148,136,0.25)" }}>
+                        <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                            <div>
+                                <h1 className="mb-1 text-white fw-bold" style={{ fontSize: "1.75rem", letterSpacing: "-0.02em" }}>All Ludo Games List</h1>
+                                <p className="mb-0 text-white opacity-75" style={{ fontSize: "0.9rem" }}>View and filter games by status</p>
+                            </div>
+                            <div className="rounded-3 d-none d-md-flex align-items-center justify-content-center text-white" style={{ width: "56px", height: "56px", background: "rgba(255,255,255,0.2)" }}><i className="fas fa-gamepad fa-lg" /></div>
+                        </div>
+                    </div>
+                </div>
+                <div className="card border-0 rounded-4 overflow-hidden" style={{ boxShadow: "0 10px 40px rgba(0,0,0,0.08)", borderTop: "3px solid #6366f1" }}>
+                    <div className="card-header border-0 py-3 px-4" style={{ background: "linear-gradient(90deg, rgba(99,102,241,0.08) 0%, transparent 100%)" }}>
+                        <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3 flex-wrap">
+                            <h3 className="mb-0 fw-bold text-dark d-flex align-items-center gap-2" style={{ fontSize: "1.1rem" }}>
+                                <span className="rounded-3 d-inline-flex align-items-center justify-content-center" style={{ width: "40px", height: "40px", background: "linear-gradient(135deg, #6366f1, #4f46e5)", color: "#fff" }}><i className="fas fa-list" /></span>
+                                All Ludo Games
+                            </h3>
+                            <div className="d-flex gap-2 align-items-center flex-wrap">
+                                <select className="form-select rounded-3 border" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} style={{ maxWidth: "160px", padding: "0.5rem 0.75rem" }}>
                                     <option value="ALL">All</option>
                                     <option value="COMPLETED">Completed</option>
                                     <option value="CANCELLED">Cancelled</option>
@@ -295,33 +269,15 @@ function AllGameList() {
                                     <option value="WAITING">Waiting</option>
                                     <option value="DISPUTE">Dispute</option>
                                 </select>
-                            </div>
-
-                            <div className="user_search">
-                                <input
-                                    type="text"
-                                    placeholder="Search..."
-                                    value={searchTerm}
-                                    onChange={e => setSearchTerm(e.target.value)}
-                                />
+                                <div className="d-flex align-items-center rounded-3 border overflow-hidden" style={{ background: "#f8fafc", maxWidth: "220px" }}>
+                                    <span className="px-3 py-2 text-muted"><i className="fas fa-search" style={{ color: "#0d9488" }} /></span>
+                                    <input type="text" className="form-control border-0 bg-transparent py-2" placeholder="Search..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ fontSize: "0.9rem" }} />
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    <div className="p-2 mobilep">
-                        <DataTableBase
-                            columns={commonColumns}
-                            data={filteredData}
-                            pagination
-                            paginationServer={false}
-                            paginationPerPage={rowsPerPage}
-                            paginationDefaultPage={currentPage}
-                            onChangePage={page => setCurrentPage(page)}
-                            onChangeRowsPerPage={(newPerPage, page) => {
-                                setRowsPerPage(newPerPage);
-                                setCurrentPage(page);
-                            }}
-                        />
+                    <div className="card-body p-0">
+                        <DataTableBase columns={commonColumns} data={filteredData} pagination paginationServer={false} paginationPerPage={rowsPerPage} paginationDefaultPage={currentPage} onChangePage={(page) => setCurrentPage(page)} onChangeRowsPerPage={(newPerPage, page) => { setRowsPerPage(newPerPage); setCurrentPage(page); }} />
                     </div>
                 </div>
             </div>

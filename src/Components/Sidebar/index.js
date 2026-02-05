@@ -1,151 +1,142 @@
 import React, { useState, useEffect } from "react";
 import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
+import AuthService from "../../Api/Api_Services/AuthService";
 
 const Sidebar = () => {
-    const [actived, setActived] = useState("");
-    const navigate = useNavigate();
-    const location = useLocation();
+  const [actived, setActived] = useState("");
+  const [pendingCounts, setPendingCounts] = useState({ deposit: 0, withdrawal: 0, dispute: 0, support: 0 });
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    useEffect(() => {
-        const segments = location.pathname.split("/");
-        const currentRoute = segments[segments.length - 1] || "dashboard";
-        setActived(currentRoute);
-    }, [location]);
+  useEffect(() => {
+    const segments = location.pathname.split("/");
+    const currentRoute = segments[segments.length - 1] || "home";
+    setActived(currentRoute);
+  }, [location]);
 
-    const handleLogout = () => {
-        sessionStorage.clear();
-        window.location.reload()
-        navigate("/login");
-    };
+  const fetchPendingCounts = async () => {
+    try {
+      const counts = await AuthService.getPendingCounts();
+      if (counts) setPendingCounts(counts);
+    } catch (_) {}
+  };
 
+  useEffect(() => {
+    fetchPendingCounts();
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const onRefreshCounts = () => fetchPendingCounts();
+    window.addEventListener("refreshSidebarCounts", onRefreshCounts);
+    return () => window.removeEventListener("refreshSidebarCounts", onRefreshCounts);
+  }, []);
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    sessionStorage.clear();
+    window.location.reload();
+    navigate("/login");
+  };
+
+  const BadgeCount = ({ count }) => {
+    if (count == null || count <= 0) return null;
     return (
-        <div className="dashboard">
-            <div class="leftside_menu">
-                <div class="leftside_items">
-                    <div class="logo">
-                        <Link to="/dashboard/home" onClick={() => setActived("home")}><img src="/images/logoplayfista.png" loading="lazy" alt="logo" /></Link>
-                    </div>
-                    <div class="toggle_menu" id="toggleBtn">
-                        <img src="/images/toggle_icon.svg" loading="lazy" alt="toggle" />
-                    </div>
-                    <div class="navi_sidebar" id="content">
-                        <div className="responsive_scrool">
-                            <ul className="list-unstyled ps-0">
-                                <li className={actived === "home" ? "active" : ""}>
-                                    <Link to="/dashboard/home" onClick={() => setActived("home")}>
-                                        <img src="/images/dashboard_icon.png" loading="lazy" alt="Dashboard" />Dashboard
-                                    </Link>
-                                </li>
-                                <li className={actived === "userList" ? "active" : ""}>
-                                    <Link to="/dashboard/userList" onClick={() => setActived("userList")}>
-                                        <img src="/images/user_icon.png" loading="lazy" alt="User List" />User List
-                                    </Link>
-                                </li>
-
-                                <li className={actived === "UserKyc" ? "active" : ""}>
-                                    <Link to="/dashboard/UserKyc" onClick={() => setActived("UserKyc")}>
-                                        <img src="/images/user_kyc_icon.png" loading="lazy" alt="User KYC" />User KYC Verification
-                                    </Link>
-                                </li>
-                                {/* 🧾 Support & Disputes */}
-                                <li className={actived === "support" ? "active" : ""}>
-                                    <Link to="/dashboard/support" onClick={() => setActived("support")}>
-                                        <img src="/images/support_icon.png" loading="lazy" alt="Support" />User Support
-                                    </Link>
-                                </li>
-
-                                <li className={actived === "disputeResponse" ? "active" : ""}>
-                                    <Link to="/dashboard/disputeResponse" onClick={() => setActived("disputeResponse")}>
-                                        <img src="/images/support_icon.svg" loading="lazy" alt="Dispute Response" />Dispute Management
-                                    </Link>
-                                </li>
-                                <li className={actived === "DespositRequest" ? "active" : ""}>
-                                    <Link to="/dashboard/DespositRequest" onClick={() => setActived("DespositRequest")}>
-                                        <img src="/images/deposit_icon.png" loading="lazy" alt="Deposit Requests" />Deposit Requests
-                                    </Link>
-                                </li>
-
-                                <li className={actived === "withdrawalRequest" ? "active" : ""}>
-                                    <Link to="/dashboard/withdrawalRequest" onClick={() => setActived("withdrawalRequest")}>
-                                        <img src="/images/withdarawal_icon.png" loading="lazy" alt="Withdrawal Requests" />Withdrawal Requests
-                                    </Link>
-                                </li>
-
-                                <li className={actived === "earn_depositWithdrawSummary" ? "active" : ""}>
-                                    <Link to="/dashboard/earn_depositWithdrawSummary" onClick={() => setActived("earn_depositWithdrawSummary")}>
-                                        <img src="/images/deposit_withdarawal_icon.png" loading="lazy" alt="Deposit/Withdrawal Summary" />Deposit & Withdrawal Summary
-                                    </Link>
-                                </li>
-
-                                <li className={actived === "addBank" ? "active" : ""}>
-                                    <Link to="/dashboard/addBank" onClick={() => setActived("addBank")}>
-                                        <img src="/images/support_icon.png" loading="lazy" alt="Admin Bank Details" />Admin Bank Details
-                                    </Link>
-                                </li>
-
-                                {/* 🎮 Game Management */}
-                                <li className={actived === "AllGamesList" ? "active" : ""}>
-                                    <Link to="/dashboard/AllGamesList" onClick={() => setActived("AllGamesList")}>
-                                        <img src="/images/gamelist_icon.png" loading="lazy" alt="All Games" />All Games
-                                    </Link>
-                                </li>
-
-                                <li className={actived === "matchDetails" ? "active" : ""}>
-                                    <Link to="/dashboard/matchDetails" onClick={() => setActived("matchDetails")}>
-                                        <img src="/images/match_detail_icon.png" loading="lazy" alt="Match Details" />Match Details
-                                    </Link>
-                                </li>
-
-                                {/* 🎁 Bonus & Earnings */}
-                                <li className={actived === "earn_referralBonus" ? "active" : ""}>
-                                    <Link to="/dashboard/earn_referralBonus" onClick={() => setActived("earn_referralBonus")}>
-                                        <img src="/images/bouns_refrence_icon.png" loading="lazy" alt="Referral Bonus" />Referral Bonus List
-                                    </Link>
-                                </li>
-
-                                <li className={actived === "commissionBonusList" ? "active" : ""}>
-                                    <Link to="/dashboard/commissionBonusList" onClick={() => setActived("commissionBonusList")}>
-                                        <img src="/images/commision_bouns_icon.png" loading="lazy" alt="Commission Bonus" />Commission Bonus List
-                                    </Link>
-                                </li>
-
-
-
-                                {/* ⚙️ System Management */}
-                                <li className={actived === "notification" ? "active" : ""}>
-                                    <Link to="/dashboard/notification" onClick={() => setActived("notification")}>
-                                        <img src="/images/notification_icon.png" loading="lazy" alt="Notifications" />Send Notifications
-                                    </Link>
-                                </li>
-                                <li className={actived === "partners" ? "active" : ""}>
-                                    <Link to="/dashboard/partners" onClick={() => setActived("partners")}>
-                                        <img style={{ width: "20px" }} src="/images/partner_icon.png" loading="lazy" alt="Partners" />Partners
-                                    </Link>
-                                </li>
-
-                                <li className={actived === "BannerManagement" ? "active" : ""}>
-                                    <Link to="/dashboard/BannerManagement" onClick={() => setActived("BannerManagement")}>
-                                        <img src="/images/banner_management_icon.png" loading="lazy" alt="Banner Management" />Banner Management
-                                    </Link>
-                                </li>
-                                <li className={actived === "settings" ? "active" : ""}>
-                                    <Link to="/dashboard/settings" onClick={() => setActived("settings")}>
-                                        <img src="/images/setting_icon.png" loading="lazy" alt="Settings" />Settings
-                                    </Link>
-                                </li>
-
-                            </ul>
-                        </div>
-
-                        <div class="logout_btn">
-                            <a href="#/" onClick={handleLogout}><img src="/images/logout_icon.png" loading="lazy" alt="Logout" />Logout</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <Outlet />
-        </div>
+      <span
+        className="sidebar-pending-badge"
+        style={{
+          background: "#dc2626",
+          color: "#fff",
+          borderRadius: "50%",
+          minWidth: "20px",
+          height: "20px",
+          fontSize: "0.7rem",
+          fontWeight: "700",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "0 5px",
+          marginLeft: "6px",
+        }}
+      >
+        {count > 99 ? "99+" : count}
+      </span>
     );
+  };
+
+  const navLink = (to, slug, label, icon, count) => (
+    <li className={actived === slug ? "active" : ""}>
+      <Link to={to} onClick={() => setActived(slug)}>
+        <i className={`fas ${icon}`} />
+        <span>{label}</span>
+        {count != null && count > 0 && <BadgeCount count={count} />}
+      </Link>
+    </li>
+  );
+
+  const sectionLabel = (text) => (
+    <li className="sidebar-section-label">
+      <span>{text}</span>
+    </li>
+  );
+
+  return (
+    <div className="dashboard">
+      <div className="leftside_menu sidebar-premium">
+        <div className="leftside_items">
+          <div className="logo sidebar-logo">
+            <Link to="/dashboard/home" onClick={() => setActived("home")}>
+              <img src="/images/logoplayfista.png" loading="lazy" alt="Play Fista" />
+            </Link>
+          </div>
+          <div className="toggle_menu" id="toggleBtn">
+            <img src="/images/toggle_icon.svg" loading="lazy" alt="toggle" />
+          </div>
+          <div className="navi_sidebar" id="content">
+            <div className="responsive_scrool">
+              <ul className="list-unstyled ps-0">
+                {sectionLabel("Main")}
+                {navLink("/dashboard/home", "home", "Dashboard", "fa-home")}
+                {navLink("/dashboard/userList", "userList", "User List", "fa-users")}
+                {navLink("/dashboard/UserKyc", "UserKyc", "User KYC Verification", "fa-id-card")}
+
+                {sectionLabel("Support & Disputes")}
+                {navLink("/dashboard/support", "support", "User Support", "fa-headset", pendingCounts.support)}
+                {navLink("/dashboard/disputeResponse", "disputeResponse", "Dispute Management", "fa-gavel", pendingCounts.dispute)}
+
+                {sectionLabel("Finance")}
+                {navLink("/dashboard/DespositRequest", "DespositRequest", "Deposit Requests", "fa-arrow-down", pendingCounts.deposit)}
+                {navLink("/dashboard/withdrawalRequest", "withdrawalRequest", "Withdrawal Requests", "fa-arrow-up", pendingCounts.withdrawal)}
+                {navLink("/dashboard/earn_depositWithdrawSummary", "earn_depositWithdrawSummary", "Deposit & Withdrawal Summary", "fa-chart-pie")}
+                {navLink("/dashboard/addBank", "addBank", "Admin Bank Details", "fa-university")}
+
+                {sectionLabel("Games")}
+                {navLink("/dashboard/AllGamesList", "AllGamesList", "All Games", "fa-gamepad")}
+                {navLink("/dashboard/matchDetails", "matchDetails", "Match Details", "fa-trophy")}
+
+                {sectionLabel("Bonus & Earnings")}
+                {navLink("/dashboard/earn_referralBonus", "earn_referralBonus", "Referral Bonus List", "fa-gift")}
+                {navLink("/dashboard/commissionBonusList", "commissionBonusList", "Commission Bonus List", "fa-percent")}
+
+                {sectionLabel("System")}
+                {navLink("/dashboard/notification", "notification", "Send Notifications", "fa-bell")}
+                {navLink("/dashboard/partners", "partners", "Partners", "fa-handshake")}
+                {navLink("/dashboard/BannerManagement", "BannerManagement", "Banner Management", "fa-image")}
+                {navLink("/dashboard/settings", "settings", "Settings", "fa-cog")}
+              </ul>
+            </div>
+
+            <div className="logout_btn">
+              <a href="#/" onClick={handleLogout}>
+                <i className="fas fa-sign-out-alt" />
+                <span>Logout</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <Outlet />
+    </div>
+  );
 };
 
 export default Sidebar;

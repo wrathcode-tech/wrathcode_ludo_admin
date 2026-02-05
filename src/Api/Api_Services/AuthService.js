@@ -656,6 +656,37 @@ const AuthService = {
     return ApiCallGet(url, headers);
   },
 
+  /** Get pending counts for sidebar badges (deposit, withdrawal, dispute, support) */
+  getPendingCounts: async () => {
+    const token = sessionStorage.getItem("token");
+    if (!token) return { deposit: 0, withdrawal: 0, dispute: 0, support: 0 };
+    const headers = { "Content-Type": "application/json", Authorization: token };
+    const { baseUrl, pendingDepositRequest, pendingWithdrawalRequest, allDisputeLudoGameList } = ApiConfig;
+    const { baseSupport, allMsg } = ApiConfig;
+
+    const [depositRes, withdrawalRes, disputeRes, supportRes] = await Promise.allSettled([
+      ApiCallGet(`${baseUrl}${pendingDepositRequest}?page=1&limit=1`, headers),
+      ApiCallGet(`${baseUrl}${pendingWithdrawalRequest}?page=1&limit=1`, headers),
+      ApiCallGet(`${baseUrl}${allDisputeLudoGameList}`, headers),
+      ApiCallGet(`${baseSupport}${allMsg}`, headers),
+    ]);
+
+    const deposit = depositRes.status === "fulfilled" && depositRes.value?.success
+      ? (depositRes.value?.pagination?.totalUsers ?? depositRes.value?.totalCount ?? depositRes.value?.data?.length ?? 0)
+      : 0;
+    const withdrawal = withdrawalRes.status === "fulfilled" && withdrawalRes.value?.success
+      ? (withdrawalRes.value?.pagination?.totalUsers ?? withdrawalRes.value?.totalCount ?? withdrawalRes.value?.data?.length ?? 0)
+      : 0;
+    const dispute = disputeRes.status === "fulfilled" && disputeRes.value?.success
+      ? (Array.isArray(disputeRes.value?.data) ? disputeRes.value.data.length : 0)
+      : 0;
+    const support = supportRes.status === "fulfilled" && supportRes.value?.success
+      ? (Array.isArray(supportRes.value?.data) ? supportRes.value.data.length : 0)
+      : 0;
+
+    return { deposit, withdrawal, dispute, support };
+  },
+
   getClosedTickets: async () => {
     const token = sessionStorage.getItem("token");
     const { baseSupport, getClosedTickets } = ApiConfig;
