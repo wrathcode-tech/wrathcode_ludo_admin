@@ -92,6 +92,9 @@ const Sidebar = () => {
             <img src="/images/toggle_icon.svg" loading="lazy" alt="toggle" />
           </div>
           <div className="navi_sidebar" id="content">
+            <div className="toggle_menu close_btn" id="closeBtn">
+              <i className="fas fa-times"></i>
+            </div>
             <div className="responsive_scrool">
               <ul className="list-unstyled ps-0">
                 {sectionLabel("Main")}

@@ -35,10 +35,18 @@
     $(document).on("click", ".toggle_menu", function (e) {
       e.preventDefault();
       $("body").toggleClass("sidenav-toggled");
+      $(".navi_sidebar").toggleClass("active");
     });
 
     $(document).on("click", ".leftside_menu a", function () {
       $("body").removeClass("sidenav-toggled");
+      $(".navi_sidebar").removeClass("active");
+    });
+    
+    $(document).on("click", ".close_btn", function (e) {
+      e.preventDefault();
+      $("body").removeClass("sidenav-toggled");
+      $(".navi_sidebar").removeClass("active");
     });
   </script>
 

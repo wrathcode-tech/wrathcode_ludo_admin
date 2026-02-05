@@ -45,6 +45,7 @@ h2 {
     left: 0;
     height: 100vh;
     z-index: 999;
+    background-color: transparent;
 }
 
 .logo {
@@ -91,11 +92,20 @@ h2 {
     height: 100%;
 }
 
-.leftside_items {
-    position: relative;
-    z-index: 999;
-    height: 100%;
-}
+    .leftside_items {
+        position: relative;
+        z-index: 999;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+    
+    @media screen and (max-width:767px) {
+        .leftside_items {
+            height: 100vh;
+        }
+    }
 
 .dashboard {
     display: flex;
@@ -849,6 +859,29 @@ body .user_list_table button.chat {
     display: none;
 }
 
+@media screen and (max-width:767px) {
+    .top_header_dash .toggle_menu {
+        display: flex !important;
+        cursor: pointer;
+        z-index: 1002;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+    
+    .top_header_dash .toggle_menu:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    .top_header_dash .toggle_menu img {
+        width: 24px;
+        height: 24px;
+        display: block;
+    }
+}
+
 .setting_form .form-control {
     padding: 12px 15px;
     font-size: 13px;
@@ -1116,7 +1149,13 @@ textarea.input_inb {
 
 
 .navi_sidebar ul.list-unstyled.ps-0 {
-    padding-bottom: 50px !important;
+    padding-bottom: 10px !important;
+}
+
+@media screen and (max-width:767px) {
+    .navi_sidebar.active ul.list-unstyled.ps-0 {
+        padding-bottom: 20px !important;
+    }
 }
 
 .perpage_list {
@@ -1216,18 +1255,14 @@ button.closed_btn {
     margin: 0px;
 }
 
-.responsive_scrool {
-    height: 83vh;
-    overflow: auto;
-}
-
-
 .logout_btn {
-    position: fixed;
-    bottom: 0px;
-    left: 0px;
-    width: 340px;
+    position: relative;
+    bottom: auto;
+    left: auto;
+    width: 100%;
     z-index: 999;
+    flex-shrink: 0;
+    margin-top: auto;
 }
 
 .logout_btn a {
@@ -1249,9 +1284,6 @@ button.closed_btn {
     width: 22px;
 }
 
-.navi_sidebar .responsive_scrool {
-    height: 75vh; }
-
 .navi_sidebar {
     padding-bottom: 0px;
     position: relative;
@@ -1259,6 +1291,15 @@ button.closed_btn {
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
+    min-height: 0;
+}
+
+.responsive_scrool {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* ===== Premium Sidebar (same theme as dashboard) ===== */
@@ -1342,6 +1383,9 @@ button.closed_btn {
     padding: 12px;
     border-top: 1px solid rgba(13, 148, 136, 0.12);
     background: #fff;
+    position: relative;
+    flex-shrink: 0;
+    margin-top: auto;
 }
 
 .sidebar-premium .logout_btn a {
@@ -1441,6 +1485,11 @@ input.form-control {
         font-size: 22px;
     }
 
+    .sidebar-premium .logout_btn{ 
+        position: relative;
+        bottom: auto;
+    }
+
 }
 
 @media screen and (max-width:1200px) {
@@ -1463,7 +1512,7 @@ input.form-control {
     }
 
     .logout_btn {
-        width: 260px;
+        width: 100%;
     }
 
     ul.list-unstyled.ps-0 {
@@ -1501,6 +1550,28 @@ input.form-control {
 }
 
 @media screen and (max-width:1024px) {
+    
+    .navi_sidebar {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        min-height: 0;
+    }
+    
+    .responsive_scrool {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        min-height: 0;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .logout_btn {
+        position: relative;
+        width: 100%;
+        flex-shrink: 0;
+        margin-top: auto;
+    }
 
     ul.list_dashboard_cate {
         grid-template-columns: repeat(2, 1fr);
@@ -1593,6 +1664,28 @@ input.form-control {
 
 
 @media screen and (max-width:991px) {
+    
+    .navi_sidebar {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        min-height: 0;
+    }
+    
+    .responsive_scrool {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        min-height: 0;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .logout_btn {
+        position: relative;
+        width: 100%;
+        flex-shrink: 0;
+        margin-top: auto;
+    }
 
     .user_detail_info .tab-content .row.mb-3 {
         flex-wrap: nowrap;
@@ -1653,6 +1746,46 @@ input.form-control {
     .width-70 {
         width: 100%;
     }
+
+    .sidenav-toggled .toggle_menu{ display: none !important; }
+
+.sticky-sidebar .leftside_items .logo {
+        max-width: 100%;
+        background-color: #fff;
+        margin: 0px auto;
+        width: 100%;
+        position: sticky;
+        top: 0;
+        z-index: 1001;
+        flex-shrink: 0;
+    }
+.sticky-sidebar.sidebar-premium .sidebar-logo {
+        position: sticky;
+        top: 0;
+        z-index: 1001;
+        flex-shrink: 0;
+        background-color: #fff;
+    }
+.sticky-sidebar.sidebar-premium .sidebar-logo img {
+        max-width: 60px;
+        margin: 0 auto;
+    }
+
+.sticky-sidebar.sidebar-premium .sidebar-logo a {
+        display: flex;
+    }
+    
+@media screen and (max-width:767px) {
+    .sticky-sidebar .leftside_items .logo,
+    .sticky-sidebar .sidebar-logo {
+        position: sticky;
+        top: 0;
+        z-index: 1001;
+        background-color: #fff;
+        flex-shrink: 0;
+    }
+}    
+
 
     .setting_form form {
         margin-top: 15px;
@@ -1783,7 +1916,31 @@ input.form-control {
     body.sidenav-toggled .navi_sidebar {
         opacity: 1;
         visibility: visible;
-        height: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+    
+    body.sidenav-toggled .navi_sidebar .responsive_scrool {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        min-height: 0;
+        max-height: calc(100vh - 80px);
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 10px;
+    }
+    
+    body.sidenav-toggled .navi_sidebar .logout_btn {
+        flex-shrink: 0;
+        margin-top: auto;
+        position: sticky;
+        bottom: 0;
+        width: 100%;
+        background-color: #fff;
+        z-index: 1001;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     }
 
     .user_list_table .table-responsive {
@@ -1814,29 +1971,73 @@ input.form-control {
         font-size: 12px !important;
     }
 
-    .leftside_menu .responsive_scrool {
-        overflow: auto;
-        height: calc(100vh - 0px);
-    }
-
     .leftside_menu:after {
         display: none;
     }
 
     .sidebar-premium .logout_btn {
-        position: absolute;
-        bottom: 90px;
+        position: sticky;
+        bottom: 0;
         z-index: 9999;
         padding-bottom: 20px;
+        margin-top: auto;
+        background-color: #fff;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     }
-
-    .leftside_menu .responsive_scrool{ padding-bottom: 140px ; }
+    
+    .navi_sidebar.active .sidebar-premium .logout_btn {
+        position: sticky;
+        bottom: 0;
+        width: 100%;
+        background-color: #fff;
+        z-index: 1001;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    }
 
     .navi_sidebar {
         height: 0px;
         opacity: 0;
         visibility: hidden;
         background-color: #fff;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+    }
+    
+    .navi_sidebar.active {
+        height: 100vh;
+        opacity: 1;
+        visibility: visible;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+    }
+    
+    .navi_sidebar.active .responsive_scrool {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        min-height: 0;
+        max-height: calc(100vh - 80px);
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 10px;
+    }
+    
+    .navi_sidebar.active .logout_btn {
+        flex-shrink: 0;
+        margin-top: auto;
+        position: sticky;
+        bottom: 0;
+        width: 100%;
+        background-color: #fff;
+        z-index: 1001;
     }
 
     .user_search input {
@@ -1852,10 +2053,6 @@ input.form-control {
         display: block;
     }
 
-    .navi_sidebar.active {
-        padding-bottom: 0px;
-        background-color: #fff;
-    }
 
     td.content_tb p {
         width: 200px;
@@ -1954,16 +2151,41 @@ input.form-control {
     }
 
     .leftside_items .toggle_menu {
-        display: block;
+        display: none;
     }
-
-    .leftside_items .toggle_menu {
+    
+    .navi_sidebar.active .close_btn {
+        display: flex !important;
         position: absolute;
-        right: 10px;
-        top: 8px;
+        right: 15px;
+        top: 15px;
+        z-index: 1002;
+        cursor: pointer;
+        background-color: rgba(255, 255, 255, 0.95);
+        padding: 10px;
+        border-radius: 50%;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        width: 32px;
+        line-height: 15px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
     }
-
-    .top_header_dash .toggle_menu {
+    
+    .navi_sidebar.active .close_btn:hover {
+        background-color: #fff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transform: scale(1.1);
+    }
+    
+    .navi_sidebar.active .close_btn i {
+        font-size: 18px;
+        color: #333;
+    }
+    
+    .navi_sidebar .close_btn {
         display: none;
     }
 
@@ -1988,18 +2210,87 @@ input.form-control {
     .dashboard_right {
         width: 100%;
         padding: 0px 20px 20px;
+        position: relative;
+        z-index: 666;
     }
+
+    .sidebar-premium.leftside_menu{ z-index: 666; }
 
     .userdetails {
         padding-top: 0px !important;
     }
+
+.sidenav-toggled .sidebar-premium.leftside_menu {
+        z-index: 99999;
+    }   
 
     .userdetails .mt-4 {
         margin-top: 0px !important;
     }
 
     .sticky-sidebar {
-        height: auto;
+        height: 100vh;
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 999;
+        background-color: #fff;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    
+    .sticky-sidebar .leftside_items {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        min-height: 0;
+    }
+    
+    .sticky-sidebar .leftside_items .logo,
+    .sticky-sidebar .sidebar-logo {
+        position: sticky;
+        top: 0;
+        z-index: 1001;
+        background-color: #fff;
+        padding: 10px 0;
+        margin: 0 auto;
+        width: 100%;
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .sticky-sidebar.sidebar-premium .sidebar-logo {
+        position: sticky;
+        top: 0;
+        z-index: 1001;
+        background-color: #fff;
+        padding: 15px 16px;
+        margin-bottom: 0;
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        border-bottom: 1px solid rgba(13, 148, 136, 0.15);
+    }
+    
+    .sticky-sidebar.sidebar-premium .sidebar-logo img {
+        max-width: 60px;
+        margin: 0 auto;
+    }
+    
+    .sticky-sidebar .navi_sidebar {
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .sticky-sidebar .responsive_scrool {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        min-height: 0;
+        -webkit-overflow-scrolling: touch;
     }
 
     .page-header-content.pt-4 {
@@ -2007,8 +2298,14 @@ input.form-control {
     }
 
     .logout_btn {
-        position: relative;
+        position: sticky;
+        bottom: 0;
         width: 100%;
+        margin-top: auto;
+        flex-shrink: 0;
+        background-color: #fff;
+        z-index: 1001;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     }
 
     .dashboard_outer_s {
@@ -2241,10 +2538,6 @@ body h2 {
 
     .perpage_list {
         gap: 5px !important;
-    }
-
-    .leftside_menu .responsive_scrool {
-        height: calc(100vh - 0px);
     }
 
     .navi_sidebar ul li a {
