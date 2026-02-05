@@ -1249,6 +1249,9 @@ button.closed_btn {
     width: 22px;
 }
 
+.navi_sidebar .responsive_scrool {
+    height: 75vh; }
+
 .navi_sidebar {
     padding-bottom: 0px;
     position: relative;
@@ -1813,12 +1816,21 @@ input.form-control {
 
     .leftside_menu .responsive_scrool {
         overflow: auto;
-        height: calc(92vh - 83px);
+        height: calc(100vh - 0px);
     }
 
     .leftside_menu:after {
         display: none;
     }
+
+    .sidebar-premium .logout_btn {
+        position: absolute;
+        bottom: 90px;
+        z-index: 9999;
+        padding-bottom: 20px;
+    }
+
+    .leftside_menu .responsive_scrool{ padding-bottom: 140px ; }
 
     .navi_sidebar {
         height: 0px;
@@ -2050,7 +2062,7 @@ input.form-control {
     }
 
     .dashboard_right {
-        padding-top: 80px;
+        padding-top:110px;
     }
 
     .dashboard_info_s ul li {
@@ -2232,7 +2244,7 @@ body h2 {
     }
 
     .leftside_menu .responsive_scrool {
-        height: calc(92vh - 60px);
+        height: calc(100vh - 0px);
     }
 
     .navi_sidebar ul li a {
