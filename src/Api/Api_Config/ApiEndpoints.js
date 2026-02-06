@@ -53,6 +53,8 @@ export const ApiConfig = {
   usersOverAllCommissionBonusEarn: "usersOverAllCommissionBonusEarn",
   dashboardData: "dashboardData",
   updateDepositRequest: "updateDepositRequest",
+  approvedDepositRequest: "approvedDepositRequest",
+  rejectedDepositRequest: "rejectedDepositRequest",
   pendingWithdrawalRequest: "pendingWithdrawalRequest",
   approvedWithdrawalRequest: "approvedWithdrawalRequest",
   cancelWithdrawalRequest: "cancelWithdrawalRequest",

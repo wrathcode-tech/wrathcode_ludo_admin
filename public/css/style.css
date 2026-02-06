@@ -46,6 +46,31 @@ h2 {
     height: 100vh;
     z-index: 999;
     background-color: transparent;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.sticky-sidebar .leftside_items {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    flex: 1;
+    overflow: hidden;
+}
+.sticky-sidebar .navi_sidebar {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.sticky-sidebar .responsive_scrool {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+    -webkit-overflow-scrolling: touch;
 }
 
 .logo {

@@ -263,6 +263,26 @@ const AuthService = {
     };
     return ApiCallGet(url, headers);
   },
+  approvedDepositRequest: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, approvedDepositRequest } = ApiConfig;
+    const url = `${baseUrl}${approvedDepositRequest}`;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
+  rejectedDepositRequest: async () => {
+    const token = sessionStorage.getItem("token");
+    const { baseUrl, rejectedDepositRequest } = ApiConfig;
+    const url = `${baseUrl}${rejectedDepositRequest}`;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token
+    };
+    return ApiCallGet(url, headers);
+  },
   getUsersRespose: async () => {
     const token = sessionStorage.getItem("token");
     const { baseUrl, getUsersRespose } = ApiConfig;
