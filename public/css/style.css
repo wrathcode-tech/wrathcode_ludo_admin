@@ -1942,6 +1942,36 @@ input.form-control {
         min-height: 0;
     }
     
+    body.sidenav-toggled .navi_sidebar .close_btn {
+        display: flex !important;
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        z-index: 1002;
+        cursor: pointer;
+        background-color: rgba(255, 255, 255, 0.95);
+        padding: 10px;
+        border-radius: 50%;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        width: 32px;
+        line-height: 15px;
+        height: 32px;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    body.sidenav-toggled .navi_sidebar .close_btn:hover {
+        background-color: #fff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transform: scale(1.1);
+    }
+    
+    body.sidenav-toggled .navi_sidebar .close_btn i {
+        font-size: 18px;
+        color: #333;
+    }
+    
     body.sidenav-toggled .navi_sidebar .responsive_scrool {
         flex: 1;
         overflow-y: auto;
@@ -2237,9 +2267,6 @@ input.form-control {
     .card-body.p-4 {
         padding: 15px !important;
     }
-
-.    
-
     .userdetails {
         padding-top: 0px !important;
     }
@@ -2252,9 +2279,9 @@ input.form-control {
         margin-top: 0px !important;
     }
 
-    .sticky-sidebar {
-        height: 100vh;
-        position: fixed !important;
+    .sidebar-premium.leftside_menu.sticky-sidebar {
+        height: 100%;
+        position: sticky !important;
         top: 0;
         left: 0;
         width: 100%;
@@ -2262,12 +2289,28 @@ input.form-control {
         overflow-y: auto;
         overflow-x: hidden;
     }
+
+    .rounded-3.d-flex.align-items-center.justify-content-center.flex-shrink-0 {
+        width: 34px !important;
+        height: 34px !important;
+    }
+
+    .lnqPEg .sc-ggWZvA span {
+        font-size: 12px !important;
+    }
+
+.dashboard_outer_s ul li.nav-item button.nav-link {
+        font-size: 13px !important;
+    }
+
+    .sidebar-premium.leftside_menu{ position: relative !important;}
     
     .sticky-sidebar .leftside_items {
         display: flex;
         flex-direction: column;
         height: 100%;
         min-height: 0;
+        z-index: inherit;
     }
     
     .sticky-sidebar .leftside_items .logo,
@@ -2286,7 +2329,7 @@ input.form-control {
     .sticky-sidebar.sidebar-premium .sidebar-logo {
         position: sticky;
         top: 0;
-        z-index: 1001;
+        z-index: 999;
         background-color: #fff;
         padding: 15px 16px;
         margin-bottom: 0;
@@ -2382,7 +2425,7 @@ input.form-control {
     }
 
     .dashboard_right {
-        padding-top:110px;
+        padding-top:20px;
     }
 
     .dashboard_info_s ul li {
@@ -2483,6 +2526,8 @@ body h2 {
 }
 
 
+
+
 }
 
 @media screen and (max-width:580px) {
@@ -2494,6 +2539,14 @@ body h2 {
     .login_section .left_side_cnt h1 {
         font-size: 26px !important;
         padding-bottom: 18px;
+    }
+
+    .dashboard_outer_s ul li.nav-item button.nav-link {
+        font-size: 12px !important;
+    }
+
+    .small, small {
+        font-size: 12px !important;
     }
 
     .select_option {
